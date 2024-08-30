@@ -371,6 +371,58 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function createOrder()
+    {
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
+        ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', [
+            "order_id" => "224-447",
+            "order_date" => "2024-08-31 01:11",
+            "pickup_location" => "Trichy",
+            "channel_id" => "",
+            "comment" => "Reseller: M/s Goku",
+            "billing_customer_name" => "Naruto",
+            "billing_last_name" => "Uzumaki",
+            "billing_address" => "House 221B, Leaf Village",
+            "billing_address_2" => "Near Hokage House",
+            "billing_city" => "New Delhi",
+            "billing_pincode" => "110002",
+            "billing_state" => "Delhi",
+            "billing_country" => "India",
+            "billing_email" => "naruto@uzumaki.com",
+            "billing_phone" => "9876543210",
+            "shipping_is_billing" => true,
+            "order_items" => [
+                [
+                    "name" => "Kunai",
+                    "sku" => "chakra123",
+                    "units" => 10,
+                    "selling_price" => "900",
+                    "discount" => "",
+                    "tax" => "",
+                    "hsn" => 441122
+                ]
+            ],
+            "payment_method" => "Prepaid",
+            "shipping_charges" => 0,
+            "giftwrap_charges" => 0,
+            "transaction_charges" => 0,
+            "total_discount" => 0,
+            "sub_total" => 9000,
+            "length" => 10,
+            "breadth" => 15,
+            "height" => 20,
+            "weight" => 2.5
+        ]);
+
+        if ($response->successful()) {
+            return response()->json(['message' => 'Order created successfully!', 'data' => $response->json()]);
+        } else {
+            return response()->json(['message' => 'Order creation failed!', 'error' => $response->json()], $response->status());
+        }
+    }
+
     public function place_order(Request $request)
     {
         $user_id = $request->input('user_id'); 
