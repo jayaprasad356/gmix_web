@@ -529,7 +529,7 @@ class AuthController extends Controller
             $order->ordered_date = Carbon::now();
             $order->save();
 
-            $address1 = $address->door_no + $address->street_name;
+            $address1 = $address->door_no . ' ' . $address->street_name;
             if($payment_mode == 'prepaid'){
                 $payment_mode = 'Prepaid';
 
