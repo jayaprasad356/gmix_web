@@ -95,6 +95,8 @@ class UsersController extends Controller
     {
         $users->name = $request->name;
         $users->mobile = $request->mobile;
+        $users->points = $request->points;
+        $users->total_points = $request->total_points;
 
         if (!$users->save()) {
             return redirect()->back()->with('error', 'Sorry, Something went wrong while updating the user.');

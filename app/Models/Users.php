@@ -15,7 +15,7 @@ class Users extends Authenticatable
 
 
     protected $fillable = [
-        'name', 'email', 'mobile', // Add 'mobile' to the fillable fields
+        'name', 'email', 'mobile','points','total_points', // Add 'mobile' to the fillable fields
     ];
 
     public function addresses()

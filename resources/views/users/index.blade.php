@@ -34,6 +34,8 @@
                     <th>ID <i class="fas fa-sort"></i></th>
                     <th>Name</th>
                     <th>Mobile</th>
+                    <th>Points</th>
+                    <th>total Points</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +48,8 @@
                         <td>{{$user->id}}</td>
                         <td>{{$user->name}}</td>
                         <td>{{$user->mobile}}</td>
+                        <td>{{$user->points}}</td>
+                        <td>{{$user->total_points}}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -78,11 +78,13 @@ class AuthController extends Controller
             'id' => $user->id,
             'name' => $user->name ?? '',
             'mobile' => $user->mobile,
+            'points' => 0,
+            'total_points' => 0,
             'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($user->created_at)->format('Y-m-d H:i:s'),
             ],
         ], 200);
-        }
+    }
 
     public function otp(Request $request)
     {
@@ -156,6 +158,8 @@ class AuthController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'mobile' => $user->mobile,
+            'points' => $user->points ?? '',
+            'total_points' => $user->total_points ?? '',
             'updated_at' => Carbon::parse($user->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($user->created_at)->format('Y-m-d H:i:s'),
         ]];
