@@ -683,11 +683,13 @@ public function reward_product_list(Request $request)
 
     $reward_productData = [];
     foreach ($reward_products as $reward_product) {
+        $imageUrl = $reward_product->image ? asset('storage/app/public/reward_products/' . $reward_product->image) : '';
         $reward_productsData[] = [
             'id' => $reward_product->id,
             'name' => $reward_product->name,
             'points' => (string) $reward_product->points,
             'description' => $reward_product->description,
+            'image' => $imageUrl,
             'updated_at' => Carbon::parse($reward_product->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($reward_product->created_at)->format('Y-m-d H:i:s'),
         ];

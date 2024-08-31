@@ -49,6 +49,25 @@
                     @enderror 
                 </div>
 
+                <div class="form-group">
+                    <span>Current Image:</span>
+                    <img src="{{ asset('storage/app/public/reward_products/' . $reward_products->image) }}" alt="{{ $reward_products->name }}" style="max-width: 100px; max-height: 100px;">
+                    <br>
+                    <label for="image">New Image</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="image" id="image">
+                        <label class="custom-file-label" for="image">Choose file</label>
+                        @if($reward_products->image)
+                            <input type="hidden" name="existing_image" value="{{ $reward_products->image }}">
+                        @endif
+                    </div>
+                    @error('image')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
             
                 <button class="btn btn-success btn-block btn-lg" type="submit">Save Changes</button>
             </form>
@@ -57,10 +76,20 @@
 @endsection
 
 @section('js')
-    <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+<script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             bsCustomFileInput.init();
         });
     </script>
-@endsection
+      <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.getElementById('image');
+    const fileInputLabel = fileInput.nextElementSibling;
+
+    fileInput.addEventListener('change', function () {
+        const fileName = this.files[0].name;
+        fileInputLabel.textContent = fileName;
+    });
+});
+</script>@endsection

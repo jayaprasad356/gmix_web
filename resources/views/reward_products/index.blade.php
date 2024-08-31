@@ -7,6 +7,7 @@
 @endsection
 @section('css')
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
 @endsection
 @section('content')
 <div class="card">
@@ -32,6 +33,7 @@
                         <th>Name <i class="fas fa-sort"></i></th>
                         <th>Points <i class="fas fa-sort"></i></th>
                         <th>Description<i class="fas fa-sort"></i></th>
+                        <th>Image</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,6 +47,11 @@
                         <td>{{$reward_product->name}}</td>
                         <td>{{$reward_product->points}}</td>
                         <td>{{$reward_product->description}}</td>
+                        <td>
+                            <a href="{{ asset('storage/app/public/reward_products/' . $reward_product->image) }}" data-lightbox="image-{{ $reward_product->id }}">
+                                <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/reward_products/' . $reward_product->image) }}" alt="Image" style="max-width: 100px; max-height: 100px;">
+                            </a>
+                         </td>
                     </tr>
                     @endforeach
                 </tbody>

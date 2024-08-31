@@ -57,10 +57,19 @@ class RewardproductsController extends Controller
     
     public function store(RewardProductsStoreRequest $request)
     {
+            // Check if a file has been uploaded
+       if ($request->hasFile('image')) {
+        $imageName = $request->file('image')->getClientOriginalName(); // Get the original file name
+        $imagePath = $request->file('image')->storeAs('reward_products', $imageName);
+    } else {
+        // Handle the case where no file has been uploaded
+        $imagePath = null; // or provide a default image path
+    }
         $reward_products = Reward_products::create([
             'points' => $request->points,
             'name' => $request->name,
             'description' => $request->description,
+            'image' => $imageName, 
         ]);
     
         if (!$reward_products) {
@@ -110,6 +119,12 @@ class RewardproductsController extends Controller
         $reward_products->points = $request->points;
         $reward_products->name = $request->name;
         $reward_products->description = $request->description;
+
+        if ($request->hasFile('image')) {
+            $newImagePath = $request->file('image')->store('reward_products', 'public');
+            Storage::disk('public')->delete('reward_products/' . $reward_products->image);
+            $reward_products->image = basename($newImagePath);
+        }
         
 
         if (!$reward_products->save()) {
@@ -120,6 +135,9 @@ class RewardproductsController extends Controller
 
     public function destroy(Reward_products $reward_products)
     {
+        if (Storage::disk('public')->exists('reward_products/' . $reward_products->image)) {
+            Storage::disk('public')->delete('reward_products/' . $reward_products->image);
+        }
         $reward_products->delete();
 
         return response()->json([

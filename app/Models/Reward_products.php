@@ -10,5 +10,6 @@ class Reward_products extends Model
         'points',
         'name',
         'description',
+        'image',
     ];
 }
