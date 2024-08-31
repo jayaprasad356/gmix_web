@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Users; 
 use App\Models\Products; 
-use App\Models\Address; 
+use App\Models\Addresses; 
 use App\Models\Orders;
 use App\Models\Friends; 
 use App\Models\Points; 
@@ -286,7 +286,7 @@ class AuthController extends Controller
         }
 
         // Create a new Address instance
-        $address = new Address();
+        $address = new Addresses();
         $address->user_id = $user_id; 
         $address->name = $name;
         $address->mobile = $mobile;
@@ -340,7 +340,7 @@ class AuthController extends Controller
 
 
         // Retrieve the user details for the given user_id
-        $address = address::find($address_id);
+        $address = addresses::find($address_id);
 
         if (!$address) {
             return response()->json([
@@ -371,58 +371,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function createOrder()
-    {
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
-        ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', [
-            "order_id" => "224-447",
-            "order_date" => "2024-08-31 01:11",
-            "pickup_location" => "Trichy",
-            "channel_id" => "",
-            "comment" => "Reseller: M/s Goku",
-            "billing_customer_name" => "Naruto",
-            "billing_last_name" => "Uzumaki",
-            "billing_address" => "House 221B, Leaf Village",
-            "billing_address_2" => "Near Hokage House",
-            "billing_city" => "New Delhi",
-            "billing_pincode" => "110002",
-            "billing_state" => "Delhi",
-            "billing_country" => "India",
-            "billing_email" => "naruto@uzumaki.com",
-            "billing_phone" => "9876543210",
-            "shipping_is_billing" => true,
-            "order_items" => [
-                [
-                    "name" => "Kunai",
-                    "sku" => "chakra123",
-                    "units" => 10,
-                    "selling_price" => "900",
-                    "discount" => "",
-                    "tax" => "",
-                    "hsn" => 441122
-                ]
-            ],
-            "payment_method" => "Prepaid",
-            "shipping_charges" => 0,
-            "giftwrap_charges" => 0,
-            "transaction_charges" => 0,
-            "total_discount" => 0,
-            "sub_total" => 9000,
-            "length" => 10,
-            "breadth" => 15,
-            "height" => 20,
-            "weight" => 2.5
-        ]);
-
-        if ($response->successful()) {
-            return response()->json(['message' => 'Order created successfully!', 'data' => $response->json()]);
-        } else {
-            return response()->json(['message' => 'Order creation failed!', 'error' => $response->json()], $response->status());
-        }
-    }
-
     public function place_order(Request $request)
     {
         $user_id = $request->input('user_id'); 
@@ -431,89 +379,55 @@ class AuthController extends Controller
         $price = $request->input('price');
         $delivery_charges = $request->input('delivery_charges');
         $payment_mode = $request->input('payment_mode');
-
-        if (empty($user_id)) {
+    
+        // Validate inputs
+        if (empty($user_id) || empty($product_id) || empty($address_id) || empty($price) || empty($delivery_charges) || empty($payment_mode)) {
             return response()->json([
                 'success' => false,
-                'message' => 'user_id is empty.',
+                'message' => 'One or more required fields are empty.',
             ], 400);
         }
-
-        if (empty($product_id)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'product_id is empty.',
-            ], 400);
-        }
-
-        if (empty($address_id)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'address_id is empty.',
-            ], 400);
-        }
-
-        if (empty($price)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'price is empty.',
-            ], 400);
-        }
-
-        if (empty($delivery_charges)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'delivery_charges is empty.',
-            ], 400);
-        }
-
-        if (empty($payment_mode)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'payment_mode is empty.',
-            ], 400);
-        }
-
+    
         // Check if user exists
         $user = Users::find($user_id);
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'user not found.',
+                'message' => 'User not found.',
             ], 404);
         }
-
+    
         // Check if product exists
         $product = Products::find($product_id);
         if (!$product) {
             return response()->json([
                 'success' => false,
-                'message' => 'product not found.',
+                'message' => 'Product not found.',
             ], 404);
         }
-
+    
         // Check if address exists
-        $address = Address::find($address_id);
+        $address = Addresses::find($address_id);
         if (!$address) {
             return response()->json([
                 'success' => false,
-                'message' => 'address not found.',
+                'message' => 'Address not found.',
             ], 404);
         }
-
+    
         // Check if the order already exists
         $existingOrder = Orders::where('user_id', $user_id)
             ->where('product_id', $product_id)
             ->where('address_id', $address_id)
             ->first();
-
+    
         if ($existingOrder) {
             return response()->json([
                 'success' => false,
                 'message' => 'Order already exists.',
             ], 400);
         }
-
+    
         // Check if payment mode is valid
         if ($payment_mode !== 'prepaid' && $payment_mode !== 'cod') {
             return response()->json([
@@ -521,7 +435,7 @@ class AuthController extends Controller
                 'message' => 'Invalid payment mode. Payment mode should be either prepaid or cod.',
             ], 400);
         }
-
+    
         // Insert into orders table
         $order = new Orders();
         $order->user_id = $user_id;
@@ -531,13 +445,77 @@ class AuthController extends Controller
         $order->delivery_charges = $delivery_charges;
         $order->payment_mode = $payment_mode;
         $order->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Order placed successfully.',
-        ], 200);
+    
+        // Prepare data for Shiprocket order creation
+        $orderData = [
+            "order_id" => $order->id,
+            "order_date" => now()->format('Y-m-d H:i'),
+            "pickup_location" => "Trichy", // Assuming a static pickup location, change as needed
+            "channel_id" => "", // If required, add channel_id logic here
+            "comment" => "Reseller: M/s Goku", // Optional comment
+            "billing_customer_name" => $user->name,
+            "billing_last_name" => $user->last_name,
+            "billing_address" => $address->address_line_1,
+            "billing_address_2" => $address->address_line_2,
+            "billing_city" => $address->city,
+            "billing_pincode" => $address->pincode,
+            "billing_state" => $address->state,
+            "billing_country" => "India",
+            "billing_email" => $user->email,
+            "billing_phone" => $user->mobile,
+            "shipping_is_billing" => true,
+            "order_items" => [
+                [
+                    "name" => $product->name,
+                    "sku" => $product->sku,
+                    "units" => 1, // Assuming 1 unit, adjust as necessary
+                    "selling_price" => $price,
+                    "discount" => "", // Add discount if applicable
+                    "tax" => "", // Add tax if applicable
+                    "hsn" => $product->hsn_code, // Assuming product has HSN code
+                ]
+            ],
+            "payment_method" => $payment_mode === 'prepaid' ? 'Prepaid' : 'COD',
+            "shipping_charges" => $delivery_charges,
+            "giftwrap_charges" => 0,
+            "transaction_charges" => 0,
+            "total_discount" => 0,
+            "sub_total" => $price,
+            "length" => $product->length, // Assuming product has dimensions
+            "breadth" => $product->breadth,
+            "height" => $product->height,
+            "weight" => $product->weight,
+        ];
+    
+        // Call the createOrder method
+        $response = $this->createOrder($orderData);
+    
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Order placed and Shiprocket order created successfully.',
+                'data' => $response->json(),
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order placed, but failed to create Shiprocket order.',
+                'error' => $response->json(),
+            ], $response->status());
+        }
     }
-
+    
+    // Modified createOrder function to accept order data
+    public function createOrder($orderData)
+    {
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
+        ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', $orderData);
+    
+        return $response;
+    }
+    
     public function orders_list(Request $request)
     {
         $user_id = $request->input('user_id');
@@ -559,7 +537,7 @@ class AuthController extends Controller
             if ($order->user_id == $user_id) {
                 $user = Users::find($order->user_id);
                 $product = Products::find($order->product_id);
-                $address = Address::find($order->address_id);
+                $address = Addresses::find($order->address_id);
                 $ordersDetails[] = [
                     'id' => $order->id,
                     'user_name' => $user->name, // Retrieve user name from the User model
@@ -580,6 +558,51 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Orders retrieved successfully.',
             'data' => $ordersDetails,
+        ], 200);
+    }
+
+    public function my_address_list(Request $request)
+    {
+        $user_id = $request->input('user_id');
+
+        // Retrieve the orders for the given user
+        $addresses = Addresses::where('user_id', $user_id)->get();
+
+        if ($addresses->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No addresses found for the user.',
+            ], 404);
+        }
+
+        $addressesDetails = [];
+
+        foreach ($addresses as $address) {
+
+            if ($address->user_id == $user_id) {
+                $user = Users::find($address->user_id);
+                $addressesDetails[] = [
+                    'id' => $address->id,
+                    'user_id' => $address->user_id,
+                    'user_name' => $user->name,
+                    'name' => $address->name,
+                    'mobile' => $address->mobile,
+                    'alternate_mobile' => $address->alternate_mobile,
+                    'door_no' => $address->door_no,
+                    'street_name' => $address->street_name,
+                    'city' => $address->city,
+                    'pincode' => $address->pincode,
+                    'state' => $address->state,
+                    'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
+                    'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Addresses retrieved successfully.',
+            'data' => $addressesDetails,
         ], 200);
     }
 }
