@@ -575,9 +575,9 @@ class AuthController extends Controller
                 "transaction_charges" => 0,
                 "total_discount" => 0,
                 "sub_total" => (int) $sub_total,
-                "length" => 10,
-                "breadth" => 15,
-                "height" => 20,
+                "length" => 8,
+                "breadth" => 4,
+                "height" => 5,
                 "weight" => 0.5
             ]);
 
