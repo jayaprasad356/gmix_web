@@ -14,6 +14,7 @@ class Addresses extends Model
         'street_name',
         'city',
         'pincode',
+        'landmark',
         'state',
         'user_id',
     ];

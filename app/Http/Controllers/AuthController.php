@@ -212,6 +212,7 @@ class AuthController extends Controller
         $city = $request->input('city');
         $pincode = $request->input('pincode');
         $state = $request->input('state');
+        $landmark = $request->input('landmark');
 
         if (empty($user_id)) {
             return response()->json([
@@ -275,6 +276,12 @@ class AuthController extends Controller
                 'message' => 'state is empty.',
             ], 400);
         }
+        if (empty($landmark)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'landmark is empty.',
+            ], 400);
+        }
 
         // Check if user exists
         $user = Users::find($user_id);
@@ -296,6 +303,7 @@ class AuthController extends Controller
         $address->city = $city;
         $address->pincode = $pincode;
         $address->state = $state;
+        $address->landmark = $landmark;
 
         // Save the address
         if (!$address->save()) {
@@ -316,6 +324,7 @@ class AuthController extends Controller
             'city' => $address->city,
             'pincode' => $address->pincode,
             'state' => $address->state,
+            'landmark' => $address->landmark,
             'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
         ]];
@@ -360,6 +369,7 @@ class AuthController extends Controller
             'city' => $address->city,
             'pincode' => $address->pincode,
             'state' => $address->state,
+            'landmark' => $address->landmark,
             'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
         ]];
@@ -593,6 +603,7 @@ class AuthController extends Controller
                     'city' => $address->city,
                     'pincode' => $address->pincode,
                     'state' => $address->state,
+                    'landmark' => $address->landmark,
                     'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
                     'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
                 ];

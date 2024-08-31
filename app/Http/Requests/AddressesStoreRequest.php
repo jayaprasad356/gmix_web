@@ -33,6 +33,7 @@ class AddressesStoreRequest extends FormRequest
             'city' => 'nullable|string',
             'pincode' => 'nullable|string',
             'state' => 'nullable|string',
+            'landmark' => 'nullable|string',
         ];
     }
 }

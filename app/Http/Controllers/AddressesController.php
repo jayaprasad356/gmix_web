@@ -29,6 +29,7 @@ class AddressesController extends Controller
                   ->orWhere('city', 'like', "%$search%")
                   ->orWhere('pincode', 'like', "%$search%")
                   ->orWhere('state', 'like', "%$search%")
+                  ->orWhere('landmark', 'like', "%$search%")
                   ->orWhereHas('users', function ($q) use ($search) {
                     $q->where('name', 'like', "%$search%");
                 });
@@ -70,6 +71,7 @@ class AddressesController extends Controller
             'city' => $request->city,
             'pincode' => $request->pincode,
             'state' => $request->state,
+            'landmark' => $request->landmark,
         ]);
 
         if (!$addresses) {
@@ -117,6 +119,7 @@ class AddressesController extends Controller
         $addresses->city = $request->city;
         $addresses->pincode = $request->pincode;
         $addresses->state = $request->state;
+        $addresses->landmark = $request->landmark;
 
         if (!$addresses->save()) {
             return redirect()->back()->with('error', 'Sorry, Something went wrong while updating the addresses.');

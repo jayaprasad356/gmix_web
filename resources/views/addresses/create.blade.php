@@ -105,6 +105,18 @@
                 </div>
 
 
+                <div class="form-group">
+                    <label for="landmark">Landmark</label>
+                    <input type="text" name="landmark" class="form-control @error('landmark') is-invalid @enderror" id="landmark"
+                           placeholder="landmark" value="{{ old('landmark') }}">
+                    @error('landmark')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
+
               
 
                 <button class="btn btn-success btn-block btn-lg" type="submit">Submit</button>

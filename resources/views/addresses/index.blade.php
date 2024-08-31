@@ -42,6 +42,7 @@
                     <th>State</th>
                     <th>Pincode</th>
                     <th>City</th>
+                    <th>Landmark</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,6 +62,7 @@
                         <td>{{$addres->state}}</td>
                         <td>{{$addres->pincode}}</td>
                         <td>{{$addres->city}}</td>
+                        <td>{{$addres->landmark}}</td>
                     </tr>
                     @endforeach
                 </tbody>
