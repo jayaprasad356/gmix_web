@@ -187,6 +187,7 @@ class AuthController extends Controller
                 'name' => $product->name,
                 'unit' => $product->unit,
                 'measurement' => $product->measurement,
+                'quantity' => $product->quantity,
                 'price' => (string) $product->price,
                 'image' => $imageUrl,
                 'updated_at' => Carbon::parse($product->updated_at)->format('Y-m-d H:i:s'),
@@ -374,151 +375,165 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function place_order(Request $request)
-    {
-        $user_id = $request->input('user_id'); 
-        $product_id = $request->input('product_id');
-        $address_id = $request->input('address_id');
-        $price = $request->input('price');
-        $delivery_charges = $request->input('delivery_charges');
-        $payment_mode = $request->input('payment_mode');
-    
-        // Validate inputs
-        if (empty($user_id) || empty($product_id) || empty($address_id) || empty($price) || empty($delivery_charges) || empty($payment_mode)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'One or more required fields are empty.',
-            ], 400);
+    public function createOrder()
+        {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
+            ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', [
+                "order_id" => "224-447",
+                "order_date" => "2024-08-31 01:11",
+                "pickup_location" => "Trichy",
+                "channel_id" => "",
+                "comment" => "Reseller: M/s Goku",
+                "billing_customer_name" => "Naruto",
+                "billing_last_name" => "Uzumaki",
+                "billing_address" => "House 221B, Leaf Village",
+                "billing_address_2" => "Near Hokage House",
+                "billing_city" => "New Delhi",
+                "billing_pincode" => "110002",
+                "billing_state" => "Delhi",
+                "billing_country" => "India",
+                "billing_email" => "naruto@uzumaki.com",
+                "billing_phone" => "9876543210",
+                "shipping_is_billing" => true,
+                "order_items" => [
+                    [
+                        "name" => "Kunai",
+                        "sku" => "chakra123",
+                        "units" => 10,
+                        "selling_price" => "900",
+                        "discount" => "",
+                        "tax" => "",
+                        "hsn" => 441122
+                    ]
+                ],
+                "payment_method" => "Prepaid",
+                "shipping_charges" => 0,
+                "giftwrap_charges" => 0,
+                "transaction_charges" => 0,
+                "total_discount" => 0,
+                "sub_total" => 9000,
+                "length" => 10,
+                "breadth" => 15,
+                "height" => 20,
+                "weight" => 2.5
+            ]);
+
+            if ($response->successful()) {
+                return response()->json(['message' => 'Order created successfully!', 'data' => $response->json()]);
+            } else {
+                return response()->json(['message' => 'Order creation failed!', 'error' => $response->json()], $response->status());
+            }
         }
-    
-        // Check if user exists
-        $user = Users::find($user_id);
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'User not found.',
-            ], 404);
-        }
-    
-        // Check if product exists
-        $product = Products::find($product_id);
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Product not found.',
-            ], 404);
-        }
-    
-        // Check if address exists
-        $address = Addresses::find($address_id);
-        if (!$address) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Address not found.',
-            ], 404);
-        }
-    
-        // Check if the order already exists
-        $existingOrder = Orders::where('user_id', $user_id)
-            ->where('product_id', $product_id)
-            ->where('address_id', $address_id)
-            ->first();
-    
-        if ($existingOrder) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order already exists.',
-            ], 400);
-        }
-    
-        // Check if payment mode is valid
-        if ($payment_mode !== 'prepaid' && $payment_mode !== 'cod') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid payment mode. Payment mode should be either prepaid or cod.',
-            ], 400);
-        }
-    
-        // Insert into orders table
-        $order = new Orders();
-        $order->user_id = $user_id;
-        $order->product_id = $product_id;
-        $order->address_id = $address_id;
-        $order->price = $price;
-        $order->delivery_charges = $delivery_charges;
-        $order->payment_mode = $payment_mode;
-        $order->save();
-    
-        // Prepare data for Shiprocket order creation
-        $orderData = [
-            "order_id" => $order->id,
-            "order_date" => now()->format('Y-m-d H:i'),
-            "pickup_location" => "Trichy", // Assuming a static pickup location, change as needed
-            "channel_id" => "", // If required, add channel_id logic here
-            "comment" => "Reseller: M/s Goku", // Optional comment
-            "billing_customer_name" => $user->name,
-            "billing_last_name" => $user->last_name,
-            "billing_address" => $address->address_line_1,
-            "billing_address_2" => $address->address_line_2,
-            "billing_city" => $address->city,
-            "billing_pincode" => $address->pincode,
-            "billing_state" => $address->state,
-            "billing_country" => "India",
-            "billing_email" => $user->email,
-            "billing_phone" => $user->mobile,
-            "shipping_is_billing" => true,
-            "order_items" => [
-                [
-                    "name" => $product->name,
-                    "sku" => $product->sku,
-                    "units" => 1, // Assuming 1 unit, adjust as necessary
-                    "selling_price" => $price,
-                    "discount" => "", // Add discount if applicable
-                    "tax" => "", // Add tax if applicable
-                    "hsn" => $product->hsn_code, // Assuming product has HSN code
-                ]
-            ],
-            "payment_method" => $payment_mode === 'prepaid' ? 'Prepaid' : 'COD',
-            "shipping_charges" => $delivery_charges,
-            "giftwrap_charges" => 0,
-            "transaction_charges" => 0,
-            "total_discount" => 0,
-            "sub_total" => $price,
-            "length" => $product->length, // Assuming product has dimensions
-            "breadth" => $product->breadth,
-            "height" => $product->height,
-            "weight" => $product->weight,
-        ];
-    
-        // Call the createOrder method
-        $response = $this->createOrder($orderData);
-    
-        if ($response->successful()) {
+
+        public function place_order(Request $request)
+        {
+            $user_id = $request->input('user_id');
+            $product_id = $request->input('product_id');
+            $address_id = $request->input('address_id');
+            $payment_mode = $request->input('payment_mode');
+        
+            if (empty($user_id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'user_id is empty.',
+                ], 400);
+            }
+        
+            if (empty($product_id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'product_id is empty.',
+                ], 400);
+            }
+        
+            if (empty($address_id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'address_id is empty.',
+                ], 400);
+            }
+        
+            if (empty($payment_mode)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'payment_mode is empty.',
+                ], 400);
+            }
+        
+            // Check if user exists
+            $user = Users::find($user_id);
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'user not found.',
+                ], 404);
+            }
+        
+            // Check if product exists and get its price
+            $product = Products::find($product_id);
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'product not found.',
+                ], 404);
+            }
+            $price = $product->price;
+        
+            // Check if address exists
+            $address = Addresses::find($address_id);
+            if (!$address) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'address not found.',
+                ], 404);
+            }
+        
+            // Get delivery charges from settings table but i getting from news table some issue of the settings name so i change name into news
+            $delivery_charges = 0; // Default to 0 for prepaid
+            if ($payment_mode === 'cod') {
+                $delivery_charges = News::value('delivery_charges');
+            }
+        
+            // Check if the order already exists
+            $existingOrder = Orders::where('user_id', $user_id)
+                ->where('product_id', $product_id)
+                ->where('address_id', $address_id)
+                ->first();
+        
+            if ($existingOrder) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order already exists.',
+                ], 400);
+            }
+        
+            // Check if payment mode is valid
+            if ($payment_mode !== 'prepaid' && $payment_mode !== 'cod') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid payment mode. Payment mode should be either prepaid or cod.',
+                ], 400);
+            }
+        
+            // Insert into orders table
+            $order = new Orders();
+            $order->user_id = $user_id;
+            $order->product_id = $product_id;
+            $order->address_id = $address_id;
+            $order->price = $price;
+            $order->delivery_charges = $delivery_charges;
+            $order->payment_mode = $payment_mode;
+            $order->ordered_date = Carbon::now();
+            $order->save();
+        
             return response()->json([
                 'success' => true,
-                'message' => 'Order placed and Shiprocket order created successfully.',
-                'data' => $response->json(),
+                'message' => 'Order placed successfully.',
             ], 200);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order placed, but failed to create Shiprocket order.',
-                'error' => $response->json(),
-            ], $response->status());
         }
-    }
-    
-    // Modified createOrder function to accept order data
-    public function createOrder($orderData)
-    {
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
-        ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', $orderData);
-    
-        return $response;
-    }
-    
+        
     public function orders_list(Request $request)
     {
         $user_id = $request->input('user_id');
@@ -546,11 +561,15 @@ class AuthController extends Controller
                     'user_name' => $user->name, // Retrieve user name from the User model
                     'address_name' => $address->name, // Retrieve address name from the Address model
                     'product_name' => $product->name, // Retrieve product name from the Product model
+                    'unit' => $product->unit,
+                    'measurement' => $product->measurement,
+                    'quantity' => $product->quantity,
                     'delivery_charges' => $order->delivery_charges,
                     'payment_mode' => $order->payment_mode,
                     'price' => (string) $order->price,
-                    'place_status' => (string) $order->place_status,
-                    'delivery_date' => Carbon::parse($order->delivery_date)->format('Y-m-d'),
+                    'status' => (string) $order->status,
+                    'est_delivery_date' => Carbon::parse($order->est_delivery_date)->format('Y-m-d'),
+                    'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
                     'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
                     'created_at' => Carbon::parse($order->created_at)->format('Y-m-d H:i:s'),
                 ];

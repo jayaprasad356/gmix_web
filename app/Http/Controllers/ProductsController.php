@@ -23,7 +23,8 @@ class ProductsController extends Controller
             $query->where('name', 'like', "%$search%")
                   ->orWhere('unit', 'like', "%$search%")
                   ->orWhere('measurement', 'like', "%$search%")
-                  ->orWhere('price', 'like', "%$search%");
+                  ->orWhere('price', 'like', "%$search%")
+                  ->orWhere('quantity', 'like', "%$search%");
         }
 
         if ($request->wantsJson()) {
@@ -67,6 +68,7 @@ class ProductsController extends Controller
             'name' => $request->name,
             'unit' => $request->unit,
             'measurement' => $request->measurement,
+            'quantity' => $request->quantity,
             'price' => $request->price,
             'image' => $imageName, 
         ]);
@@ -110,6 +112,7 @@ class ProductsController extends Controller
         $product->name = $request->name;
         $product->unit = $request->unit;
         $product->measurement = $request->measurement;
+        $product->quantity = $request->quantity;
         $product->price = $request->price;
 
         if ($request->hasFile('image')) {

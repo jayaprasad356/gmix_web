@@ -39,9 +39,20 @@
 
                 <div class="form-group">
                     <label for="measurement">Measurement</label>
-                    <input type="number" name="measurement" class="form-control @error('measurement') is-invalid @enderror" id="offer_percentage"
+                    <input type="number" name="measurement" class="form-control @error('measurement') is-invalid @enderror" id="measurement"
                            placeholder="Measurement" value="{{ old('measurement') }}">
                     @error('measurement')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" id="quantity"
+                           placeholder="quantity" value="{{ old('quantity') }}">
+                    @error('quantity')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

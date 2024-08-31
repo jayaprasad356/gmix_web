@@ -52,6 +52,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror"
+                           id="quantity"
+                           placeholder="quantity" value="{{ old('quantity', $product->quantity) }}">
+                    @error('quantity')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+
+                <div class="form-group">
                     <label for="price">Price</label>
                     <input type="number" name="price" class="form-control @error('price') is-invalid @enderror"
                            id="price"
