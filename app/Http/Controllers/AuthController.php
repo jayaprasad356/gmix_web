@@ -502,17 +502,11 @@ class AuthController extends Controller
             }
         
             // Check if the order already exists
-            $existingOrder = Orders::where('user_id', $user_id)
-                ->where('product_id', $product_id)
-                ->where('address_id', $address_id)
-                ->first();
+            $latestOrderId = Orders::where('user_id', $user_id)
+            ->latest('created_at')
+            ->value('id');
         
-            if ($existingOrder) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Order already exists.',
-                ], 400);
-            }
+
         
             // Check if payment mode is valid
             if ($payment_mode !== 'prepaid' && $payment_mode !== 'cod') {
@@ -521,6 +515,7 @@ class AuthController extends Controller
                     'message' => 'Invalid payment mode. Payment mode should be either prepaid or cod.',
                 ], 400);
             }
+            $shipping_charges = 60 ;
         
             // Insert into orders table
             $order = new Orders();
@@ -533,11 +528,69 @@ class AuthController extends Controller
             $order->live_tracking = 'https://gmix.shiprocket.co/tracking/19041629047052'; 
             $order->ordered_date = Carbon::now();
             $order->save();
+
+            $address1 = $address->door_no + $address->street_name;
+            if($payment_mode == 'prepaid'){
+                $payment_mode = 'Prepaid';
+
+            }else{
+                $payment_mode = 'COD';
+            }
+            $sub_total = $price + $delivery_charges;
+
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
+            ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', [
+                "order_id" => $latestOrderId,
+                "order_date" => "2024-08-31 01:11",
+                "pickup_location" => "Trichy",
+                "channel_id" => "",
+                "comment" => "G Mix",
+                "billing_customer_name" => $address->name,
+                "billing_last_name" => "",
+                "billing_address" => $address1,
+                "billing_address_2" => "",
+                "billing_city" => $address->city,
+                "billing_pincode" => $address->pincode,
+                "billing_state" => $address->state,
+                "billing_country" => "India",
+                "billing_email" => "",
+                "billing_phone" => $address->mobile,
+                "shipping_is_billing" => true,
+                "order_items" => [
+                    [
+                        "name" => "G Mix",
+                        "sku" => "123456",
+                        "units" => 1,
+                        "selling_price" => $price,
+                        "discount" => "",
+                        "tax" => "",
+                        "hsn" => 441122
+                    ]
+                ],
+                "payment_method" => $payment_mode,
+                "shipping_charges" => (int) $delivery_charges,
+                "giftwrap_charges" => 0,
+                "transaction_charges" => 0,
+                "total_discount" => 0,
+                "sub_total" => (int) $sub_total,
+                "length" => 10,
+                "breadth" => 15,
+                "height" => 20,
+                "weight" => 0.5
+            ]);
+
+            if ($response->successful()) {
+                return response()->json(['message' => 'Order created successfully!', 'data' => $response->json()]);
+            } else {
+                return response()->json(['message' => 'Order creation failed!', 'error' => $response->json()], $response->status());
+            }
         
-            return response()->json([
-                'success' => true,
-                'message' => 'Order placed successfully.',
-            ], 200);
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Order placed successfully.',
+            // ], 200);
         }
         
         public function orders_list(Request $request)
