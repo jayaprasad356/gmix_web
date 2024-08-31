@@ -18,7 +18,7 @@ use App\Models\Feedback;
 use App\Models\Fakechats; 
 use App\Models\Professions; 
 use App\Models\RechargeTrans;
-use App\Models\Reward_points;
+use App\Models\Reward_products;
 use App\Models\VerificationTrans;
 use App\Models\Appsettings; 
 use App\Models\News; 
@@ -667,34 +667,34 @@ class AuthController extends Controller
     ], 200);
 }
 
-public function reward_points_list(Request $request)
+public function reward_product_list(Request $request)
 {
     // Retrieve all news settings
-    $reward_points = Reward_points::all();
+    $reward_products = Reward_products::all();
 
-    if ($reward_points->isEmpty()) {
+    if ($reward_products->isEmpty()) {
         return response()->json([
             'success' => false,
-            'message' => 'No reward points found.',
+            'message' => 'No reward product found.',
         ], 404);
     }
 
-    $reward_pointsData = [];
-    foreach ($reward_points as $reward_point) {
-        $reward_pointsData[] = [
-            'id' => $reward_point->id,
-            'name' => $reward_point->name,
-            'points' => (string) $reward_point->points,
-            'description' => $reward_point->description,
-            'updated_at' => Carbon::parse($reward_point->updated_at)->format('Y-m-d H:i:s'),
-            'created_at' => Carbon::parse($reward_point->created_at)->format('Y-m-d H:i:s'),
+    $reward_productData = [];
+    foreach ($reward_products as $reward_product) {
+        $reward_productsData[] = [
+            'id' => $reward_product->id,
+            'name' => $reward_product->name,
+            'points' => (string) $reward_product->points,
+            'description' => $reward_product->description,
+            'updated_at' => Carbon::parse($reward_product->updated_at)->format('Y-m-d H:i:s'),
+            'created_at' => Carbon::parse($reward_product->created_at)->format('Y-m-d H:i:s'),
         ];
     }
 
     return response()->json([
         'success' => true,
-        'message' => 'Reward Points listed successfully.',
-        'data' => $reward_pointsData,
+        'message' => 'Reward Products listed successfully.',
+        'data' => $reward_productsData,
     ], 200);
 }
 

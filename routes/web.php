@@ -19,7 +19,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AppsettingsController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\RewardpointsController;
+use App\Http\Controllers\RewardproductsController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\UserNotificationsController;
@@ -90,12 +90,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
 
             //reward_points
-            Route::get('/reward_points', [RewardpointsController::class, 'index'])->name('reward_points.index');
-            Route::get('/reward_points/reward_points', [RewardpointsController::class, 'create'])->name('reward_points.create');
-            Route::get('/reward_points/{reward_points}/edit', [RewardpointsController::class, 'edit'])->name('reward_points.edit');
-            Route::delete('/reward_points/{reward_points}', [RewardpointsController::class, 'destroy'])->name('reward_points.destroy');
-            Route::put('/reward_points/{reward_points}', [RewardpointsController::class, 'update'])->name('reward_points.update');
-            Route::post('/reward_points', [RewardpointsController::class, 'store'])->name('reward_points.store');
+            Route::get('/reward_products', [RewardproductsController::class, 'index'])->name('reward_products.index');
+            Route::get('/reward_products/reward_products', [RewardproductsController::class, 'create'])->name('reward_products.create');
+            Route::get('/reward_products/{reward_products}/edit', [RewardproductsController::class, 'edit'])->name('reward_products.edit');
+            Route::delete('/reward_products/{reward_products}', [RewardproductsController::class, 'destroy'])->name('reward_products.destroy');
+            Route::put('/reward_products/{reward_products}', [RewardproductsController::class, 'update'])->name('reward_products.update');
+            Route::post('/reward_products', [RewardproductsController::class, 'store'])->name('reward_products.store');
 
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::delete('/orders/{orders}', [OrdersController::class, 'destroy'])->name('orders.destroy');

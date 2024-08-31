@@ -49,9 +49,9 @@
             </li>
 
             <li class="nav-item has-treeview">
-                <a href="{{ route('reward_points.index') }}" class="nav-link {{ activeSegment('reward_points') }}">
+                <a href="{{ route('reward_products.index') }}" class="nav-link {{ activeSegment('reward_products') }}">
                 <i class="nav-icon fas fa-gift"></i> <!-- Icon for Address -->
-                    <p>Reward Points</p>
+                    <p>Reward Products</p>
                 </a>
             </li>
 

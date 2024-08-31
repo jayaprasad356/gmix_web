@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
-@section('title', 'Reward Points Management')
-@section('content-header', ' RewardPoints Management')
+@section('title', 'Reward Products Management')
+@section('content-header', ' Reward Products Management')
 @section('content-actions')
-    <a href="{{route('reward_points.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Reward Points</a>
+    <a href="{{route('reward_products.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Reward Products</a>
 @endsection
 @section('css')
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
@@ -13,7 +13,7 @@
     <div class="card-body">
     <div class="row mb-4">
         <div class="ml-auto">
-        <form id="search-form" action="{{ route('reward_points.index') }}" method="GET">
+        <form id="search-form" action="{{ route('reward_products.index') }}" method="GET">
                     <div class="input-group">
                         <input type="text" id="search-input" name="search" class="form-control" placeholder="Search by..." autocomplete="off" value="{{ request()->input('search') }}">
                         <div class="input-group-append">
@@ -35,22 +35,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($reward_points as $reward_point)
+                    @foreach ($reward_products as $reward_product)
                     <tr>
                     <td>
-                            <a href="{{ route('reward_points.edit', $reward_point) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                            <button class="btn btn-danger btn-delete" data-url="{{route('reward_points.destroy', $reward_point)}}"><i class="fas fa-trash"></i></button>
+                            <a href="{{ route('reward_products.edit', $reward_product) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                            <button class="btn btn-danger btn-delete" data-url="{{route('reward_products.destroy', $reward_product)}}"><i class="fas fa-trash"></i></button>
                         </td>
-                        <td>{{$reward_point->id}}</td>
-                        <td>{{$reward_point->name}}</td>
-                        <td>{{$reward_point->points}}</td>
-                        <td>{{$reward_point->description}}</td>
+                        <td>{{$reward_product->id}}</td>
+                        <td>{{$reward_product->name}}</td>
+                        <td>{{$reward_product->points}}</td>
+                        <td>{{$reward_product->description}}</td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-        {{ $reward_points->appends(request()->query())->links() }}
+        {{ $reward_products->appends(request()->query())->links() }}
     </div>
 </div>
 

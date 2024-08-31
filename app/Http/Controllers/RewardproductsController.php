@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RewardPointsStoreRequest;
-use App\Models\Reward_points;
+use App\Http\Requests\RewardProductsStoreRequest;
+use App\Models\Reward_products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class RewardpointsController extends Controller
+class RewardproductsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class RewardpointsController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Reward_points::query();
+        $query = Reward_products::query();
         
         // Check if there's a search query
         if ($request->filled('search')) {
@@ -31,9 +31,9 @@ class RewardpointsController extends Controller
         }
         
         // Retrieve all points if there's no search query
-        $reward_points = $query->latest()->paginate(10);
+        $reward_products = $query->latest()->paginate(10);
         
-        return view('reward_points.index')->with('reward_points', $reward_points);
+        return view('reward_products.index')->with('reward_products', $reward_products);
     }
     
     
@@ -44,7 +44,7 @@ class RewardpointsController extends Controller
      */
     public function create()
     {
-        return view('reward_points.create');
+        return view('reward_products.create');
     }
 
     /**
@@ -55,19 +55,19 @@ class RewardpointsController extends Controller
      */
 
     
-    public function store(RewardPointsStoreRequest $request)
+    public function store(RewardProductsStoreRequest $request)
     {
-        $reward_points = Reward_points::create([
+        $reward_products = Reward_products::create([
             'points' => $request->points,
             'name' => $request->name,
             'description' => $request->description,
         ]);
     
-        if (!$reward_points) {
+        if (!$reward_products) {
             return redirect()->back()->with('error', 'Sorry, Something went wrong while creating user.');
         }
     
-        return redirect()->route('reward_points.index')->with('success', 'Success, New Reward Points has been added successfully!');
+        return redirect()->route('reward_products.index')->with('success', 'Success, New Reward Products has been added successfully!');
     }
     
     /**
@@ -76,14 +76,14 @@ class RewardpointsController extends Controller
      * @param  \App\Models\points  $customer
      * @return \Illuminate\Http\Response
      */
-    public function show(reward_points $reward_points)
+    public function show(reward_products $reward_products)
     {
 
     }
 
-    public function reward_points()
+    public function reward_products()
 {
-    return $this->belongsTo(Reward_points::class);
+    return $this->belongsTo(Reward_products::class);
 }
     /**
      * Show the form for editing the specified resource.
@@ -91,9 +91,9 @@ class RewardpointsController extends Controller
      * @param  \App\Models\Points $customer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Reward_points $reward_points)
+    public function edit(Reward_products $reward_products)
     {
-        return view('reward_points.edit', compact('reward_points'));
+        return view('reward_products.edit', compact('reward_products'));
     }
 
 
@@ -104,23 +104,23 @@ class RewardpointsController extends Controller
      * @param  \App\Models\Points  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reward_points $reward_points)
+    public function update(Request $request, Reward_products $reward_products)
 
     {
-        $reward_points->points = $request->points;
-        $reward_points->name = $request->name;
-        $reward_points->description = $request->description;
+        $reward_products->points = $request->points;
+        $reward_products->name = $request->name;
+        $reward_products->description = $request->description;
         
 
-        if (!$reward_points->save()) {
+        if (!$reward_products->save()) {
             return redirect()->back()->with('error', 'Sorry, Something went wrong while updating the customer.');
         }
-        return redirect()->route('reward_points.edit', $reward_points->id)->with('success', 'Success, Reward Points has been updated.');
+        return redirect()->route('reward_products.edit', $reward_products->id)->with('success', 'Success, Reward Products has been updated.');
     }
 
-    public function destroy(Reward_points $reward_points)
+    public function destroy(Reward_products $reward_products)
     {
-        $reward_points->delete();
+        $reward_products->delete();
 
         return response()->json([
             'success' => true
