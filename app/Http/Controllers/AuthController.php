@@ -530,6 +530,7 @@ class AuthController extends Controller
             $order->price = $price;
             $order->delivery_charges = $delivery_charges;
             $order->payment_mode = $payment_mode;
+            $order->live_tracking = 'https://gmix.shiprocket.co/tracking/19041629047052'; 
             $order->ordered_date = Carbon::now();
             $order->save();
         
@@ -567,7 +568,7 @@ class AuthController extends Controller
         
                     $ordersDetails[] = [
                         'id' => $order->id,
-                        'user_name' => $user->name, // Retrieve user name from the User model
+                        'user_name' => $user->name ?? '',
                         'address_name' => $address->name, // Retrieve address name from the Address model
                         'product_name' => $product->name, // Retrieve product name from the Product model
                         'unit' => $product->unit,
@@ -578,6 +579,7 @@ class AuthController extends Controller
                         'price' => (string) $order->price,
                         'status' => $statusLabel, // Use status label
                         'status_color' => '#0D47A1',
+                        'live_tracking' => $order->live_tracking ?? '',
                         'est_delivery_date' => Carbon::parse($order->est_delivery_date)->format('Y-m-d'),
                         'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
                         'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),

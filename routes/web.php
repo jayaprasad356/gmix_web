@@ -13,7 +13,6 @@ use App\Http\Controllers\StaffsController;
 use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;    
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AppsettingsController;
@@ -100,6 +99,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::delete('/orders/{orders}', [OrdersController::class, 'destroy'])->name('orders.destroy');
     });
+
+    Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
+    Route::get('/orders/orders', [OrdersController::class, 'create'])->name('orders.create');
+    Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
+    Route::get('/user-addresses/{userId}', [OrdersController::class, 'getUserAddresses']);
+    Route::post('/orders/verify', [OrdersController::class, 'verify'])->name('orders.verify');
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

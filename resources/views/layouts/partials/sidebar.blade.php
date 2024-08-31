@@ -56,6 +56,13 @@
             </li>
 
             <li class="nav-item has-treeview">
+                <a href="{{ route('orders.index') }}" class="nav-link {{ activeSegment('orders') }}">
+                <i class="nav-icon fas fa-shopping-basket"></i> <!-- Icon for Orders -->
+                    <p>Orders</p>
+                </a>
+            </li>
+
+            <li class="nav-item has-treeview">
                     <a href="{{ route('news.edit') }}" class="nav-link {{ activeSegment('news') }}">
                         <i class="nav-icon fas fa-gear"></i>
                         <p>Settings</p>
