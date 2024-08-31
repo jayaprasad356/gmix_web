@@ -18,6 +18,7 @@ use App\Models\Feedback;
 use App\Models\Fakechats; 
 use App\Models\Professions; 
 use App\Models\RechargeTrans;
+use App\Models\Reward_points;
 use App\Models\VerificationTrans;
 use App\Models\Appsettings; 
 use App\Models\News; 
@@ -534,54 +535,60 @@ class AuthController extends Controller
             ], 200);
         }
         
-    public function orders_list(Request $request)
-    {
-        $user_id = $request->input('user_id');
-
-        // Retrieve the orders for the given user
-        $orders = Orders::where('user_id', $user_id)->get();
-
-        if ($orders->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No orders found for the user.',
-            ], 404);
-        }
-
-        $ordersDetails = [];
-
-        foreach ($orders as $order) {
-
-            if ($order->user_id == $user_id) {
-                $user = Users::find($order->user_id);
-                $product = Products::find($order->product_id);
-                $address = Addresses::find($order->address_id);
-                $ordersDetails[] = [
-                    'id' => $order->id,
-                    'user_name' => $user->name, // Retrieve user name from the User model
-                    'address_name' => $address->name, // Retrieve address name from the Address model
-                    'product_name' => $product->name, // Retrieve product name from the Product model
-                    'unit' => $product->unit,
-                    'measurement' => $product->measurement,
-                    'quantity' => $product->quantity,
-                    'delivery_charges' => $order->delivery_charges,
-                    'payment_mode' => $order->payment_mode,
-                    'price' => (string) $order->price,
-                    'status' => (string) $order->status,
-                    'est_delivery_date' => Carbon::parse($order->est_delivery_date)->format('Y-m-d'),
-                    'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
-                    'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
-                    'created_at' => Carbon::parse($order->created_at)->format('Y-m-d H:i:s'),
-                ];
+        public function orders_list(Request $request)
+        {
+            $user_id = $request->input('user_id');
+        
+            // Retrieve the orders for the given user
+            $orders = Orders::where('user_id', $user_id)->get();
+        
+            if ($orders->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No orders found for the user.',
+                ], 404);
             }
+        
+            $ordersDetails = [];
+        
+            foreach ($orders as $order) {
+        
+                if ($order->user_id == $user_id) {
+                    $user = Users::find($order->user_id);
+                    $product = Products::find($order->product_id);
+                    $address = Addresses::find($order->address_id);
+        
+                    // Determine the status label
+                    $statusLabel = $order->status == 0 ? 'Wait for Confirmation' : (string) $order->status;
+        
+                    $ordersDetails[] = [
+                        'id' => $order->id,
+                        'user_name' => $user->name, // Retrieve user name from the User model
+                        'address_name' => $address->name, // Retrieve address name from the Address model
+                        'product_name' => $product->name, // Retrieve product name from the Product model
+                        'unit' => $product->unit,
+                        'measurement' => $product->measurement,
+                        'quantity' => $product->quantity,
+                        'delivery_charges' => $order->delivery_charges,
+                        'payment_mode' => $order->payment_mode,
+                        'price' => (string) $order->price,
+                        'status' => $statusLabel, // Use status label
+                        'status_color' => '#0D47A1',
+                        'est_delivery_date' => Carbon::parse($order->est_delivery_date)->format('Y-m-d'),
+                        'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
+                        'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
+                        'created_at' => Carbon::parse($order->created_at)->format('Y-m-d H:i:s'),
+                    ];
+                }
+            }
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Orders retrieved successfully.',
+                'data' => $ordersDetails,
+            ], 200);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Orders retrieved successfully.',
-            'data' => $ordersDetails,
-        ], 200);
-    }
+        
 
     public function my_address_list(Request $request)
     {
@@ -653,6 +660,37 @@ class AuthController extends Controller
         'success' => true,
         'message' => 'Settings listed successfully.',
         'data' => $newsData,
+    ], 200);
+}
+
+public function reward_points_list(Request $request)
+{
+    // Retrieve all news settings
+    $reward_points = Reward_points::all();
+
+    if ($reward_points->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No reward points found.',
+        ], 404);
+    }
+
+    $reward_pointsData = [];
+    foreach ($reward_points as $reward_point) {
+        $reward_pointsData[] = [
+            'id' => $reward_point->id,
+            'name' => $reward_point->name,
+            'points' => (string) $reward_point->points,
+            'description' => $reward_point->description,
+            'updated_at' => Carbon::parse($reward_point->updated_at)->format('Y-m-d H:i:s'),
+            'created_at' => Carbon::parse($reward_point->created_at)->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Reward Points listed successfully.',
+        'data' => $reward_pointsData,
     ], 200);
 }
 

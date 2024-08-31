@@ -17,6 +17,7 @@ Route::post('orders_list', [AuthController::class, 'orders_list']);
 Route::post('otp', [AuthController::class, 'otp']);
 Route::post('my_address_list', [AuthController::class, 'my_address_list']);
 Route::post('settings_list', [AuthController::class, 'settings_list']);
+Route::post('reward_points_list', [AuthController::class, 'reward_points_list']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

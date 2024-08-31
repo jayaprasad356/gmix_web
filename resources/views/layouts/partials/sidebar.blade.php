@@ -12,12 +12,12 @@
     <div class="sidebar">
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                <img src="https://www.gravatar.com/avatar/" class="img-circle elevation-2" alt="User Image">
+        <div class="image">
+                <img src="{{ auth()->user()->getAvatar() }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-        <a href="#" class="d-block"><?php echo e(explode(' ', auth()->user()->name)[0]); ?></a>
-    </div>
+            <a href="#" class="d-block">{{ explode(' ', auth()->user()->getFullname())[0] }}</a>
+            </div>
         </div>
         <!-- Sidebar Menu -->
         <!-- Sidebar Menu -->
@@ -47,7 +47,14 @@
                     <p>Products</p>
                 </a>
             </li>
-            
+
+            <li class="nav-item has-treeview">
+                <a href="{{ route('reward_points.index') }}" class="nav-link {{ activeSegment('reward_points') }}">
+                <i class="nav-icon fas fa-gift"></i> <!-- Icon for Address -->
+                    <p>Reward Points</p>
+                </a>
+            </li>
+
             <li class="nav-item has-treeview">
                     <a href="{{ route('news.edit') }}" class="nav-link {{ activeSegment('news') }}">
                         <i class="nav-icon fas fa-gear"></i>
@@ -74,9 +81,11 @@
 </aside>
 <?php
 function activeSegment($segmentName) {
-    if (request()->is($segmentName . '*')) {
+    $currentUri = $_SERVER['REQUEST_URI'];
+    if (strpos($currentUri, $segmentName) !== false) {
         return 'active';
     }
     return '';
 }
 ?>
+

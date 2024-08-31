@@ -19,6 +19,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AppsettingsController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\RewardpointsController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\UserNotificationsController;
@@ -87,6 +88,14 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete('/products/{products}', [ProductsController::class, 'destroy'])->name('products.destroy');
     Route::put('/products/{product}', [ProductsController::class, 'update'])->name('products.update');
     Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
+
+            //reward_points
+            Route::get('/reward_points', [RewardpointsController::class, 'index'])->name('reward_points.index');
+            Route::get('/reward_points/reward_points', [RewardpointsController::class, 'create'])->name('reward_points.create');
+            Route::get('/reward_points/{reward_points}/edit', [RewardpointsController::class, 'edit'])->name('reward_points.edit');
+            Route::delete('/reward_points/{reward_points}', [RewardpointsController::class, 'destroy'])->name('reward_points.destroy');
+            Route::put('/reward_points/{reward_points}', [RewardpointsController::class, 'update'])->name('reward_points.update');
+            Route::post('/reward_points', [RewardpointsController::class, 'store'])->name('reward_points.store');
 
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::delete('/orders/{orders}', [OrdersController::class, 'destroy'])->name('orders.destroy');

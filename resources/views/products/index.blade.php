@@ -14,10 +14,9 @@
 @section('content')
 <div class="card">
     <div class="card-body">
-        <div class="row mb-4">
-            <div class="col-md-4 text-right">
-                <!-- Search Form -->
-                <form id="search-form" action="{{ route('products.index') }}" method="GET">
+    <div class="row mb-4">
+        <div class="ml-auto">
+        <form id="search-form" action="{{ route('products.index') }}" method="GET">
                     <div class="input-group">
                         <input type="text" id="search-input" name="search" class="form-control" placeholder="Search by..." autocomplete="off" value="{{ request()->input('search') }}">
                         <div class="input-group-append">
@@ -97,20 +96,23 @@
     $('#search-input').on('input', function () {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(function () {
-            filterProducts();
+            filterUsers();
         }, 300); // Adjust delay as needed
     });
 
+    let debounceTimer;
 
-    function filterProducts() {
+function filterUsers() {
+    clearTimeout(debounceTimer);
+
+    debounceTimer = setTimeout(function() {
         let search = $('#search-input').val();
 
-        if (search.length >= 4) { // Adjust this number as needed
-            window.location.search = `search=${encodeURIComponent(search)}`;
-        } else if (search.length === 0) { // If search input is cleared, keep URL parameters
-            window.location.search = `search=${encodeURIComponent(search)}`;
-        }
-    }
+        window.location.search = `search=${encodeURIComponent(search)}`;
+    }, 500); // Adjust the delay (in milliseconds) as needed
+}
+
+$('#search-input').on('input', filterUsers);
         // Handle delete button click
         $(document).on('click', '.btn-delete', function () {
             $this = $(this);
@@ -124,7 +126,7 @@
 
             swalWithBootstrapButtons.fire({
                 title: 'Are you sure?',
-                text: "Do you really want to delete this Product?",
+                text: "Do you really want to delete this user?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, delete it!',

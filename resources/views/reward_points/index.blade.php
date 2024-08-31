@@ -1,22 +1,19 @@
 @extends('layouts.admin')
 
-@section('title', 'User Management')
-@section('content-header', 'User Management')
+@section('title', 'Reward Points Management')
+@section('content-header', ' RewardPoints Management')
 @section('content-actions')
-    <a href="{{ route('users.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Users</a>
+    <a href="{{route('reward_points.create')}}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Reward Points</a>
 @endsection
-
 @section('css')
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
 @endsection
-
 @section('content')
 <div class="card">
     <div class="card-body">
     <div class="row mb-4">
         <div class="ml-auto">
-        <form id="search-form" action="{{ route('users.index') }}" method="GET">
+        <form id="search-form" action="{{ route('reward_points.index') }}" method="GET">
                     <div class="input-group">
                         <input type="text" id="search-input" name="search" class="form-control" placeholder="Search by..." autocomplete="off" value="{{ request()->input('search') }}">
                         <div class="input-group-append">
@@ -31,29 +28,29 @@
                 <thead class="thead-dark">
                     <tr>
                     <th>Actions</th>
-                    <th>ID <i class="fas fa-sort"></i></th>
-                    <th>Name</th>
-                    <th>Mobile</th>
+                        <th>ID <i class="fas fa-sort"></i></th>
+                        <th>Name <i class="fas fa-sort"></i></th>
+                        <th>Points <i class="fas fa-sort"></i></th>
+                        <th>Description<i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($users as $user)
+                    @foreach ($reward_points as $reward_point)
                     <tr>
                     <td>
-                            <a href="{{ route('users.edit', $user) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                            <button class="btn btn-danger btn-delete" data-url="{{route('users.destroy', $user)}}"><i class="fas fa-trash"></i></button>
+                            <a href="{{ route('reward_points.edit', $reward_point) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                            <button class="btn btn-danger btn-delete" data-url="{{route('reward_points.destroy', $reward_point)}}"><i class="fas fa-trash"></i></button>
                         </td>
-                        <td>{{$user->id}}</td>
-                        <td>{{$user->name}}</td>
-                        <td>{{$user->mobile}}</td>
+                        <td>{{$reward_point->id}}</td>
+                        <td>{{$reward_point->name}}</td>
+                        <td>{{$reward_point->points}}</td>
+                        <td>{{$reward_point->description}}</td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-       
-        {{ $users->appends(request()->query())->links() }}
-
+        {{ $reward_points->appends(request()->query())->links() }}
     </div>
 </div>
 
