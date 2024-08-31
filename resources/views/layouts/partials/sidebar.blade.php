@@ -16,7 +16,7 @@
                 <img src="https://www.gravatar.com/avatar/" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-        <a href="#" class="d-block"><?php echo e(explode(' ', auth()->user()->name)[0]); ?></a>
+        <a href="#" class="d-block">Admin</a>
     </div>
         </div>
         <!-- Sidebar Menu -->
