@@ -14,30 +14,9 @@
         @csrf
         @method('POST')
             <div class="form-group">
-                <label for="telegram">Telegram</label>
-                <input type="text" class="form-control" id="telegram" name="telegram" value="{{ $news->telegram }}" required>
+                <label for="delivery_charges">Delivery Charges</label>
+                <input type="text" class="form-control" id="delivery_charges" name="delivery_charges" value="{{ $news->delivery_charges }}" required style="width: 100%; max-width: 250px;">
             </div>
-
-            <div class="form-group">
-                <label for="instagram">Instagram</label>
-                <input type="text" class="form-control" id="instagram" name="instagram" value="{{ $news->instagram }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="upi_id">UPI ID</label>
-                <input type="text" class="form-control" id="upi_id" name="upi_id" value="{{ $news->upi_id }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="privacy_policy">Privacy Policy</label>
-                <textarea name="privacy_policy" id="privacy_policy" class="form-control ckeditor-content" rows="10" required>{!! $news->privacy_policy !!}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="terms_conditions">Terms & Conditions</label>
-                <textarea name="terms_conditions" id="terms_conditions" class="form-control ckeditor-content" rows="10" required>{!! $news->terms_conditions !!}</textarea>
-            </div>
-
             <div class="box-footer">
                 <button type="submit" class="btn btn-primary">Update</button>
             </div>

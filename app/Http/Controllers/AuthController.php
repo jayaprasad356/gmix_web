@@ -188,7 +188,6 @@ class AuthController extends Controller
                 'unit' => $product->unit,
                 'measurement' => $product->measurement,
                 'price' => (string) $product->price,
-                'delivery_charges' => (string) $product->delivery_charges,
                 'image' => $imageUrl,
                 'updated_at' => Carbon::parse($product->updated_at)->format('Y-m-d H:i:s'),
                 'created_at' => Carbon::parse($product->created_at)->format('Y-m-d H:i:s'),
@@ -276,12 +275,6 @@ class AuthController extends Controller
                 'message' => 'state is empty.',
             ], 400);
         }
-        if (empty($landmark)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'landmark is empty.',
-            ], 400);
-        }
 
         // Check if user exists
         $user = Users::find($user_id);
@@ -324,7 +317,7 @@ class AuthController extends Controller
             'city' => $address->city,
             'pincode' => $address->pincode,
             'state' => $address->state,
-            'landmark' => $address->landmark,
+            'landmark' => $address->landmark ?? '',
             'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
         ]];
@@ -369,7 +362,7 @@ class AuthController extends Controller
             'city' => $address->city,
             'pincode' => $address->pincode,
             'state' => $address->state,
-            'landmark' => $address->landmark,
+             'landmark' => $address->landmark ?? '',
             'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
         ]];
@@ -603,7 +596,7 @@ class AuthController extends Controller
                     'city' => $address->city,
                     'pincode' => $address->pincode,
                     'state' => $address->state,
-                    'landmark' => $address->landmark,
+                     'landmark' => $address->landmark ?? '',
                     'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
                     'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
                 ];
@@ -616,4 +609,32 @@ class AuthController extends Controller
             'data' => $addressesDetails,
         ], 200);
     }
+
+    public function settings_list(Request $request)
+{
+    // Retrieve all news settings
+    $news = News::all();
+
+    if ($news->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No settings found.',
+        ], 404);
+    }
+
+    $newsData = [];
+    foreach ($news as $item) {
+        $newsData[] = [
+            'id' => $item->id,
+            'delivery_charges' => $item->delivery_charges,
+        ];
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Settings listed successfully.',
+        'data' => $newsData,
+    ], 200);
+}
+
 }

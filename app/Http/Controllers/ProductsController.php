@@ -68,7 +68,6 @@ class ProductsController extends Controller
             'unit' => $request->unit,
             'measurement' => $request->measurement,
             'price' => $request->price,
-            'delivery_charges' => $request->delivery_charges,
             'image' => $imageName, 
         ]);
 
@@ -112,7 +111,6 @@ class ProductsController extends Controller
         $product->unit = $request->unit;
         $product->measurement = $request->measurement;
         $product->price = $request->price;
-        $product->delivery_charges = $request->delivery_charges;
 
         if ($request->hasFile('image')) {
             $newImagePath = $request->file('image')->store('products', 'public');

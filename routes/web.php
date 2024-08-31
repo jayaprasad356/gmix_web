@@ -97,6 +97,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/settings', [SettingController::class, 'store'])->name('settings.store');
     Route::resource('customers', CustomerController::class);
 
+    Route::get('news/1/edit', [NewsController::class, 'edit'])->name('news.edit');
+        Route::post('news/1/update', [NewsController::class, 'update'])->name('news.update');
+
 
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {

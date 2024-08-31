@@ -17,19 +17,11 @@ class NewsController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'telegram' => 'required|string|max:255',
-            'instagram' => 'required|string|max:255',
-            'upi_id' => 'required|string|max:255',
-            'privacy_policy' => 'required|string',
-            'terms_conditions' => 'required|string',
+            'delivery_charges' => 'required|string|max:255',
         ]);
 
         $news = News::findOrFail(1); // Again, assuming ID 1 for simplicity
-        $news->telegram = $request->input('telegram');
-        $news->instagram = $request->input('instagram');
-        $news->upi_id = $request->input('upi_id');
-        $news->privacy_policy = $request->input('privacy_policy');
-        $news->terms_conditions = $request->input('terms_conditions');
+        $news->delivery_charges = $request->input('delivery_charges');
     
 
         if ($news->save()) {
