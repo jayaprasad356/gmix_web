@@ -543,7 +543,7 @@ class AuthController extends Controller
                 'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
             ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', [
                 "order_id" => $latestOrderId,
-                "order_date" => "2024-08-31 01:11",
+                "order_date" => Carbon::now()->format('Y-m-d H:i:s'),
                 "pickup_location" => "Trichy",
                 "channel_id" => "",
                 "comment" => "G Mix",
@@ -582,15 +582,15 @@ class AuthController extends Controller
             ]);
 
             if ($response->successful()) {
-                return response()->json(['message' => 'Order created successfully!', 'data' => $response->json()]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Order placed successfully.',
+                ], 200);
             } else {
                 return response()->json(['message' => 'Order creation failed!', 'error' => $response->json()], $response->status());
             }
         
-            // return response()->json([
-            //     'success' => true,
-            //     'message' => 'Order placed successfully.',
-            // ], 200);
+
         }
         
         public function orders_list(Request $request)
