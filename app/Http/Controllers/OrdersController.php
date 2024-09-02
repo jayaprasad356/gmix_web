@@ -35,7 +35,7 @@ class OrdersController extends Controller
                     $product = Products::find($order->product_id);
                     $price = $product->price;
                     $delivery_charges = $order->delivery_charges;
-                    $total_price = $price + $delivery_charges;
+                    $total_price = $order->total_price;
                     $address1 = $address->door_no . ' ' . $address->street_name;
                     $payment_mode = $order->payment_mode;
     
