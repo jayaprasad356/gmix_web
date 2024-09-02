@@ -113,7 +113,14 @@ class OrdersController extends Controller
             $q->whereHas('user', function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
             })->orWhereHas('addresses', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
+                $q->where('door_no', 'like', "%{$search}%")
+                  ->orWhere('street_name', 'like', "%{$search}%")
+                  ->orWhere('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('pincode', 'like', "%{$search}%")
+                  ->orWhere('state', 'like', "%{$search}%")
+                  ->orWhere('landmark', 'like', "%{$search}%");
             })->orWhereHas('product', function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
             })->orWhere('price', 'like', "%{$search}%")
