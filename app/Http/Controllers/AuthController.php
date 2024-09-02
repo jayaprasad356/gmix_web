@@ -755,4 +755,35 @@ public function reward_product_list(Request $request)
     ], 200);
 }
 
+public function pincode(Request $request)
+{
+    $pincode = $request->input('pincode');
+
+    if (empty($pincode)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Pincode is empty.',
+        ], 400);
+    }
+
+    // Make a GET request to the external API
+    $response = Http::get("http://www.postalpincode.in/api/pincode/{$pincode}");
+
+    // Check if the request was successful
+    if ($response->successful()) {
+        // Decode the JSON response to get the address details
+        $pincodeDetails = $response->json();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pincode retrieved successfully.',
+            'data' => $pincodeDetails,
+        ], 200);
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to retrieve address details. Please try again later.',
+        ], 500);
+    }
+}
 }

@@ -18,6 +18,7 @@ Route::post('otp', [AuthController::class, 'otp']);
 Route::post('my_address_list', [AuthController::class, 'my_address_list']);
 Route::post('settings_list', [AuthController::class, 'settings_list']);
 Route::post('reward_product_list', [AuthController::class, 'reward_product_list']);
+Route::post('pincode', [AuthController::class, 'pincode']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
