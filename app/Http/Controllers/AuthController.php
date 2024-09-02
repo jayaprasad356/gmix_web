@@ -248,6 +248,13 @@ class AuthController extends Controller
             ], 400);
         }
 
+        if ($mobile === $alternate_mobile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mobile and Alternate Mobile cannot be the same.',
+            ], 400);
+        }
+
         if (empty($door_no)) {
             return response()->json([
                 'success' => false,
@@ -290,6 +297,23 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'user not found.',
             ], 404);
+        }
+
+        // Check if address already exists
+        $existingAddress = Addresses::where('door_no', $door_no)
+            ->where('street_name', $street_name)
+            ->where('landmark', $landmark)
+            ->where(function ($query) use ($mobile, $alternate_mobile) {
+                $query->where('mobile', $mobile)
+                    ->orWhere('alternate_mobile', $alternate_mobile);
+            })
+            ->first();
+
+        if ($existingAddress) {
+            return response()->json([   
+                'success' => false,
+                'message' => 'Address already exists.',
+            ], 400);
         }
 
         // Create a new Address instance
@@ -628,7 +652,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'No addresses found for the user.',
-            ], 404);
+            ], 400);
         }
 
         $addressesDetails = [];
