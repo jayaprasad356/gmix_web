@@ -24,8 +24,20 @@
                     <label class="form-check-label" for="checkAll">Select All</label>
                 </div>
                 
+                <!-- Status Filter Dropdown -->
+                <div class="form-group mb-2 mb-lg-4">
+                    <label for="status-select">Select Status:</label>
+                    <select name="status" id="status-select" class="form-control">
+                        <option value="0">Wait For Confirmation</option>
+                        <option value="1">Confirmed</option>
+                        <option value="2" >Cancelled</option>
+                        <option value="3">Shipped</option>
+                        <option value="4">Delivered</option>
+                    </select>
+                </div>
+                
                 <!-- Status Buttons -->
-                <div class="d-flex flex-wrap align-items-center">
+                <div class="d-flex flex-wrap align-items-center mt-2 pl-lg-4">
                     <button class="btn btn-success mr-2 mb-2 mb-lg-0" id="verifyButton">Approved</button>
                 </div>
             </div>
@@ -47,17 +59,21 @@
         <!-- Filters -->
         <div class="row mb-4">
             <div class="col-md-12">
-                <form id="filter-form" action="{{ route('orders.index') }}" method="GET">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="status-filter">Filter by Status:</label>
-                            <select name="status" id="status-filter" class="form-control">
-                                <option value="0" {{ request()->input('status') === '0' ? 'selected' : '' }}>Pending</option>
-                                <option value="1" {{ request()->input('status') === '1' ? 'selected' : '' }}>Verified</option>
-                            </select>
-                        </div>
-                    </div>
-                </form>
+            <form id="filter-form" action="{{ route('orders.index') }}" method="GET">
+                <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="status-filter">Filter by Status:</label>
+                    <select name="status" id="status-filter" class="form-control">
+                        <option value="">All</option>
+                        <option value="0" {{ request()->input('status') === '0' ? 'selected' : '' }}>Wait For Confirmation</option>
+                        <option value="1" {{ request()->input('status') === '1' ? 'selected' : '' }}>Confirmed</option>
+                        <option value="2" {{ request()->input('status') === '2' ? 'selected' : '' }}>Cancelled</option>
+                        <option value="3" {{ request()->input('status') === '3' ? 'selected' : '' }}>Shipped</option>
+                        <option value="4" {{ request()->input('status') === '4' ? 'selected' : '' }}>Delivered</option>
+                    </select>
+                </div>
+                </div>
+            </form>
             </div>
         </div>
 
@@ -90,12 +106,19 @@
                         <td>{{ $order->payment_mode }}</td>
                         <td>{{ $order->live_tracking }}</td>
                         <td>
-                                @if ($order->status === 1)
-                                    <span class="badge badge-success">Verified</span>
-                                @elseif ($order->status === 0)
-                                    <span class="badge badge-primary">Pending</span>
-                                @endif
-                            </td>
+                            @if ($order->status === 0)
+                                <span class="badge badge-primary">Wait For Confirmation</span>
+                            @elseif ($order->status === 1)
+                                <span class="badge badge-success">Confirmed</span>
+                            @elseif ($order->status === 2)
+                                <span class="badge badge-danger">Cancelled</span>
+                            @elseif ($order->status === 3)
+                                <span class="badge badge-info">Shipped</span>
+                            @elseif ($order->status === 4)
+                                <span class="badge badge-secondary">Delivered</span>
+                            @endif
+                        </td>
+
                     </tr>
                     @endforeach
                 </tbody>
@@ -143,19 +166,19 @@
 
         let debounceTimer;
 
-function filterUsers() {
-    clearTimeout(debounceTimer);
+        function filterUsers() {
+            clearTimeout(debounceTimer);
 
-    debounceTimer = setTimeout(function() {
-        let search = $('#search-input').val();
-        let status = $('#status-filter').val();
+            debounceTimer = setTimeout(function() {
+                let search = $('#search-input').val();
+                let status = $('#status-filter').val();
 
-        window.location.search = `search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`;
-    }, 500); // Adjust the delay (in milliseconds) as needed
-}
+                window.location.search = `search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`;
+            }, 500); // Adjust the delay (in milliseconds) as needed
+        }
        
-           // Handle delete button click
-           $(document).on('click', '.btn-delete', function () {
+        // Handle delete button click
+        $(document).on('click', '.btn-delete', function () {
             $this = $(this);
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -183,6 +206,7 @@ function filterUsers() {
                 }
             })
         });
+        
         // Handle table sorting
         $('.table th').click(function () {
             var table = $(this).parents('table').eq(0);
@@ -216,47 +240,41 @@ function filterUsers() {
             var arrow = asc ? '<i class="fas fa-arrow-up arrow"></i>' : '<i class="fas fa-arrow-down arrow"></i>';
             table.find('th').eq(index).append(arrow);
         }
-    });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            // Handle "Select All" checkbox
-            $('#checkAll').change(function () {
-                $('.checkbox').prop('checked', $(this).prop('checked'));
-            });
-
-
-            // Handle Approve Button click
-            $('#verifyButton').click(function () {
-                updateStatus(1); // Status 1 for Approved
-            });
-
+        
+        // Handle "Select All" checkbox
+        $('#checkAll').change(function () {
+            $('.checkbox').prop('checked', $(this).prop('checked'));
         });
 
-        // Function to update status via AJAX
-        function updateStatus(status) {
+        $('#verifyButton').click(function () {
+            verifySelectedOrders();
+        });
+
+        function verifySelectedOrders() {
             var orderIds = [];
             $('.checkbox:checked').each(function () {
                 orderIds.push($(this).data('id'));
             });
 
             if (orderIds.length === 0) {
-                alert('Please select at least one trip to update status.');
+                alert('Please select at least one order to update status.');
                 return;
             }
+
+            // Get the selected status from the dropdown
+            var selectedStatus = $('#status-select').val();
 
             $.ajax({
                 url: '{{ route("orders.verify") }}',
                 type: 'POST',
                 data: {
                     order_ids: orderIds,
-                    status: status,
+                    status: selectedStatus,  // Send selected status
                     _token: '{{ csrf_token() }}'
                 },
                 success: function (response) {
                     if (response.success) {
-                        location.reload();
+                        location.reload(); // Reload the page to reflect changes
                     } else {
                         alert('Failed to update status. Please try again.');
                     }
@@ -266,5 +284,6 @@ function filterUsers() {
                 }
             });
         }
-    </script>
+    });
+</script>
 @endsection

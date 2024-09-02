@@ -15,19 +15,24 @@ class OrdersController extends Controller
 {
 
     public function verify(Request $request)
-    {
-        $orderIds = $request->input('order_ids', []);
-        
-        foreach ($orderIds as $orderId) {
-            $order = Orders::find($orderId);
-            if ($order) {
-                $order->status = 1; // Set status to Fake
-                $order->save();
-            }
-        }
+{
+    $orderIds = $request->input('order_ids', []);
+    $newStatus = $request->input('status'); // Get the status from the request
 
-        return response()->json(['success' => true]);
+    foreach ($orderIds as $orderId) {
+        $order = Orders::find($orderId);
+        if ($order) {
+            // Update the order status to the selected status
+            $order->status = $newStatus;
+            $order->save();
+        }
     }
+
+    return response()->json(['success' => true]);
+}
+
+    
+    
     public function index(Request $request)
 {
     $query = Orders::query()->with('user', 'addresses', 'product'); // Eager load relationships
