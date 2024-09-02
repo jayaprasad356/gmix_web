@@ -6,6 +6,7 @@ use App\Models\Users;
 use App\Models\Orders;
 use App\Models\Products;
 use App\Models\Addresses;
+use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -76,7 +77,7 @@ class OrdersController extends Controller
                         "giftwrap_charges" => 0,
                         "transaction_charges" => 0,
                         "total_discount" => 0,
-                        "total_price" => (int) $total_price,
+                        "sub_total" => (int) $total_price,
                         "length" => 8,
                         "breadth" => 4,
                         "height" => 5,
