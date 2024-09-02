@@ -89,6 +89,7 @@
                         <th>Product Name <i class="fas fa-sort"></i></th>
                         <th>Price <i class="fas fa-sort"></i></th>
                         <th>Delivery Charges <i class="fas fa-sort"></i></th>
+                        <th>Total Price <i class="fas fa-sort"></i></th>
                         <th>Payment Mode <i class="fas fa-sort"></i></th>
                         <th>Door No <i class="fas fa-sort"></i></th>
                         <th>Street Name <i class="fas fa-sort"></i></th>
@@ -113,6 +114,7 @@
                         <td>{{ optional($order->product)->name }}</td>
                         <td>{{ $order->price }}</td>
                         <td>{{ $order->delivery_charges }}</td>
+                        <td>{{ $order->total_price }}</td>
                         <td>{{ $order->payment_mode }}</td>
                         <td>{{ optional($order->addresses)->door_no }}</td>
                         <td>{{ optional($order->addresses)->street_name }}</td>

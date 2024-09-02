@@ -519,8 +519,15 @@ class AuthController extends Controller
                 ], 400);
             }
             $shipping_charges = 60 ;
+
+            if($payment_mode == 'Prepaid'){
+                $payment_mode = 'Prepaid';
+                $total_price = $price + 0;
+            }else{
+                $payment_mode = 'COD';
+                $total_price = $price + $delivery_charges;
+             }
         
-            // Insert into orders table
             $order = new Orders();
             $order->user_id = $user_id;
             $order->product_id = $product_id;
@@ -528,25 +535,17 @@ class AuthController extends Controller
             $order->price = $price;
             $order->delivery_charges = $delivery_charges;
             $order->payment_mode = $payment_mode;
+            $order->total_price = $total_price;
             $order->live_tracking = 'https://gmix.shiprocket.co/tracking/19041629047052'; 
             $order->ordered_date = Carbon::now();
             $order->save();
-
-            $address1 = $address->door_no . ' ' . $address->street_name;
-            if($payment_mode == 'prepaid'){
-                $payment_mode = 'Prepaid';
-
-            }else{
-                $payment_mode = 'COD';
-            }
-            $sub_total = $price + $delivery_charges;
 
                     // Return success response
             return response()->json([
                 'success' => true,
                 'message' => 'Order placed successfully.',
                 'order_id' => $order->id,
-                'subtotal' => $sub_total,
+                'total_price' => $total_price,
             ], 200);
         }
         
@@ -586,14 +585,16 @@ class AuthController extends Controller
                     $ordersDetails[] = [
                         'id' => $order->id,
                         'user_name' => $user->name ?? '',
-                        'address_name' => $address->name, // Retrieve address name from the Address model
-                        'product_name' => $product->name, // Retrieve product name from the Product model
+                        'first_name' => $address->first_name, 
+                        'last_name' => $user->last_name ?? '',
+                        'product_name' => $product->name,
                         'unit' => $product->unit,
                         'measurement' => $product->measurement,
                         'quantity' => $product->quantity,
                         'delivery_charges' => $order->delivery_charges,
                         'payment_mode' => $order->payment_mode,
                         'price' => (string) $order->price,
+                        'total_price' => (string) $order->total_price,
                         'status' => $statusLabel, // Use status label
                         'status_color' => '#0D47A1',
                         'live_tracking' => $order->live_tracking ?? '',

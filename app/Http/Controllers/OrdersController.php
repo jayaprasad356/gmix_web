@@ -35,7 +35,7 @@ class OrdersController extends Controller
                     $product = Products::find($order->product_id);
                     $price = $product->price;
                     $delivery_charges = $order->delivery_charges;
-                    $sub_total = $price + $delivery_charges;
+                    $total_price = $price + $delivery_charges;
                     $address1 = $address->door_no . ' ' . $address->street_name;
                     $payment_mode = $order->payment_mode;
     
@@ -76,7 +76,7 @@ class OrdersController extends Controller
                         "giftwrap_charges" => 0,
                         "transaction_charges" => 0,
                         "total_discount" => 0,
-                        "sub_total" => (int) $sub_total,
+                        "total_price" => (int) $total_price,
                         "length" => 8,
                         "breadth" => 4,
                         "height" => 5,

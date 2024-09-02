@@ -13,6 +13,7 @@ class Orders extends Model
         'price',
         'delivery_charges',
         'payment_mode',
+        'total_price',
     ];
 
     public function user()
