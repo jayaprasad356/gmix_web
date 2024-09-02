@@ -580,7 +580,7 @@ class AuthController extends Controller
                     $address = Addresses::find($order->address_id);
         
                     // Determine the status label
-                    $statusLabel = $order->status == 0 ? 'Wait for Confirmation' : (string) $order->status;
+                    $statusLabel = $order->status == 0 ? 'Wait For Confirmation' : ($order->status == 1 ? 'Confirmed' : ($order->status == 2 ? 'Cancelled' : ($order->status == 3 ? 'Shipped' : ($order->status == 4 ? 'Delivered' : (string) $order->status))));
         
                     $ordersDetails[] = [
                         'id' => $order->id,
