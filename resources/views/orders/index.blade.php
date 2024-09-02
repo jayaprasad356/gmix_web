@@ -84,8 +84,8 @@
                     <th><input type="checkbox" id="checkAll"></th>
                     <th>Actions</th>
                         <th>ID <i class="fas fa-sort"></i></th>
-                        <th>User Name <i class="fas fa-sort"></i></th>
-                        <th>Address Name <i class="fas fa-sort"></i></th>
+                        <th>First Name <i class="fas fa-sort"></i></th>
+                        <th>Last Name <i class="fas fa-sort"></i></th>
                         <th>Product Name <i class="fas fa-sort"></i></th>
                         <th>Price <i class="fas fa-sort"></i></th>
                         <th>Delivery Charges <i class="fas fa-sort"></i></th>
@@ -108,8 +108,8 @@
                             <a href="{{ route('orders.edit', $order) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                         </td>
                         <td>{{ $order->id }}</td>
-                        <td>{{ optional($order->user)->name }}</td>
                         <td>{{ optional($order->addresses)->first_name }}</td>
+                        <td>{{ optional($order->addresses)->last_name }}</td>
                         <td>{{ optional($order->product)->name }}</td>
                         <td>{{ $order->price }}</td>
                         <td>{{ $order->delivery_charges }}</td>
