@@ -14,11 +14,23 @@
                 @csrf
 
                 <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                           id="name"
-                           placeholder="name" value="{{ old('name') }}">
-                    @error('name')
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" class="form-control @error('first_name') is-invalid @enderror"
+                           id="first_name"
+                           placeholder="First Name" value="{{ old('first_name') }}">
+                    @error('first_name')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" class="form-control @error('last_name') is-invalid @enderror"
+                           id="last_name"
+                           placeholder="Last Name" value="{{ old('last_name') }}">
+                    @error('last_name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

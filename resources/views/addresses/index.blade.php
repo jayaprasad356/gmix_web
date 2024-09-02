@@ -33,7 +33,8 @@
                     <th>Actions</th>
                     <th>ID <i class="fas fa-sort"></i></th>
                     <th>User Name</th>
-                    <th>Name</th>
+                    <th>Fisrt Name</th>
+                    <th>Last Name</th>
                     <th>Mobile</th>
                     <th>Alternate Mobile</th>
                     <th>Door No</th>
@@ -53,7 +54,8 @@
                         </td>
                         <td>{{$addres->id}}</td>
                         <td>{{ optional($addres->users)->name }}</td>
-                        <td>{{$addres->name}}</td>
+                        <td>{{$addres->first_name}}</td>
+                        <td>{{$addres->last_name}}</td>
                         <td>{{$addres->mobile}}</td>
                         <td>{{$addres->alternate_mobile}}</td>
                         <td>{{$addres->door_no}}</td>

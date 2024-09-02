@@ -21,7 +21,8 @@ class AddressesController extends Controller
 
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('name', 'like', "%$search%")
+            $query->where('first_name', 'like', "%$search%")
+                  ->orWhere('last_name', 'like', "%$search%")
                   ->orWhere('mobile', 'like', "%$search%")
                   ->orWhere('alternate_mobile', 'like', "%$search%")
                   ->orWhere('door_no', 'like', "%$search%")
@@ -63,7 +64,8 @@ class AddressesController extends Controller
     public function store(AddressesStoreRequest $request)
     {
         $addresses = Addresses::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'mobile' => $request->mobile,
             'alternate_mobile' => $request->alternate_mobile,
             'door_no' => $request->door_no,
@@ -111,7 +113,8 @@ class AddressesController extends Controller
      */
     public function update(Request $request, Addresses $addresses)
     {
-        $addresses->name = $request->name;
+        $addresses->first_name = $request->first_name;
+        $addresses->last_name = $request->last_name;
         $addresses->mobile = $request->mobile;
         $addresses->alternate_mobile = $request->alternate_mobile;
         $addresses->door_no = $request->door_no;

@@ -25,7 +25,8 @@ class AddressesStoreRequest extends FormRequest
     {
         return [
             'id' => 'nullable|integer',
-            'name' => 'nullable|string',
+            'first_name' => 'nullable|string',
+            'last_name' => 'nullable|string',
             'mobile' => 'nullable|string',
             'alternate_mobile' => 'nullable|string',
             'door_no' => 'nullable|string',
