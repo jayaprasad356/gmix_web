@@ -34,7 +34,7 @@ class OrdersController extends Controller
                     // Fetch necessary data
                     $address = Addresses::find($order->address_id);
                     $product = Products::find($order->product_id);
-                    $price = $product->price;
+                    $price = $order->price;
                     $delivery_charges = $order->delivery_charges;
                     $total_price = $order->total_price;
                     $address1 = $address->door_no . ' ' . $address->street_name;
