@@ -82,6 +82,7 @@
                 <thead class="thead-dark">
                     <tr>
                     <th><input type="checkbox" id="checkAll"></th>
+                    <th>Actions</th>
                         <th>ID <i class="fas fa-sort"></i></th>
                         <th>User Name <i class="fas fa-sort"></i></th>
                         <th>Address Name <i class="fas fa-sort"></i></th>
@@ -89,7 +90,12 @@
                         <th>Price <i class="fas fa-sort"></i></th>
                         <th>Delivery Charges <i class="fas fa-sort"></i></th>
                         <th>Payment Mode <i class="fas fa-sort"></i></th>
-                        <th>Live Tracking <i class="fas fa-sort"></i></th>
+                        <th>Door No <i class="fas fa-sort"></i></th>
+                        <th>Street Name <i class="fas fa-sort"></i></th>
+                        <th>City <i class="fas fa-sort"></i></th>
+                        <th>Pincode <i class="fas fa-sort"></i></th>
+                        <th>State <i class="fas fa-sort"></i></th>
+                        <th>Landmark <i class="fas fa-sort"></i></th>
                         <th>Status <i class="fas fa-sort"></i></th>
                         <th>Ship Rocket <i class="fas fa-sort"></i></th>
                     </tr>
@@ -98,14 +104,22 @@
                     @foreach ($orders as $order)
                     <tr>
                     <td><input type="checkbox" class="checkbox" data-id="{{ $order->id }}"></td>
+                    <td>
+                            <a href="{{ route('orders.edit', $order) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                        </td>
                         <td>{{ $order->id }}</td>
                         <td>{{ optional($order->user)->name }}</td>
-                        <td>{{ optional($order->addresses)->name }}</td>
+                        <td>{{ optional($order->addresses)->first_name }}</td>
                         <td>{{ optional($order->product)->name }}</td>
                         <td>{{ $order->price }}</td>
                         <td>{{ $order->delivery_charges }}</td>
                         <td>{{ $order->payment_mode }}</td>
-                        <td>{{ $order->live_tracking }}</td>
+                        <td>{{ optional($order->addresses)->door_no }}</td>
+                        <td>{{ optional($order->addresses)->street_name }}</td>
+                        <td>{{ optional($order->addresses)->city }}</td>
+                        <td>{{ optional($order->addresses)->pincode }}</td>
+                        <td>{{ optional($order->addresses)->state }}</td>
+                        <td>{{ optional($order->addresses)->landmark }}</td>
                         <td>
                             @if ($order->status === 0)
                                 <span class="badge badge-primary">Wait For Confirmation</span>

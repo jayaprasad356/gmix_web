@@ -105,6 +105,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
     Route::get('/user-addresses/{userId}', [OrdersController::class, 'getUserAddresses']);
     Route::post('/orders/verify', [OrdersController::class, 'verify'])->name('orders.verify');
+    Route::get('/orders/{order}/edit', [OrdersController::class, 'edit'])->name('orders.edit');
+    Route::put('/orders/{order}', [OrdersController::class, 'update'])->name('orders.update');
 
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

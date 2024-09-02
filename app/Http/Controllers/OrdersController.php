@@ -179,6 +179,59 @@ class OrdersController extends Controller
     
         return redirect()->route('orders.index')->with('success', 'Success, New orders has been added successfully!');
     }
+    public function edit(Orders $order)
+    {
+        // Fetch the address associated with the order
+        $addresses = Addresses::find($order->address_id);
+    
+        if (!$addresses) {
+            return redirect()->route('orders.index')->with('error', 'Address not found.');
+        }
+    
+        return view('orders.edit', compact('order', 'addresses'));
+    }
+    
+    
+    public function update(Request $request, Orders $order)
+    {
+        // Validate the input
+        $request->validate([
+            'address_id' => 'required|exists:addresses,id',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'mobile' => 'required|numeric',
+            'alternate_mobile' => 'nullable|numeric',
+            'door_no' => 'required|string|max:255',
+            'street_name' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'pincode' => 'required|numeric',
+            'state' => 'required|string|max:255',
+            'landmark' => 'nullable|string|max:255',
+        ]);
+    
+        // Update the Address
+        $addresses = Addresses::find($request->input('address_id'));
+        if (!$addresses) {
+            return redirect()->route('orders.index')->with('error', 'Address not found.');
+        }
+    
+        $addresses->update([
+            'door_no' => $request->input('door_no'),
+            'street_name' => $request->input('street_name'),
+            'city' => $request->input('city'),
+            'pincode' => $request->input('pincode'),
+            'state' => $request->input('state'),
+            'landmark' => $request->input('landmark'),
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'mobile' => $request->input('mobile'),
+            'alternate_mobile' => $request->input('alternate_mobile'),
+        ]);
+    
+        return redirect()->route('orders.index')->with('success', 'Order and Address updated successfully.');
+    }
+    
+
     public function getUserAddresses($userId)
     {
         // Fetch addresses associated with the user

@@ -20,12 +20,10 @@ class Orders extends Model
         return $this->belongsTo(Users::class, 'user_id');
     }
 
-     // The relationship for the address where the order is delivered
      public function addresses()
      {
          return $this->belongsTo(Addresses::class, 'address_id');
      }
- 
      // The relationship for the product ordered
      public function product()
      {
