@@ -581,7 +581,9 @@ class AuthController extends Controller
         
                     // Determine the status label
                     $statusLabel = $order->status == 0 ? 'Wait For Confirmation' : ($order->status == 1 ? 'Confirmed' : ($order->status == 2 ? 'Cancelled' : ($order->status == 3 ? 'Shipped' : ($order->status == 4 ? 'Delivered' : (string) $order->status))));
-        
+
+                    $statusColor = $order->status == 0 ? '#01579B' : ($order->status == 1 ? '#006064' : ($order->status == 2 ? '#DD2C00' : ($order->status == 3 ? '#01579B' : ($order->status == 4 ? '#1B5E20' : '#0D47A1'))));
+
                     $ordersDetails[] = [
                         'id' => $order->id,
                         'user_name' => $user->name ?? '',
@@ -596,7 +598,7 @@ class AuthController extends Controller
                         'price' => (string) $order->price,
                         'total_price' => (string) $order->total_price,
                         'status' => $statusLabel, // Use status label
-                        'status_color' => '#0D47A1',
+                        'status_color' => $statusColor,
                         'live_tracking' => $order->live_tracking ?? '',
                         'ship_rocket' => $order->ship_rocket ?? '',
                         'est_delivery_date' => Carbon::parse($order->est_delivery_date)->format('Y-m-d'),
