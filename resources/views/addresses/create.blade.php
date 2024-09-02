@@ -28,8 +28,8 @@
                 <div class="form-group">
                     <label for="last_name">Last Name</label>
                     <input type="text" name="last_name" class="form-control @error('last_name') is-invalid @enderror"
-                           id="last_name"
-                           placeholder="Last Name" value="{{ old('last_name') }}">
+                        id="last_name"
+                        placeholder="Last Name" value="{{ old('last_name') }}">
                     @error('last_name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -41,10 +41,10 @@
                     <label for="mobile">Mobile</label>
                     <input type="number" name="mobile" class="form-control @error('mobile') is-invalid @enderror" id="mobile"
                            placeholder="mobile" value="{{ old('mobile') }}">
-                    @error('mobile')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                           @error('mobile')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                     @enderror
                 </div>
 
@@ -52,10 +52,10 @@
                     <label for="alternate_mobile">Alternate Mobile</label>
                     <input type="number" name="alternate_mobile" class="form-control @error('alternate_mobile') is-invalid @enderror" id="alternate_mobile"
                            placeholder="alternate_mobile" value="{{ old('alternate_mobile') }}">
-                    @error('alternate_mobile')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                           @error('alternate_mobile')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                     @enderror
                 </div>
 
@@ -63,10 +63,10 @@
                     <label for="door_no">Door No</label>
                     <input type="text" name="door_no" class="form-control @error('door_no') is-invalid @enderror" id="door_no"
                            placeholder="Door No" value="{{ old('door_no') }}">
-                    @error('door_no')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                           @error('door_no')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                     @enderror
                 </div>
 
@@ -75,10 +75,10 @@
                     <label for="street_name">Street Name</label>
                     <input type="text" name="street_name" class="form-control @error('street_name') is-invalid @enderror" id="street_name"
                            placeholder="Street Name" value="{{ old('street_name') }}">
-                    @error('street_name')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                           @error('street_name')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                     @enderror
                 </div>
 
@@ -121,15 +121,12 @@
                     <label for="landmark">Landmark</label>
                     <input type="text" name="landmark" class="form-control @error('landmark') is-invalid @enderror" id="landmark"
                            placeholder="landmark" value="{{ old('landmark') }}">
-                    @error('landmark')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                           @error('landmark')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
                     @enderror
                 </div>
-
-
-              
 
                 <button class="btn btn-success btn-block btn-lg" type="submit">Submit</button>
             </form>
@@ -140,17 +137,6 @@
 @section('js')
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     <script>
-        $(document).ready(function () {
-            bsCustomFileInput.init();
-        });
-
-        function updateProfileLabel(input) {
-            var fileName = input.files[0].name;
-            var label = $(input).siblings('.custom-file-label');
-            label.text(fileName);
-        }
-    </script>
-     <script>
         $(document).ready(function () {
             bsCustomFileInput.init();
         });

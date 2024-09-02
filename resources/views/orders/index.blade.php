@@ -84,6 +84,14 @@
                     <th><input type="checkbox" id="checkAll"></th>
                     <th>Actions</th>
                         <th>ID <i class="fas fa-sort"></i></th>
+                        <th>Status <i class="fas fa-sort"></i></th>
+                        <th>Ship Rocket <i class="fas fa-sort"></i></th>
+                        <th>Door No <i class="fas fa-sort"></i></th>
+                        <th>Street Name <i class="fas fa-sort"></i></th>
+                        <th>City <i class="fas fa-sort"></i></th>
+                        <th>Pincode <i class="fas fa-sort"></i></th>
+                        <th>State <i class="fas fa-sort"></i></th>
+                        <th>Landmark <i class="fas fa-sort"></i></th>
                         <th>First Name <i class="fas fa-sort"></i></th>
                         <th>Last Name <i class="fas fa-sort"></i></th>
                         <th>Product Name <i class="fas fa-sort"></i></th>
@@ -91,14 +99,6 @@
                         <th>Delivery Charges <i class="fas fa-sort"></i></th>
                         <th>Total Price <i class="fas fa-sort"></i></th>
                         <th>Payment Mode <i class="fas fa-sort"></i></th>
-                        <th>Door No <i class="fas fa-sort"></i></th>
-                        <th>Street Name <i class="fas fa-sort"></i></th>
-                        <th>City <i class="fas fa-sort"></i></th>
-                        <th>Pincode <i class="fas fa-sort"></i></th>
-                        <th>State <i class="fas fa-sort"></i></th>
-                        <th>Landmark <i class="fas fa-sort"></i></th>
-                        <th>Status <i class="fas fa-sort"></i></th>
-                        <th>Ship Rocket <i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,19 +109,6 @@
                             <a href="{{ route('orders.edit', $order) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                         </td>
                         <td>{{ $order->id }}</td>
-                        <td>{{ optional($order->addresses)->first_name }}</td>
-                        <td>{{ optional($order->addresses)->last_name }}</td>
-                        <td>{{ optional($order->product)->name }}</td>
-                        <td>{{ $order->price }}</td>
-                        <td>{{ $order->delivery_charges }}</td>
-                        <td>{{ $order->total_price }}</td>
-                        <td>{{ $order->payment_mode }}</td>
-                        <td>{{ optional($order->addresses)->door_no }}</td>
-                        <td>{{ optional($order->addresses)->street_name }}</td>
-                        <td>{{ optional($order->addresses)->city }}</td>
-                        <td>{{ optional($order->addresses)->pincode }}</td>
-                        <td>{{ optional($order->addresses)->state }}</td>
-                        <td>{{ optional($order->addresses)->landmark }}</td>
                         <td>
                             @if ($order->status === 0)
                                 <span class="badge badge-primary">Wait For Confirmation</span>
@@ -142,6 +129,19 @@
                                 <span class="badge badge-success">Confirmed</span>
                             @endif
                         </td>
+                        <td>{{ optional($order->addresses)->door_no }}</td>
+                        <td>{{ optional($order->addresses)->street_name }}</td>
+                        <td>{{ optional($order->addresses)->city }}</td>
+                        <td>{{ optional($order->addresses)->pincode }}</td>
+                        <td>{{ optional($order->addresses)->state }}</td>
+                        <td>{{ optional($order->addresses)->landmark }}</td>
+                        <td>{{ optional($order->addresses)->first_name }}</td>
+                        <td>{{ optional($order->addresses)->last_name }}</td>
+                        <td>{{ optional($order->product)->name }}</td>
+                        <td>{{ $order->price }}</td>
+                        <td>{{ $order->delivery_charges }}</td>
+                        <td>{{ $order->total_price }}</td>
+                        <td>{{ $order->payment_mode }}</td>   
                     </tr>
                     @endforeach
                 </tbody>

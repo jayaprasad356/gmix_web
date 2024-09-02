@@ -219,77 +219,78 @@ class AuthController extends Controller
         $pincode = $request->input('pincode');
         $state = $request->input('state');
         $landmark = $request->input('landmark');
-
+    
+        // Validate input fields
         if (empty($user_id)) {
             return response()->json([
                 'success' => false,
                 'message' => 'user_id is empty.',
             ], 400);
         }
-
+    
         if (empty($first_name)) {
             return response()->json([
                 'success' => false,
                 'message' => 'First name is empty.',
             ], 400);
         }
-
+    
         if (empty($mobile)) {
             return response()->json([
                 'success' => false,
                 'message' => 'mobile is empty.',
             ], 400);
         }
-
+    
         if (empty($alternate_mobile)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Alternate Mobile is empty.',
             ], 400);
         }
-
+    
         if ($mobile === $alternate_mobile) {
             return response()->json([
                 'success' => false,
                 'message' => 'Mobile and Alternate Mobile cannot be the same.',
             ], 400);
         }
-
+    
         if (empty($door_no)) {
             return response()->json([
                 'success' => false,
                 'message' => 'door_no is empty.',
             ], 400);
         }
-
+    
         if (empty($street_name)) {
             return response()->json([
                 'success' => false,
                 'message' => 'street_name is empty.',
             ], 400);
         }
-
+    
         if (empty($city)) {
             return response()->json([
                 'success' => false,
                 'message' => 'city is empty.',
             ], 400);
         }
-
+    
         if (empty($pincode)) {
             return response()->json([
                 'success' => false,
                 'message' => 'pincode is empty.',
             ], 400);
         }
-
+    
         if (empty($state)) {
             return response()->json([
                 'success' => false,
                 'message' => 'state is empty.',
             ], 400);
         }
-
+    
         // Check if user exists
         $user = Users::find($user_id);
         if (!$user) {
@@ -298,47 +299,47 @@ class AuthController extends Controller
                 'message' => 'user not found.',
             ], 404);
         }
+    
+        // Check if an address already exists for this user_id
+        $address = Addresses::where('user_id', $user_id)->first();
 
-        // Check if address already exists
-        $existingAddress = Addresses::where('door_no', $door_no)
-            ->where('street_name', $street_name)
-            ->where('landmark', $landmark)
-            ->where(function ($query) use ($mobile, $alternate_mobile) {
-                $query->where('mobile', $mobile)
-                    ->orWhere('alternate_mobile', $alternate_mobile);
-            })
-            ->first();
-
-        if ($existingAddress) {
-            return response()->json([   
-                'success' => false,
-                'message' => 'Address already exists.',
-            ], 400);
+        if ($address) {
+            // Update the existing address
+            $address->first_name = $first_name;
+            $address->last_name = $last_name;
+            $address->mobile = $mobile;
+            $address->alternate_mobile = $alternate_mobile;
+            $address->door_no = $door_no;
+            $address->street_name = $street_name;
+            $address->city = $city;
+            $address->pincode = $pincode;
+            $address->state = $state;
+            $address->landmark = $landmark;
+        } else {
+            // Create a new Address instance
+            $address = new Addresses();
+            $address->user_id = $user_id; 
+            $address->first_name = $first_name;
+            $address->last_name = $last_name;
+            $address->mobile = $mobile;
+            $address->alternate_mobile = $alternate_mobile;
+            $address->door_no = $door_no;
+            $address->street_name = $street_name;
+            $address->city = $city;
+            $address->pincode = $pincode;
+            $address->state = $state;
+            $address->landmark = $landmark;
         }
-
-        // Create a new Address instance
-        $address = new Addresses();
-        $address->user_id = $user_id; 
-        $address->first_name = $first_name;
-        $address->last_name = $last_name;
-        $address->mobile = $mobile;
-        $address->alternate_mobile = $alternate_mobile;
-        $address->door_no = $door_no;
-        $address->street_name = $street_name;
-        $address->city = $city;
-        $address->pincode = $pincode;
-        $address->state = $state;
-        $address->landmark = $landmark;
 
         // Save the address
         if (!$address->save()) {
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to save address.',
+            'success' => false,
+            'message' => 'Failed to save address.',
             ], 500);
         }
 
-        $addressDetails = [[
+        $addressDetails = [
             'id' => $address->id,
             'user_id' => $address->user_id,
             'first_name' => $address->first_name,
@@ -353,15 +354,22 @@ class AuthController extends Controller
             'landmark' => $address->landmark ?? '',
             'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
-        ]];
+        ];
 
-        return response()->json([
+        if ($address->wasRecentlyCreated) {
+            return response()->json([
             'success' => true,
             'message' => 'Address added successfully.',
             'data' => $addressDetails,
-        ], 201);
+            ], 200);
+        } else {
+            return response()->json([
+            'success' => true,
+            'message' => 'Address updated successfully.',
+            'data' => $addressDetails,
+            ], 200);
+        }
     }
-
      public function address_list(Request $request)
     {
         $address_id = $request->input('address_id');
@@ -381,7 +389,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'address not found.',
-            ], 404);
+            ], 200);
         }
 
         $addressDetails = [[

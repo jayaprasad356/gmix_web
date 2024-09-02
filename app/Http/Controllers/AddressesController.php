@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class AddressesController extends Controller
 {
+
+    
     /**
      * Display a listing of the resource.
      *
@@ -50,6 +52,7 @@ class AddressesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    
     public function create()
     {
         return view('addresses.create');
@@ -63,6 +66,24 @@ class AddressesController extends Controller
      */
     public function store(AddressesStoreRequest $request)
     {
+        $existingAddress = Addresses::where('door_no', $request->door_no)
+        ->where('street_name', $request->street_name)
+        ->where('landmark', $request->landmark)
+        ->first();
+
+    if ($existingAddress) {
+        return redirect()->back()->withErrors([
+            'address' => 'The address with the same Door No, Street Name, and Landmark already exists.'
+        ])->withInput();
+    }
+
+    // Custom validation to ensure mobile and alternate_mobile are different
+    if ($request->mobile === $request->alternate_mobile) {
+        return redirect()->back()->withErrors([
+            'mobile' => 'Mobile and Alternate Mobile must be different.',
+        ])->withInput();
+    }
+
         $addresses = Addresses::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -113,6 +134,23 @@ class AddressesController extends Controller
      */
     public function update(Request $request, Addresses $addresses)
     {
+        // Validate that mobile and alternate_mobile are different
+        $request->validate([
+            'mobile' => 'required|different:alternate_mobile',
+            'alternate_mobile' => 'required',
+        ]);
+    
+        // Check if the door_no, street_name, and landmark already exist
+        $existingAddress = Addresses::where('door_no', $request->door_no)
+                                    ->where('street_name', $request->street_name)
+                                    ->where('landmark', $request->landmark)
+                                    ->first();
+    
+        if ($existingAddress && $existingAddress->id != $addresses->id) {
+            return redirect()->back()->with('error', 'The address with the same door number, street name, and landmark already exists.');
+        }
+    
+        // Update the address fields
         $addresses->first_name = $request->first_name;
         $addresses->last_name = $request->last_name;
         $addresses->mobile = $request->mobile;
@@ -123,13 +161,14 @@ class AddressesController extends Controller
         $addresses->pincode = $request->pincode;
         $addresses->state = $request->state;
         $addresses->landmark = $request->landmark;
-
+    
         if (!$addresses->save()) {
-            return redirect()->back()->with('error', 'Sorry, Something went wrong while updating the addresses.');
+            return redirect()->back()->with('error', 'Sorry, something went wrong while updating the addresses.');
         }
-        return redirect()->route('addresses.edit', $addresses->id)->with('success', 'Success, addresses has been updated.');
+    
+        return redirect()->route('addresses.edit', $addresses->id)->with('success', 'Success, address has been updated.');
     }
-
+    
     public function destroy(Addresses $addresses)
     {
         $addresses->delete();
