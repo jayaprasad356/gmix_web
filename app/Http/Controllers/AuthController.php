@@ -209,7 +209,8 @@ class AuthController extends Controller
     public function add_address(Request $request)
     {
         $user_id = $request->input('user_id'); 
-        $name = $request->input('name');
+        $first_name = $request->input('first_name');
+        $last_name = $request->input('last_name');
         $mobile = $request->input('mobile');
         $alternate_mobile = $request->input('alternate_mobile');
         $door_no = $request->input('door_no');
@@ -226,10 +227,10 @@ class AuthController extends Controller
             ], 400);
         }
 
-        if (empty($name)) {
+        if (empty($first_name)) {
             return response()->json([
                 'success' => false,
-                'message' => 'name is empty.',
+                'message' => 'First name is empty.',
             ], 400);
         }
 
@@ -294,7 +295,8 @@ class AuthController extends Controller
         // Create a new Address instance
         $address = new Addresses();
         $address->user_id = $user_id; 
-        $address->name = $name;
+        $address->first_name = $first_name;
+        $address->last_name = $last_name;
         $address->mobile = $mobile;
         $address->alternate_mobile = $alternate_mobile;
         $address->door_no = $door_no;
@@ -315,7 +317,8 @@ class AuthController extends Controller
         $addressDetails = [[
             'id' => $address->id,
             'user_id' => $address->user_id,
-            'name' => $address->name,
+            'first_name' => $address->first_name,
+            'last_name' => $address->last_name ?? '',
             'mobile' => $address->mobile,
             'alternate_mobile' => $address->alternate_mobile,
             'door_no' => $address->door_no,
@@ -635,7 +638,8 @@ class AuthController extends Controller
                     'id' => $address->id,
                     'user_id' => $address->user_id,
                     'user_name' => $user->name,
-                    'name' => $address->name,
+                    'first_name' => $address->first_name,
+                    'last_name' => $address->last_name ?? '',
                     'mobile' => $address->mobile,
                     'alternate_mobile' => $address->alternate_mobile,
                     'door_no' => $address->door_no,
