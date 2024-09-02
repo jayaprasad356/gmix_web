@@ -91,6 +91,7 @@
                         <th>Payment Mode <i class="fas fa-sort"></i></th>
                         <th>Live Tracking <i class="fas fa-sort"></i></th>
                         <th>Status <i class="fas fa-sort"></i></th>
+                        <th>Ship Rocket <i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -118,7 +119,13 @@
                                 <span class="badge badge-secondary">Delivered</span>
                             @endif
                         </td>
-
+                        <td>
+                            @if ($order->ship_rocket === 0)
+                                <span class="badge badge-primary">pending</span>
+                            @elseif ($order->ship_rocket === 1)
+                                <span class="badge badge-success">Confirmed</span>
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

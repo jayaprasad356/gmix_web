@@ -10,27 +10,96 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests\OrderStoreRequest;
+use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
+
 
 class OrdersController extends Controller
 {
 
     public function verify(Request $request)
-{
-    $orderIds = $request->input('order_ids', []);
-    $newStatus = $request->input('status'); // Get the status from the request
-
-    foreach ($orderIds as $orderId) {
-        $order = Orders::find($orderId);
-        if ($order) {
-            // Update the order status to the selected status
-            $order->status = $newStatus;
-            $order->save();
+    {
+        $orderIds = $request->input('order_ids', []);
+        $newStatus = $request->input('status'); // Get the status from the request
+    
+        foreach ($orderIds as $orderId) {
+            $order = Orders::find($orderId);
+            if ($order) {
+                // Update the order status to the selected status
+                $order->status = $newStatus;
+    
+                // Execute Shiprocket API request only if the status is 'Confirmed' (1) and ship_rocket is not already 1
+                if ($newStatus == 1 && $order->ship_rocket != 1) {
+                    // Fetch necessary data
+                    $address = Addresses::find($order->address_id);
+                    $product = Products::find($order->product_id);
+                    $price = $product->price;
+                    $delivery_charges = $order->delivery_charges;
+                    $sub_total = $price + $delivery_charges;
+                    $address1 = $address->door_no . ' ' . $address->street_name;
+                    $payment_mode = $order->payment_mode;
+    
+                    // Shiprocket API request
+                    $response = Http::withHeaders([
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
+                    ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', [
+                        "order_id" => $orderId, // Use current order ID
+                        "order_date" => Carbon::now()->format('Y-m-d H:i:s'),
+                        "pickup_location" => "Trichy",
+                        "channel_id" => "",
+                        "comment" => "G Mix",
+                        "billing_customer_name" => $address->name,
+                        "billing_last_name" => "",
+                        "billing_address" => $address1,
+                        "billing_address_2" => "",
+                        "billing_city" => $address->city,
+                        "billing_pincode" => $address->pincode,
+                        "billing_state" => $address->state,
+                        "billing_country" => "India",
+                        "billing_email" => "",
+                        "billing_phone" => $address->mobile,
+                        "shipping_is_billing" => true,
+                        "order_items" => [
+                            [
+                                "name" => "G Mix",
+                                "sku" => "123456",
+                                "units" => 1,
+                                "selling_price" => $price,
+                                "discount" => "",
+                                "tax" => "",
+                                "hsn" => 441122
+                            ]
+                        ],
+                        "payment_method" => $payment_mode,
+                        "shipping_charges" => (int) $delivery_charges,
+                        "giftwrap_charges" => 0,
+                        "transaction_charges" => 0,
+                        "total_discount" => 0,
+                        "sub_total" => (int) $sub_total,
+                        "length" => 8,
+                        "breadth" => 4,
+                        "height" => 5,
+                        "weight" => 0.5
+                    ]);
+    
+                    if ($response->successful()) {
+                        // If the API request is successful, update the ship_rocket status
+                        $order->ship_rocket = 1;
+                        $order->save();
+                    } else {
+                        // If the API request fails, return an error response
+                        return response()->json(['success' => false, 'message' => 'Shiprocket API request failed'], 500);
+                    }
+                } else {
+                    // If status is not "Confirmed" or ship_rocket is already 1, just save the order status
+                    $order->save();
+                }
+            }
         }
+    
+        return response()->json(['success' => true]);
     }
-
-    return response()->json(['success' => true]);
-}
-
     
     
     public function index(Request $request)

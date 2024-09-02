@@ -497,7 +497,7 @@ class AuthController extends Controller
         
             // Get delivery charges from settings table but i getting from news table some issue of the settings name so i change name into news
             $delivery_charges = 0; // Default to 0 for prepaid
-            if ($payment_mode === 'cod') {
+            if ($payment_mode === 'COD') {
                 $delivery_charges = News::value('delivery_charges');
             }
         
@@ -509,10 +509,10 @@ class AuthController extends Controller
 
         
             // Check if payment mode is valid
-            if ($payment_mode !== 'prepaid' && $payment_mode !== 'cod') {
+            if ($payment_mode !== 'Prepaid' && $payment_mode !== 'COD') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invalid payment mode. Payment mode should be either prepaid or cod.',
+                    'message' => 'Invalid payment mode. Payment mode should be either Prepaid or COD.',
                 ], 400);
             }
             $shipping_charges = 60 ;
@@ -538,64 +538,25 @@ class AuthController extends Controller
             }
             $sub_total = $price + $delivery_charges;
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUwOTY4OTAsInNvdXJjZSI6InNyLWF1dGgtaW50IiwiZXhwIjoxNzI1OTIwMjcyLCJqdGkiOiJ6VFFtdjV4RWRrNE1IbTdLIiwiaWF0IjoxNzI1MDU2MjcyLCJpc3MiOiJodHRwczovL3NyLWF1dGguc2hpcHJvY2tldC5pbi9hdXRob3JpemUvdXNlciIsIm5iZiI6MTcyNTA1NjI3MiwiY2lkIjoyNzI4MzUyLCJ0YyI6MzYwLCJ2ZXJib3NlIjpmYWxzZSwidmVuZG9yX2lkIjowLCJ2ZW5kb3JfY29kZSI6IiJ9.sLpaoPK_vihXBiFO6ivYzXk6WX9-iORL28RYzz8UPxY'
-            ])->post('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', [
-                "order_id" => $latestOrderId,
-                "order_date" => Carbon::now()->format('Y-m-d H:i:s'),
-                "pickup_location" => "Trichy",
-                "channel_id" => "",
-                "comment" => "G Mix",
-                "billing_customer_name" => $address->name,
-                "billing_last_name" => "",
-                "billing_address" => $address1,
-                "billing_address_2" => "",
-                "billing_city" => $address->city,
-                "billing_pincode" => $address->pincode,
-                "billing_state" => $address->state,
-                "billing_country" => "India",
-                "billing_email" => "",
-                "billing_phone" => $address->mobile,
-                "shipping_is_billing" => true,
-                "order_items" => [
-                    [
-                        "name" => "G Mix",
-                        "sku" => "123456",
-                        "units" => 1,
-                        "selling_price" => $price,
-                        "discount" => "",
-                        "tax" => "",
-                        "hsn" => 441122
-                    ]
-                ],
-                "payment_method" => $payment_mode,
-                "shipping_charges" => (int) $delivery_charges,
-                "giftwrap_charges" => 0,
-                "transaction_charges" => 0,
-                "total_discount" => 0,
-                "sub_total" => (int) $sub_total,
-                "length" => 8,
-                "breadth" => 4,
-                "height" => 5,
-                "weight" => 0.5
-            ]);
-
-            if ($response->successful()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Order placed successfully.',
-                ], 200);
-            } else {
-                return response()->json(['message' => 'Order creation failed!', 'error' => $response->json()], $response->status());
-            }
-        
-
+                    // Return success response
+            return response()->json([
+                'success' => true,
+                'message' => 'Order placed successfully.',
+                'order_id' => $order->id,
+                'subtotal' => $sub_total,
+            ], 200);
         }
         
         public function orders_list(Request $request)
         {
             $user_id = $request->input('user_id');
+
+            if (empty($user_id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'user_id is empty.',
+                ], 400);
+            }
         
             // Retrieve the orders for the given user
             $orders = Orders::where('user_id', $user_id)->get();
@@ -633,6 +594,7 @@ class AuthController extends Controller
                         'status' => $statusLabel, // Use status label
                         'status_color' => '#0D47A1',
                         'live_tracking' => $order->live_tracking ?? '',
+                        'ship_rocket' => $order->ship_rocket ?? '',
                         'est_delivery_date' => Carbon::parse($order->est_delivery_date)->format('Y-m-d'),
                         'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
                         'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
@@ -759,6 +721,7 @@ public function pincode(Request $request)
 {
     $pincode = $request->input('pincode');
 
+    // Validate that the pincode is provided
     if (empty($pincode)) {
         return response()->json([
             'success' => false,
