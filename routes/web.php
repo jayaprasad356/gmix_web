@@ -116,6 +116,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('news/1/edit', [NewsController::class, 'edit'])->name('news.edit');
         Route::post('news/1/update', [NewsController::class, 'update'])->name('news.update');
 
+        Route::get('appsettings/{id}/edit', [AppsettingsController::class, 'edit'])->name('appsettings.edit');
+        Route::put('appsettings/{id}/update', [AppsettingsController::class, 'update'])->name('appsettings.update');
+        
+
 
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {

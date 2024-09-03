@@ -24,19 +24,6 @@
                 <textarea name="description" id="description" class="form-control" rows="10" required>{!! old('description', $appsettings->description) !!}</textarea>
             </div>
 
-            <div class="form-group">
-                <label for="login">Log In</label>
-                <div class="custom-control custom-switch">
-                    <input type="hidden" name="login" value="0"> <!-- Hidden input to ensure a value is always submitted -->
-                    <input type="checkbox" name="login" class="custom-control-input @error('login') is-invalid @enderror" id="login" value="1" {{ old('login', $appsettings->login) == '1' ? 'checked' : '' }}>
-                    <label class="custom-control-label" for="login"></label>
-                </div>
-                @error('login')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-                @enderror
-            </div>
 
             <div class="box-footer">
                 <button type="submit" class="btn btn-primary">Update</button>
