@@ -591,7 +591,8 @@ class AuthController extends Controller
 
             // Perform actions based on the webhook event
             if ($dataArray && isset($dataArray['order_id'])) {
-                $order_id = $dataArray['order_id'];
+                $order_id = "Gmix-" . $dataArray['order_id'];
+                
                 $shipment_status = $dataArray['shipment_status'];
 
                 DB::table('orders')->where('id', $order_id)->update([
