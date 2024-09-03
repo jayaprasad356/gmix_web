@@ -20,6 +20,7 @@ Route::post('settings_list', [AuthController::class, 'settings_list']);
 Route::post('reward_product_list', [AuthController::class, 'reward_product_list']);
 Route::post('pincode', [AuthController::class, 'pincode']);
 Route::post('appsettings_list', [AuthController::class, 'appsettings_list']);
+Route::post('ship_webhook', [AuthController::class, 'ship_webhook']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
