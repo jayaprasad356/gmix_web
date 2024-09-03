@@ -713,6 +713,7 @@ class AuthController extends Controller
         $newsData[] = [
             'id' => $item->id,
             'delivery_charges' => $item->delivery_charges,
+            'customer_support_mobile' => $item->customer_support_mobile,
         ];
     }
 

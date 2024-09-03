@@ -8,5 +8,6 @@ class News extends Model
 {
     protected $fillable = [
         'delivery_charges',
+        'customer_support_mobile',
     ];
 }   

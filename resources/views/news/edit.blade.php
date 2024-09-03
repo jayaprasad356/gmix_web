@@ -17,6 +17,10 @@
                 <label for="delivery_charges">Delivery Charges</label>
                 <input type="text" class="form-control" id="delivery_charges" name="delivery_charges" value="{{ $news->delivery_charges }}" required style="width: 100%; max-width: 250px;">
             </div>
+            <div class="form-group">
+                <label for="customer_support_number">Customer Support Number</label>
+                <input type="number" class="form-control" id="customer_support_number" name="customer_support_number" value="{{ $news->customer_support_number }}" required style="width: 100%; max-width: 250px;">
+            </div>
             <div class="box-footer">
                 <button type="submit" class="btn btn-primary">Update</button>
             </div>
