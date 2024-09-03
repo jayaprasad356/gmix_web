@@ -18,12 +18,12 @@ class NewsController extends Controller
     {
         $request->validate([
             'delivery_charges' => 'required|string|max:255',
-            'customer_support_mobile' => 'required|string|max:255',
+            'customer_support_number' => 'required|string|max:255',
         ]);
 
         $news = News::findOrFail(1); // Again, assuming ID 1 for simplicity
         $news->delivery_charges = $request->input('delivery_charges');
-        $news->customer_support_mobile = $request->input('customer_support_mobile');
+        $news->customer_support_number = $request->input('customer_support_number');
     
 
         if ($news->save()) {
