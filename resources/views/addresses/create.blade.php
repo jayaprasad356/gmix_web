@@ -14,6 +14,18 @@
                 @csrf
 
                 <div class="form-group">
+                    <label for="user_id">User ID</label>
+                    <input type="number" name="user_id" class="form-control @error('user_id') is-invalid @enderror"
+                           id="user_id"
+                           placeholder="User ID" value="{{ old('user_id') ?? $user_id }}">
+                    @error('user_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+                
+                <div class="form-group">
                     <label for="first_name">First Name</label>
                     <input type="text" name="first_name" class="form-control @error('first_name') is-invalid @enderror"
                            id="first_name"

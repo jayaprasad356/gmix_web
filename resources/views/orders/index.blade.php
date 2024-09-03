@@ -148,11 +148,36 @@
             </table>
             </table>
         </div>
-       
-        {{ $orders->appends(request()->query())->links() }}
+        <div class="d-flex align-items-center">
+    <!-- Total orders count -->
+    <p class="mb-0 mr-1">
+        Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of {{ $orders->total() }} entries
+    </p>
 
-    </div>
+    <!-- Dropdown for selecting number of items per page -->
+    <form method="GET" action="{{ url()->current() }}" class="d-inline mb-0">
+        <div class="form-group mb-0">
+            <label for="perPage" class="sr-only">Show</label>
+            <select name="perPage" id="perPage" class="form-control form-control-sm" onchange="this.form.submit()" style="width: 60px;">
+                @foreach([5, 10, 20, 50, 100, 200] as $size)
+                    <option value="{{ $size }}" {{ $size == $perPage ? 'selected' : '' }}>
+                        {{ $size }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <!-- Preserve search and status filters -->
+        <input type="hidden" name="search" value="{{ request('search') }}">
+        <input type="hidden" name="status" value="{{ request('status') }}">
+    </form>
 </div>
+
+<div class="pagination mt-3">
+    {{ $orders->appends(request()->query())->links() }}
+</div>
+    </div>
+
+
 
 @endsection
 
@@ -196,6 +221,7 @@
                 let search = $('#search-input').val();
                 let status = $('#status-filter').val();
 
+  
                 window.location.search = `search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`;
             }, 500); // Adjust the delay (in milliseconds) as needed
         }

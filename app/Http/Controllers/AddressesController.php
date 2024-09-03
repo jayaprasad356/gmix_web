@@ -20,7 +20,8 @@ class AddressesController extends Controller
     public function index(Request $request)
     {
         $query = Addresses::query();
-
+    
+        // Search functionality
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where('first_name', 'like', "%$search%")
@@ -34,18 +35,29 @@ class AddressesController extends Controller
                   ->orWhere('state', 'like', "%$search%")
                   ->orWhere('landmark', 'like', "%$search%")
                   ->orWhereHas('users', function ($q) use ($search) {
-                    $q->where('name', 'like', "%$search%");
-                });
+                      $q->where('name', 'like', "%$search%");
+                  });
         }
-
+    
+        // Handle perPage value from the request, default to 10
+        $perPage = $request->input('perPage', 10);
+    
+        // Pagination
+        $addresses = $query->orderBy('created_at', 'desc')->paginate($perPage); // Ensure latest data is at the end
+    
+        // Check if the request is AJAX
         if ($request->wantsJson()) {
-            return response($query->get());
+            return response()->json($addresses);
         }
-        $addresses = $query->latest()->paginate(10);
+    
+        // Fetch all users for the filter dropdown
         $users = Users::all();
-     
-         return view('addresses.index', compact('addresses', 'users'));
+    
+        // Return the view with the addresses, users, and perPage value
+        return view('addresses.index', compact('addresses', 'users', 'perPage'));
     }
+    
+    
 
     /**
      * Show the form for creating a new resource.
@@ -66,17 +78,6 @@ class AddressesController extends Controller
      */
     public function store(AddressesStoreRequest $request)
     {
-        $existingAddress = Addresses::where('door_no', $request->door_no)
-        ->where('street_name', $request->street_name)
-        ->where('landmark', $request->landmark)
-        ->first();
-
-    if ($existingAddress) {
-        return redirect()->back()->withErrors([
-            'address' => 'The address with the same Door No, Street Name, and Landmark already exists.'
-        ])->withInput();
-    }
-
     // Custom validation to ensure mobile and alternate_mobile are different
     if ($request->mobile === $request->alternate_mobile) {
         return redirect()->back()->withErrors([
@@ -85,6 +86,7 @@ class AddressesController extends Controller
     }
 
         $addresses = Addresses::create([
+            'user_id' => $request->user_id,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'mobile' => $request->mobile,
@@ -139,16 +141,7 @@ class AddressesController extends Controller
             'mobile' => 'required|different:alternate_mobile',
             'alternate_mobile' => 'required',
         ]);
-    
-        // Check if the door_no, street_name, and landmark already exist
-        $existingAddress = Addresses::where('door_no', $request->door_no)
-                                    ->where('street_name', $request->street_name)
-                                    ->where('landmark', $request->landmark)
-                                    ->first();
-    
-        if ($existingAddress && $existingAddress->id != $addresses->id) {
-            return redirect()->back()->with('error', 'The address with the same door number, street name, and landmark already exists.');
-        }
+
     
         // Update the address fields
         $addresses->first_name = $request->first_name;

@@ -17,20 +17,28 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         $query = Users::query();
-    
+
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where('name', 'like', "%$search%")
                   ->orWhere('mobile', 'like', "%$search%");
         }
-    
+
+        // Get perPage value from the request, default to 10
+        $perPage = $request->input('perPage', 10);
+
+        // Pagination
+        $users = $query->latest()->paginate($perPage); // Show latest users first
+
+        // Check if the request is AJAX
         if ($request->wantsJson()) {
-            return response($query->get());
+            return response()->json($users);
         }
-    
-        $users = $query->latest()->paginate(10);
-        return view('users.index')->with('users', $users);
+
+        $allUsers = Users::all(); // Fetch all users for the filter dropdown
+        return view('users.index', compact('users', 'allUsers', 'perPage'));
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -55,6 +63,7 @@ class UsersController extends Controller
         $users = Users::create([
             'name' => $request->name,
             'mobile' => $request->mobile,
+            
         ]);
 
         if (!$users) {

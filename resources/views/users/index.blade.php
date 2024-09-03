@@ -55,12 +55,11 @@
                 </tbody>
             </table>
         </div>
-       
-        {{ $users->appends(request()->query())->links() }}
-
     </div>
+<div class="pagination mt-3">
+    {{ $users->appends(request()->query())->links() }}
 </div>
-
+    </div>
 @endsection
 
 @section('js')

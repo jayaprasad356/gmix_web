@@ -25,6 +25,7 @@ class AddressesStoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'user_id' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'mobile' => [
@@ -32,15 +33,6 @@ class AddressesStoreRequest extends FormRequest
                 'numeric',
                 'digits_between:10,15',
                 'different:alternate_mobile', // Ensure mobile and alternate_mobile are different
-                function ($attribute, $value, $fail) {
-                    // Custom rule to check if door_no, street_name, and landmark already exist together
-                    if (Addresses::where('door_no', $this->door_no)
-                        ->where('street_name', $this->street_name)
-                        ->where('landmark', $this->landmark)
-                        ->exists()) {
-                        $fail('The address with the same Door No, Street Name, and Landmark already exists.');
-                    }
-                }
             ],
             'alternate_mobile' => [
                 'required',
@@ -53,7 +45,6 @@ class AddressesStoreRequest extends FormRequest
             'city' => 'required|string|max:255',
             'pincode' => 'required|numeric|digits:6',
             'state' => 'required|string|max:255',
-            'landmark' => 'required|string|max:255',
         ];
     }
 
