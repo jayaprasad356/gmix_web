@@ -660,7 +660,7 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'No addresses found for the user.',
-            ], 400);
+            ], 200);
         }
 
         $addressesDetails = [];
