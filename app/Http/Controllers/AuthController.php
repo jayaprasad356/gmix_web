@@ -583,21 +583,31 @@ class AuthController extends Controller
 
         public function ship_webhook(Request $request)
         {
+            
             // Get the raw POST data
             $data = $request->getContent();
 
             // Decode the JSON data
             $dataArray = json_decode($data, true);
+            
 
             // Perform actions based on the webhook event
             if ($dataArray && isset($dataArray['order_id'])) {
-                $order_id = "Gmix-" . $dataArray['order_id'];
                 
+                $order_id = $dataArray['order_id'];
+                
+                $order_id = str_replace("Gmix-", "", $order_id);
+         
+
                 $shipment_status = $dataArray['shipment_status'];
 
                 DB::table('orders')->where('id', $order_id)->update([
                     'shipment_status' => $shipment_status,
                 ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'success',
+                ], 200);
 
                 // Log the order_id for debugging purposes
                 //Log::info('Order ID received:', ['order_id' => $order_id]);
@@ -606,11 +616,16 @@ class AuthController extends Controller
             } else {
                 // Log an error if the order_id is not present or data is invalid
                 Log::error('Invalid data received:', ['data' => $dataArray]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'success',
+                ], 200);
             }
 
             // Respond with a 200 status code to acknowledge receipt of the webhook
-            return response('Webhook received', 200);
+            
         }
+
         
         public function orders_list(Request $request)
         {
