@@ -219,7 +219,7 @@ class AuthController extends Controller
         $pincode = $request->input('pincode');
         $state = $request->input('state');
         $landmark = $request->input('landmark');
-    
+
         // Validate input fields
         if (empty($user_id)) {
             return response()->json([
@@ -227,70 +227,70 @@ class AuthController extends Controller
                 'message' => 'user_id is empty.',
             ], 400);
         }
-    
+
         if (empty($first_name)) {
             return response()->json([
                 'success' => false,
                 'message' => 'First name is empty.',
             ], 400);
         }
-    
+
         if (empty($mobile)) {
             return response()->json([
                 'success' => false,
                 'message' => 'mobile is empty.',
             ], 400);
         }
-    
+
         if (empty($alternate_mobile)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Alternate Mobile is empty.',
             ], 400);
         }
-    
+
         if ($mobile === $alternate_mobile) {
             return response()->json([
                 'success' => false,
                 'message' => 'Mobile and Alternate Mobile cannot be the same.',
             ], 400);
         }
-    
+
         if (empty($door_no)) {
             return response()->json([
                 'success' => false,
                 'message' => 'door_no is empty.',
             ], 400);
         }
-    
+
         if (empty($street_name)) {
             return response()->json([
                 'success' => false,
                 'message' => 'street_name is empty.',
             ], 400);
         }
-    
+
         if (empty($city)) {
             return response()->json([
                 'success' => false,
                 'message' => 'city is empty.',
             ], 400);
         }
-    
+
         if (empty($pincode)) {
             return response()->json([
                 'success' => false,
                 'message' => 'pincode is empty.',
             ], 400);
         }
-    
+
         if (empty($state)) {
             return response()->json([
                 'success' => false,
                 'message' => 'state is empty.',
             ], 400);
         }
-    
+
         // Check if user exists
         $user = Users::find($user_id);
         if (!$user) {
@@ -299,14 +299,14 @@ class AuthController extends Controller
                 'message' => 'user not found.',
             ], 404);
         }
-    
+
         // Check if an address already exists for this user_id
         $address = Addresses::where('user_id', $user_id)->first();
 
         if ($address) {
             // Update the existing address
             $address->first_name = $first_name;
-            $address->last_name = $last_name;
+            $address->last_name = $last_name ?? $first_name;
             $address->mobile = $mobile;
             $address->alternate_mobile = $alternate_mobile;
             $address->door_no = $door_no;
@@ -320,7 +320,7 @@ class AuthController extends Controller
             $address = new Addresses();
             $address->user_id = $user_id; 
             $address->first_name = $first_name;
-            $address->last_name = $last_name;
+            $address->last_name = $last_name ?? $first_name;
             $address->mobile = $mobile;
             $address->alternate_mobile = $alternate_mobile;
             $address->door_no = $door_no;
@@ -664,9 +664,11 @@ class AuthController extends Controller
 
                     $ordersDetails[] = [
                         'id' => $order->id,
+                        'user_id' => $order->user_id,
                         'user_name' => $user->name ?? '',
+                        'user_mobile_number' => $user->mobile ?? '',
                         'first_name' => $address->first_name, 
-                        'last_name' => $user->last_name ?? '',
+                        'last_name' => $address->last_name ?? '',
                         'product_name' => $product->name,
                         'unit' => $product->unit,
                         'measurement' => $product->measurement,

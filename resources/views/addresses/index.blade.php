@@ -69,11 +69,34 @@
                 </tbody>
             </table>
         </div>
-       
-        {{ $addresses->appends(request()->query())->links() }}
+        <div class="d-flex align-items-center">
+    <!-- Total addresses count -->
+    <p class="mb-0 mr-2">
+        Showing {{ $addresses->firstItem() }} to {{ $addresses->lastItem() }} of {{ $addresses->total() }} entries
+    </p>
 
-    </div>
+    <!-- Dropdown for selecting number of items per page -->
+    <form method="GET" action="{{ url()->current() }}" class="d-inline mb-0">
+        <div class="form-group mb-0">
+            <label for="perPage" class="sr-only">Show</label>
+            <select name="perPage" id="perPage" class="form-control form-control-sm" onchange="this.form.submit()" style="width: 60px;">
+                @foreach([5, 10, 20, 50, 100, 200] as $size)
+                    <option value="{{ $size }}" {{ $size == $perPage ? 'selected' : '' }}>
+                        {{ $size }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <!-- Preserve search and other filters -->
+        <input type="hidden" name="search" value="{{ request('search') }}">
+    </form>
 </div>
+
+<!-- Pagination links -->
+<div class="pagination mt-3">
+    {{ $addresses->appends(request()->query())->links() }}
+</div>
+
 
 @endsection
 
