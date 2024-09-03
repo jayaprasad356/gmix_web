@@ -580,6 +580,36 @@ class AuthController extends Controller
                 'total_price' => $total_price,
             ], 200);
         }
+
+        public function ship_webhook(Request $request)
+        {
+            // Get the raw POST data
+            $data = $request->getContent();
+
+            // Decode the JSON data
+            $dataArray = json_decode($data, true);
+
+            // Perform actions based on the webhook event
+            if ($dataArray && isset($dataArray['order_id'])) {
+                $order_id = $dataArray['order_id'];
+                $shipment_status = $dataArray['shipment_status'];
+
+                DB::table('orders')->where('id', $order_id)->update([
+                    'shipment_status' => $shipment_status,
+                ]);
+
+                // Log the order_id for debugging purposes
+                //Log::info('Order ID received:', ['order_id' => $order_id]);
+
+                // Handle other events or actions based on order_id if needed
+            } else {
+                // Log an error if the order_id is not present or data is invalid
+                Log::error('Invalid data received:', ['data' => $dataArray]);
+            }
+
+            // Respond with a 200 status code to acknowledge receipt of the webhook
+            return response('Webhook received', 200);
+        }
         
         public function orders_list(Request $request)
         {
