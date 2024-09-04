@@ -85,11 +85,11 @@ class OrdersController extends Controller
                     ]);
     
                     if ($response->successful()) {
-                        $responseData = json_decode($response, true);
-                        $tracking_id = $responseData['data']['id'];
+                        //$responseData = json_decode($response, true);
+                        // $tracking_id = $responseData['data']['id'];
                         // If the API request is successful, update the ship_rocket status
                         $order->ship_rocket = 1;
-                        $order->live_tracking = 'https://gmix.shiprocket.co/tracking/'.$tracking_id;
+                        //$order->live_tracking = 'https://gmix.shiprocket.co/tracking/'.$tracking_id;
                         $order->save();
                     } else {
                         // If the API request fails, return an error response
