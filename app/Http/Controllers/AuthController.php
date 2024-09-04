@@ -684,7 +684,7 @@ class AuthController extends Controller
                         'total_price' => (string) $order->total_price,
                         'status' => $statusLabel, // Use status label
                         'status_color' => $statusColor,
-                        'live_tracking' => $order->live_tracking . $order->awb,
+                        'live_tracking' => $order->live_tracking,
                         'ship_rocket' => $order->ship_rocket ?? '',
                         'est_delivery_date' => $order->est_delivery_date ?? '',
                         'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
