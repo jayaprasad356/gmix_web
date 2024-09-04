@@ -158,13 +158,7 @@
     <form method="GET" action="{{ url()->current() }}" class="d-inline mb-0">
         <div class="form-group mb-0">
             <label for="perPage" class="sr-only">Show</label>
-            <!-- <select name="perPage" id="perPage" class="form-control form-control-sm" onchange="this.form.submit()" style="width: 60px;">
-                @foreach([5, 10, 20, 50, 100, 200] as $size)
-                    <option value="{{ $size }}" {{ $size == $perPage ? 'selected' : '' }}>
-                        {{ $size }}
-                    </option>
-                @endforeach
-            </select> -->
+
         </div>
         <!-- Preserve search and status filters -->
         <input type="hidden" name="search" value="{{ request('search') }}">
