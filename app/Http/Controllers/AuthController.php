@@ -681,7 +681,7 @@ class AuthController extends Controller
                         'status_color' => $statusColor,
                         'live_tracking' => $order->live_tracking ?? '',
                         'ship_rocket' => $order->ship_rocket ?? '',
-                        'est_delivery_date' => Carbon::parse($order->est_delivery_date)->format('Y-m-d'),
+                        'est_delivery_date' => ''
                         'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
                         'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
                         'created_at' => Carbon::parse($order->created_at)->format('Y-m-d H:i:s'),
