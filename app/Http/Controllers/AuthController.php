@@ -601,12 +601,10 @@ class AuthController extends Controller
          
 
                 $shipment_status = $dataArray['shipment_status'];
-                $awb = $dataArray['awb'];
                 $etd = Carbon::parse($dataArray['etd'])->format('Y-m-d');
 
                 DB::table('orders')->where('id', $order_id)->update([
                     'shipment_status' => $shipment_status,
-                    'awb' => $awb,
                     'est_delivery_date' => $etd,
                 ]);
                 return response()->json([
