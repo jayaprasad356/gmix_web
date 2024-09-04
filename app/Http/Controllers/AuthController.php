@@ -568,7 +568,7 @@ class AuthController extends Controller
             $order->delivery_charges = $delivery_charges;
             $order->payment_mode = $payment_mode;
             $order->total_price = $total_price;
-            $order->live_tracking = ''; 
+            $order->live_tracking = 'https://gmix.shiprocket.co/tracking/'; 
             $order->ordered_date = Carbon::now();
             $order->save();
 
@@ -595,14 +595,19 @@ class AuthController extends Controller
             if ($dataArray && isset($dataArray['order_id'])) {
                 
                 $order_id = $dataArray['order_id'];
+
                 
                 $order_id = str_replace("Gmix-", "", $order_id);
          
 
                 $shipment_status = $dataArray['shipment_status'];
+                $awb = $dataArray['awb'];
+                $etd = Carbon::parse($dataArray['etd'])->format('Y-m-d');
 
                 DB::table('orders')->where('id', $order_id)->update([
                     'shipment_status' => $shipment_status,
+                    'awb' => $awb,
+                    'est_delivery_date' => $etd,
                 ]);
                 return response()->json([
                     'success' => true,
@@ -679,9 +684,9 @@ class AuthController extends Controller
                         'total_price' => (string) $order->total_price,
                         'status' => $statusLabel, // Use status label
                         'status_color' => $statusColor,
-                        'live_tracking' => $order->live_tracking ?? '',
+                        'live_tracking' => $order->live_tracking . $order->awb,
                         'ship_rocket' => $order->ship_rocket ?? '',
-                        'est_delivery_date' => ''
+                        'est_delivery_date' => $order->est_delivery_date ?? '',
                         'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
                         'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
                         'created_at' => Carbon::parse($order->created_at)->format('Y-m-d H:i:s'),
