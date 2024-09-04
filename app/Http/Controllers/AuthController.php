@@ -568,7 +568,7 @@ class AuthController extends Controller
             $order->delivery_charges = $delivery_charges;
             $order->payment_mode = $payment_mode;
             $order->total_price = $total_price;
-            $order->live_tracking = 'https://gmix.shiprocket.co/tracking/19041629047052'; 
+            $order->live_tracking = ''; 
             $order->ordered_date = Carbon::now();
             $order->save();
 
