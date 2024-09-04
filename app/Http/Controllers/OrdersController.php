@@ -85,11 +85,8 @@ class OrdersController extends Controller
                     ]);
     
                     if ($response->successful()) {
-                        //$responseData = json_decode($response, true);
-                        // $tracking_id = $responseData['data']['id'];
                         // If the API request is successful, update the ship_rocket status
                         $order->ship_rocket = 1;
-                        //$order->live_tracking = 'https://gmix.shiprocket.co/tracking/'.$tracking_id;
                         $order->save();
                     } else {
                         // If the API request fails, return an error response
@@ -107,58 +104,55 @@ class OrdersController extends Controller
     
     
     public function index(Request $request)
-    {
-        $query = Orders::query()->with('user', 'addresses', 'product'); // Eager load relationships
-    
-        // Search functionality
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->whereHas('user', function($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })->orWhereHas('addresses', function($q) use ($search) {
-                    $q->where('door_no', 'like', "%{$search}%")
-                      ->orWhere('street_name', 'like', "%{$search}%")
-                      ->orWhere('first_name', 'like', "%{$search}%")
-                      ->orWhere('last_name', 'like', "%{$search}%")
-                      ->orWhere('city', 'like', "%{$search}%")
-                      ->orWhere('pincode', 'like', "%{$search}%")
-                      ->orWhere('state', 'like', "%{$search}%")
-                      ->orWhere('landmark', 'like', "%{$search}%");
-                })->orWhereHas('product', function($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })->orWhere('price', 'like', "%{$search}%")
-                  ->orWhere('delivery_charges', 'like', "%{$search}%")
-                  ->orWhere('payment_mode', 'like', "%{$search}%");
-            });
-        }
-    
-        // Status filter functionality
-        if ($request->filled('status')) {
-            $status = $request->input('status');
-            $query->where('status', $status);
-        }
-    
-        // Default sorting: Show pending orders first, then others, sorted by latest date
-        $query->orderByRaw('CASE WHEN status = 0 THEN 0 ELSE 1 END, created_at DESC');
-    
-        // Get perPage value from the request, default to 10
-        $perPage = $request->input('perPage', 10);
-    
-        // Pagination
-        $orders = $query->paginate($perPage); // Automatically handles limit and offset
-    
-        // Check if the request is AJAX
-        if ($request->wantsJson()) {
-            return response()->json($orders);
-        }
-     $users = Users::all(); // Fetch all users for the filter dropdown
-       
-        $products = Products::all(); // Fetch all products for the filter dropdown
-    
-        return view('orders.index', compact('users', 'orders', 'products', 'perPage'));
+{
+    $query = Orders::query()->with('user', 'addresses', 'product'); // Eager load relationships
+
+    // Search functionality
+    if ($request->has('search')) {
+        $search = $request->input('search');
+        $query->where(function($q) use ($search) {
+            $q->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            })->orWhereHas('addresses', function($q) use ($search) {
+                $q->where('door_no', 'like', "%{$search}%")
+                  ->orWhere('street_name', 'like', "%{$search}%")
+                  ->orWhere('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('pincode', 'like', "%{$search}%")
+                  ->orWhere('state', 'like', "%{$search}%")
+                  ->orWhere('landmark', 'like', "%{$search}%");
+            })->orWhereHas('product', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            })->orWhere('price', 'like', "%{$search}%")
+              ->orWhere('delivery_charges', 'like', "%{$search}%")
+              ->orWhere('payment_mode', 'like', "%{$search}%");
+        });
     }
-    
+
+    // Status filter functionality
+    if ($request->filled('status')) {
+        $status = $request->input('status');
+        $query->where('status', $status);
+    }
+
+    // Default sorting: Show pending orders first, then others, sorted by latest date
+    $query->orderByRaw('CASE WHEN status = 0 THEN 0 ELSE 1 END, created_at DESC');
+
+    // Paginate the results
+    $orders = $query->paginate(10);
+
+    // Check if the request is AJAX
+    if ($request->wantsJson()) {
+        return response()->json($orders);
+    }
+
+    $users = Users::all(); // Fetch all users for the filter dropdown
+    $products = Products::all(); // Fetch all products for the filter dropdown
+
+    return view('orders.index', compact('users', 'orders', 'products'));
+}
+
     public function create()
 {
     $products = Products::all();

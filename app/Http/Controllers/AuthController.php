@@ -601,10 +601,12 @@ class AuthController extends Controller
          
 
                 $shipment_status = $dataArray['shipment_status'];
+                $awb = $dataArray['awb'];
                 $etd = Carbon::parse($dataArray['etd'])->format('Y-m-d');
 
                 DB::table('orders')->where('id', $order_id)->update([
                     'shipment_status' => $shipment_status,
+                    'awb' => $awb,
                     'est_delivery_date' => $etd,
                 ]);
                 return response()->json([
@@ -682,7 +684,7 @@ class AuthController extends Controller
                         'total_price' => (string) $order->total_price,
                         'status' => $statusLabel, // Use status label
                         'status_color' => $statusColor,
-                        'live_tracking' => $order->live_tracking,
+                        'live_tracking' => $order->live_tracking . $order->awb,
                         'ship_rocket' => $order->ship_rocket ?? '',
                         'est_delivery_date' => $order->est_delivery_date ?? '',
                         'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
