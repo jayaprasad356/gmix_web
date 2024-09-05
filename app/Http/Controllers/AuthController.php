@@ -22,6 +22,7 @@ use App\Models\Reward_products;
 use App\Models\VerificationTrans;
 use App\Models\Appsettings; 
 use App\Models\News; 
+use App\Models\Reviews;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Berkayk\OneSignal\OneSignalClient;
@@ -871,6 +872,46 @@ public function appsettings_list(Request $request)
         'success' => true,
         'message' => 'App Settings listed successfully.',
         'data' => $appsettingsData,
+    ], 200);
+}
+public function reviews_list(Request $request)
+{
+    $product_id = $request->input('product_id');
+
+    // Validate that the product_id is provided
+    if (empty($product_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'product_id is empty.',
+        ], 400);
+    }
+
+    // Retrieve reviews for the given product_id
+    $reviews = Reviews::where('product_id', $product_id)->get();
+
+    if ($reviews->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No reviews found for the product.',
+        ], 404);
+    }
+
+    $reviewsData = [];
+    foreach ($reviews as $item) {
+        $reviewsData[] = [
+            'id' => $item->id,
+            'product_id' => $item->product_id,
+            'description' => $item->description,
+            'image1' => $item->image1,
+            'image2' => $item->image2,
+            'image3' => $item->image3,
+        ];
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Reviews listed successfully.',
+        'data' => $reviewsData,
     ], 200);
 }
 }
