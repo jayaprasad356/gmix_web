@@ -349,6 +349,138 @@ class AuthController extends Controller
             'data' => $addressDetails,
         ], 200);
     }
+
+    public function update_address(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $address_id = $request->input('address_id');
+        $first_name = $request->input('first_name');
+        $last_name = $request->input('last_name');
+        $mobile = $request->input('mobile');
+        $alternate_mobile = $request->input('alternate_mobile');
+        $door_no = $request->input('door_no');
+        $street_name = $request->input('street_name');
+        $city = $request->input('city');
+        $pincode = $request->input('pincode');
+        $state = $request->input('state');
+        $landmark = $request->input('landmark');
+
+        // Validate input fields
+        if (empty($first_name)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'First name is empty.',
+            ], 400);
+        }
+
+        if (empty($mobile)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'mobile is empty.',
+            ], 400);
+        }
+
+        if (empty($alternate_mobile)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Alternate Mobile is empty.',
+            ], 400);
+        }
+
+        if ($mobile === $alternate_mobile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mobile and Alternate Mobile cannot be the same.',
+            ], 400);
+        }
+
+        if (empty($door_no)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'door_no is empty.',
+            ], 400);
+        }
+
+        if (empty($street_name)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'street_name is empty.',
+            ], 400);
+        }
+
+        if (empty($city)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'city is empty.',
+            ], 400);
+        }
+
+        if (empty($pincode)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'pincode is empty.',
+            ], 400);
+        }
+
+        if (empty($state)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'state is empty.',
+            ], 400);
+        }
+
+        // Check if address exists
+        $address = Addresses::where('user_id', $user_id)->where('id', $address_id)->first();
+        if (!$address) {
+            return response()->json([
+                'success' => false,
+                'message' => 'address not found.',
+            ], 404);
+        }
+
+        // Update the address
+        $address->first_name = $first_name;
+        $address->last_name = $last_name ?? $first_name;
+        $address->mobile = $mobile;
+        $address->alternate_mobile = $alternate_mobile;
+        $address->door_no = $door_no;
+        $address->street_name = $street_name;
+        $address->city = $city;
+        $address->pincode = $pincode;
+        $address->state = $state;
+        $address->landmark = $landmark;
+
+        // Save the updated address
+        if (!$address->save()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update address.',
+            ], 500);
+        }
+
+        $addressDetails = [
+            'id' => $address->id,
+            'user_id' => $address->user_id,
+            'first_name' => $address->first_name,
+            'last_name' => $address->last_name ?? '',
+            'mobile' => $address->mobile,
+            'alternate_mobile' => $address->alternate_mobile,
+            'door_no' => $address->door_no,
+            'street_name' => $address->street_name,
+            'city' => $address->city,
+            'pincode' => $address->pincode,
+            'state' => $address->state,
+            'landmark' => $address->landmark ?? '',
+            'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
+            'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address updated successfully.',
+            'data' => $addressDetails,
+        ], 200);
+    }
      public function address_list(Request $request)
     {
         $address_id = $request->input('address_id');
