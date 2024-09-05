@@ -304,36 +304,19 @@ class AuthController extends Controller
             ], 404);
         }
 
-        // Check if an address already exists for this user_id
-        $address = Addresses::where('user_id', $user_id)->first();
-
-        if ($address) {
-            // Update the existing address
-            $address->first_name = $first_name;
-            $address->last_name = $last_name ?? $first_name;
-            $address->mobile = $mobile;
-            $address->alternate_mobile = $alternate_mobile;
-            $address->door_no = $door_no;
-            $address->street_name = $street_name;
-            $address->city = $city;
-            $address->pincode = $pincode;
-            $address->state = $state;
-            $address->landmark = $landmark;
-        } else {
-            // Create a new Address instance
-            $address = new Addresses();
-            $address->user_id = $user_id; 
-            $address->first_name = $first_name;
-            $address->last_name = $last_name ?? $first_name;
-            $address->mobile = $mobile;
-            $address->alternate_mobile = $alternate_mobile;
-            $address->door_no = $door_no;
-            $address->street_name = $street_name;
-            $address->city = $city;
-            $address->pincode = $pincode;
-            $address->state = $state;
-            $address->landmark = $landmark;
-        }
+        // Create a new Address instance
+        $address = new Addresses();
+        $address->user_id = $user_id; 
+        $address->first_name = $first_name;
+        $address->last_name = $last_name ?? $first_name;
+        $address->mobile = $mobile;
+        $address->alternate_mobile = $alternate_mobile;
+        $address->door_no = $door_no;
+        $address->street_name = $street_name;
+        $address->city = $city;
+        $address->pincode = $pincode;
+        $address->state = $state;
+        $address->landmark = $landmark;
 
         // Save the address
         if (!$address->save()) {
@@ -360,19 +343,11 @@ class AuthController extends Controller
             'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
         ];
 
-        if ($address->wasRecentlyCreated) {
-            return response()->json([
+        return response()->json([
             'success' => true,
             'message' => 'Address added successfully.',
             'data' => $addressDetails,
-            ], 200);
-        } else {
-            return response()->json([
-            'success' => true,
-            'message' => 'Address updated successfully.',
-            'data' => $addressDetails,
-            ], 200);
-        }
+        ], 200);
     }
      public function address_list(Request $request)
     {
