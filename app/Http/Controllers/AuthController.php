@@ -735,7 +735,7 @@ class AuthController extends Controller
                 $addressesDetails[] = [
                     'id' => $address->id,
                     'user_id' => $address->user_id,
-                    'user_name' => $user->name,
+                    'user_name' => $user->name ?? '',
                     'first_name' => $address->first_name,
                     'last_name' => $address->last_name ?? '',
                     'mobile' => $address->mobile,
