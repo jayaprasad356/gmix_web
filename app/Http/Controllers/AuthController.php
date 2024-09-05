@@ -709,6 +709,13 @@ class AuthController extends Controller
     {
         $user_id = $request->input('user_id');
 
+        if (empty($user_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'user_id is empty.',
+            ], 400);
+        }
+
         // Retrieve the orders for the given user
         $addresses = Addresses::where('user_id', $user_id)->get();
 
