@@ -12,5 +12,6 @@ class Reviews extends Model
         'image1',
         'image2',
         'image3',
+        'ratings',
     ];
 }   
