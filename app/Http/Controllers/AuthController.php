@@ -481,6 +481,47 @@ class AuthController extends Controller
             'data' => $addressDetails,
         ], 200);
     }
+    public function delete_address(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $address_id = $request->input('address_id');
+
+        if (empty($user_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'user_id is empty.',
+            ], 400);
+        }
+
+        if (empty($address_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'address_id is empty.',
+            ], 400);
+        }
+
+        // Check if address exists
+        $address = Addresses::where('user_id', $user_id)->where('id', $address_id)->first();
+        if (!$address) {
+            return response()->json([
+                'success' => false,
+                'message' => 'address not found.',
+            ], 404);
+        }
+
+        // Delete the address
+        if (!$address->delete()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete address.',
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address deleted successfully.',
+        ], 200);
+    }
      public function address_list(Request $request)
     {
         $address_id = $request->input('address_id');
