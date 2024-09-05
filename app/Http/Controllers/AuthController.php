@@ -644,7 +644,9 @@ class AuthController extends Controller
             }
         
             // Retrieve the orders for the given user
-            $orders = Orders::where('user_id', $user_id)->get();
+            $orders = Orders::where('user_id', $user_id)
+                ->latest('created_at')
+                ->get();
         
             if ($orders->isEmpty()) {
                 return response()->json([

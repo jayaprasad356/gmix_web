@@ -9,9 +9,62 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
-@endsection
+<style>
+    /* Ensure the table container is scrollable horizontally */
+.table-scroll-container {
+    position: relative;
+    overflow-x: hidden; /* Hide the native bottom scrollbar */
+}
+
+/* Styling for the top scrollbar */
+.top-scroll {
+    height: 20px; /* Height for the scrollbar */
+    overflow-x: auto;
+    margin-bottom: 10px;
+}
+
+/* Styling for the dummy element to match the table width */
+.dummy {
+    height: 1px;
+}
+
+/* Ensure the table remains responsive and scrollable */
+.table-responsive {
+    overflow-x: auto;
+    position: relative;
+}
+
+/* Hide the bottom scrollbar for desktop screens */
+.table-responsive::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar in webkit browsers */
+}
+.table-responsive {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Mobile behavior: Show bottom scrollbar and hide top scrollbar */
+@media (max-width: 768px) {
+    .top-scroll {
+        display: none; /* Hide top scrollbar on mobile */
+    }
+
+    /* Show bottom scrollbar on mobile */
+    .table-responsive {
+        overflow-x: scroll;
+    }
+
+    /* Allow text wrapping on smaller screens */
+    .table th, .table td {
+        white-space: normal;
+    }
+}
+
+</style>
+    @endsection
 
 @section('content')
+
 <div class="card">
     <div class="card-body">
         <!-- Action Buttons and Search -->
@@ -76,16 +129,22 @@
             </form>
             </div>
         </div>
+        <div class="table-scroll-container">
+    <!-- Ghost Scrollbar on Top -->
+    <div class="top-scroll" style="overflow-x: auto;">
+        <div class="dummy" style="width: max-content;"></div>
+    </div>
 
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
+        <div class="table-responsive" style="overflow-x: auto;">
+             <table class="table table-bordered table-hover">
+               <thead class="thead-dark">
                     <tr>
                     <th><input type="checkbox" id="checkAll"></th>
                     <th>Actions</th>
                         <th>ID <i class="fas fa-sort"></i></th>
                         <th>Status <i class="fas fa-sort"></i></th>
                         <th>Ship Rocket <i class="fas fa-sort"></i></th>
+                        <th>Ordered Date <i class="fas fa-sort"></i></th>
                         <th>Door No <i class="fas fa-sort"></i></th>
                         <th>Street Name <i class="fas fa-sort"></i></th>
                         <th>City <i class="fas fa-sort"></i></th>
@@ -129,6 +188,7 @@
                                 <span class="badge badge-success">Confirmed</span>
                             @endif
                         </td>
+                        <td>{{ $order->ordered_date }}</td> 
                         <td>{{ optional($order->addresses)->door_no }}</td>
                         <td>{{ optional($order->addresses)->street_name }}</td>
                         <td>{{ optional($order->addresses)->city }}</td>
@@ -169,7 +229,7 @@
 <div class="pagination mt-3">
     {{ $orders->appends(request()->query())->links() }}
 </div>
-    </div>
+    
 
 
 
@@ -328,5 +388,28 @@
             });
         }
     });
+</script>
+<script>
+$(document).ready(function () {
+    // Sync scrolling between top scrollbar and table's scroll bar
+    $('.top-scroll').on('scroll', function () {
+        $('.table-responsive').scrollLeft($(this).scrollLeft());
+    });
+
+    $('.table-responsive').on('scroll', function () {
+        $('.top-scroll').scrollLeft($(this).scrollLeft());
+    });
+
+    // Set the width of the dummy div to match the actual table width dynamically
+    const tableWidth = $('.table-responsive table').outerWidth();
+    $('.top-scroll .dummy').width(tableWidth);
+
+    // Adjust table width when the window is resized (for responsiveness)
+    $(window).on('resize', function () {
+        const updatedTableWidth = $('.table-responsive table').outerWidth();
+        $('.top-scroll .dummy').width(updatedTableWidth);
+    });
+});
+
 </script>
 @endsection
