@@ -21,6 +21,15 @@
                 <label for="customer_support_number">Customer Support Number</label>
                 <input type="number" class="form-control" id="customer_support_number" name="customer_support_number" value="{{ $news->customer_support_number }}" required style="width: 100%; max-width: 250px;">
             </div>
+            <div class="form-group">
+                <label for="privacy_policy">Privacy Policy</label>
+                <textarea name="privacy_policy" id="privacy_policy" class="form-control ckeditor-content" rows="10" required>{!! $news->privacy_policy !!}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="terms_conditions">Terms & Conditions</label>
+                <textarea name="terms_conditions" id="terms_conditions" class="form-control ckeditor-content" rows="10" required>{!! $news->terms_conditions !!}</textarea>
+            </div>
             <div class="box-footer">
                 <button type="submit" class="btn btn-primary">Update</button>
             </div>

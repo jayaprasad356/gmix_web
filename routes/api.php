@@ -24,6 +24,8 @@ Route::post('pincode', [AuthController::class, 'pincode']);
 Route::post('appsettings_list', [AuthController::class, 'appsettings_list']);
 Route::post('ship_webhook', [AuthController::class, 'ship_webhook']);
 Route::post('reviews_list', [AuthController::class, 'reviews_list']);
+Route::post('privacy_policy', [AuthController::class, 'privacy_policy']);
+Route::post('terms_conditions', [AuthController::class, 'terms_conditions']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
