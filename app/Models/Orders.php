@@ -14,6 +14,7 @@ class Orders extends Model
         'delivery_charges',
         'payment_mode',
         'total_price',
+        'quantity',
     ];
 
     public function user()

@@ -625,6 +625,7 @@ class AuthController extends Controller
             $product_id = $request->input('product_id');
             $address_id = $request->input('address_id');
             $payment_mode = $request->input('payment_mode');
+            $quantity = $request->input('quantity');
         
             if (empty($user_id)) {
                 return response()->json([
@@ -651,6 +652,12 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'payment_mode is empty.',
+                ], 400);
+            }
+              if (empty($quantity)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'quantity is empty.',
                 ], 400);
             }
         
@@ -720,6 +727,7 @@ class AuthController extends Controller
             $order->delivery_charges = $delivery_charges;
             $order->payment_mode = $payment_mode;
             $order->total_price = $total_price;
+            $order->quantity = $quantity;
             $order->live_tracking = 'https://gmix.shiprocket.co/tracking/'; 
             $order->ordered_date = Carbon::now();
             $order->save();
@@ -831,11 +839,11 @@ class AuthController extends Controller
                         'product_name' => $product->name,
                         'unit' => $product->unit,
                         'measurement' => $product->measurement,
-                        'quantity' => $product->quantity,
                         'delivery_charges' => $order->delivery_charges,
                         'payment_mode' => $order->payment_mode,
                         'price' => (string) $order->price,
                         'total_price' => (string) $order->total_price,
+                        'quantity' =>(string)  $order->quantity ?? '',
                         'status' => $statusLabel, // Use status label
                         'status_color' => $statusColor,
                         'live_tracking' => $order->live_tracking . $order->awb,

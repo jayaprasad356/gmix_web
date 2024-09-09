@@ -157,6 +157,7 @@
                         <th>Price <i class="fas fa-sort"></i></th>
                         <th>Delivery Charges <i class="fas fa-sort"></i></th>
                         <th>Total Price <i class="fas fa-sort"></i></th>
+                        <th>Quantity <i class="fas fa-sort"></i></th>
                         <th>Payment Mode <i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
@@ -201,6 +202,7 @@
                         <td>{{ $order->price }}</td>
                         <td>{{ $order->delivery_charges }}</td>
                         <td>{{ $order->total_price }}</td>
+                        <td>{{ $order->quantity }}</td>
                         <td>{{ $order->payment_mode }}</td>   
                     </tr>
                     @endforeach
