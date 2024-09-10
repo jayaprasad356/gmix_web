@@ -94,6 +94,16 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" placeholder="Description">{{ old('description', $product->description) }}</textarea>
+                    @error('description')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror 
+                </div>
+
                 <button class="btn btn-success btn-block btn-lg" type="submit">Save Changes</button>
             </form>
         </div>

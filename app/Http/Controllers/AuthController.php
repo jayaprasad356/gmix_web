@@ -187,18 +187,16 @@ class AuthController extends Controller
         foreach ($products as $product) {
             $imageUrl = $product->image ? asset('storage/app/public/products/' . $product->image) : '';
             $ratings = number_format(Reviews::where('product_id', $product->id)->avg('ratings'), 2);
-            $reviews = Reviews::where('product_id', $product->id)->pluck('description')->toArray();
-            $description = implode('<br>', $reviews);
             $productsDetails[] = [
                 'id' => $product->id,
                 'name' => $product->name,
                 'unit' => $product->unit,
                 'measurement' => $product->measurement,
                 'quantity' => $product->quantity,
+                'description' => $product->description,
                 'price' => (string) $product->price,
                 'image' => $imageUrl,
                 'ratings' => $ratings ?? '',
-                'description' => $description ?? '',
                 'updated_at' => Carbon::parse($product->updated_at)->format('Y-m-d H:i:s'),
                 'created_at' => Carbon::parse($product->created_at)->format('Y-m-d H:i:s'),
             ];

@@ -70,6 +70,7 @@ class ProductsController extends Controller
             'measurement' => $request->measurement,
             'quantity' => $request->quantity,
             'price' => $request->price,
+            'description' => $request->description,
             'image' => $imageName, 
         ]);
 
@@ -114,6 +115,7 @@ class ProductsController extends Controller
         $product->measurement = $request->measurement;
         $product->quantity = $request->quantity;
         $product->price = $request->price;
+        $product->description = $request->description;
 
         if ($request->hasFile('image')) {
             $newImagePath = $request->file('image')->store('products', 'public');
