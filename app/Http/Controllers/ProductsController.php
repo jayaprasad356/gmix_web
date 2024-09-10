@@ -128,14 +128,14 @@ class ProductsController extends Controller
     }
     
 
-    public function destroy(Products $product)
+    public function destroy(Products $products)
     {
 
-        if (Storage::disk('public')->exists('products/' . $product->image)) {
-            Storage::disk('public')->delete('products/' . $product->image);
+        if (Storage::disk('public')->exists('products/' . $products->image)) {
+            Storage::disk('public')->delete('products/' . $products->image);
         }
 
-        $product->delete();
+        $products->delete();
 
         return response()->json([
             'success' => true
