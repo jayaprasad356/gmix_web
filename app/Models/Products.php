@@ -13,5 +13,11 @@ class Products extends Model
         'price',
         'quantity',
         'image',
+        'description',
     ];
+    public function order()
+    {
+        return $this->belongsTo(Orders::class, 'order_id');
+    }
 }
+

@@ -6,7 +6,6 @@ use App\Models\Users;
 use App\Models\Orders;
 use App\Models\Products;
 use App\Models\Addresses;
-use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -22,6 +21,7 @@ class OrdersController extends Controller
     {
         $orderIds = $request->input('order_ids', []);
         $newStatus = $request->input('status'); // Get the status from the request
+        
     
         foreach ($orderIds as $orderId) {
             $order = Orders::find($orderId);

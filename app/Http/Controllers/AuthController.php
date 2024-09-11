@@ -626,7 +626,7 @@ class AuthController extends Controller
             $product_id = $request->input('product_id');
             $address_id = $request->input('address_id');
             $payment_mode = $request->input('payment_mode');
-           // $quantity = $request->input('quantity');
+            $quantity = $request->input('quantity');
         
             if (empty($user_id)) {
                 return response()->json([
@@ -723,6 +723,7 @@ class AuthController extends Controller
             $order->delivery_charges = $delivery_charges;
             $order->payment_mode = $payment_mode;
             $order->total_price = $total_price;
+            $order->quantity = $quantity;
             $order->live_tracking = 'https://gmix.shiprocket.co/tracking/'; 
             $order->ordered_date = Carbon::now();
             $order->save();
@@ -840,6 +841,7 @@ class AuthController extends Controller
                         'total_price' => (string) $order->total_price,
                         'status' => $statusLabel, // Use status label
                         'status_color' => $statusColor,
+                        'quantity' => $order->quantity ?? '',
                         'live_tracking' => $order->live_tracking . $order->awb,
                         'ship_rocket' => $order->ship_rocket ?? '',
                         'est_delivery_date' => $order->est_delivery_date ?? '',

@@ -49,8 +49,8 @@
                         </td>
                         <td>{{$review->id}}</td>
                         <td>{{ optional($review->products)->name }}</td>
-                        <td>{{$review->description}}</td>
                         <td>{{$review->ratings}}</td>
+                        <td>{{$review->description}}</td>
                         <td>
                             <a href="{{ asset('storage/app/public/reviews/' . $review->image1) }}" data-lightbox="image-{{ $review->id }}">
                                 <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/reviews/' . $review->image1) }}" alt="Image" style="max-width: 100px; max-height: 100px;">
