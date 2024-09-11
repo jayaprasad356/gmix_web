@@ -17,6 +17,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AppsettingsController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RewardproductsController;
 use App\Http\Controllers\FriendsController;
@@ -120,6 +121,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::put('appsettings/{id}/update', [AppsettingsController::class, 'update'])->name('appsettings.update');
         
 
+        Route::get('/reviews', [ReviewsController::class, 'index'])->name('reviews.index');
+        Route::get('/reviews/reviews', [ReviewsController::class, 'create'])->name('reviews.create');
+        Route::get('/reviews/{review}/edit', [ReviewsController::class, 'edit'])->name('reviews.edit');
+        Route::delete('/reviews/{reviews}', [ReviewsController::class, 'destroy'])->name('reviews.destroy');
+        Route::put('/reviews/{review}', [ReviewsController::class, 'update'])->name('reviews.update');
+        Route::post('/reviews', [ReviewsController::class, 'store'])->name('reviews.store');
+    
 
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {

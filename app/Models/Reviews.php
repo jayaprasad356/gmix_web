@@ -14,4 +14,8 @@ class Reviews extends Model
         'image3',
         'ratings',
     ];
+    public function products()
+    {
+        return $this->belongsTo(Products::class, 'product_id');
+    }
 }   

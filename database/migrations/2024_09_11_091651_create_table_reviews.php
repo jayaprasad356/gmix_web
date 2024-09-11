@@ -13,11 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('reward_points', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->Integer('points');
-            $table->string('description');
+            $table->Integer('product_id');
+            $table->string('image1');
+            $table->string('image2');
+            $table->string('image3');
+            $table->text('description');
+            $table->integer('ratings');
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reward_points');
+        Schema::dropIfExists('table_reviews');
     }
 };
