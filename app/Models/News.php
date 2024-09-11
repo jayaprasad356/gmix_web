@@ -11,5 +11,6 @@ class News extends Model
         'customer_support_number',
         'privacy_policy',
         'terms_conditions',
+        'refund_policy',
     ];
 }   
