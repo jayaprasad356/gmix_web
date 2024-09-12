@@ -1060,13 +1060,16 @@ public function reviews_list(Request $request)
 
     $reviewsData = [];
     foreach ($reviews as $item) {
+        $imageUrl1 = $item->image1 ? asset('storage/app/public/reviews/' . $item->image1) : '';
+        $imageUrl2 = $item->image2 ? asset('storage/app/public/reviews/' . $item->image2) : '';
+        $imageUrl3 = $item->image3 ? asset('storage/app/public/reviews/' . $item->image3) : '';
         $reviewsData[] = [
             'id' => $item->id,
             'product_id' => $item->product_id,
             'description' => $item->description,
-            'image1' => $item->image1,
-            'image2' => $item->image2,
-            'image3' => $item->image3,
+            'image1' => $imageUrl1,
+            'image2' => $imageUrl2,
+            'image3' => $imageUrl3,
             'ratings' => $item->ratings,
         ];
     }
