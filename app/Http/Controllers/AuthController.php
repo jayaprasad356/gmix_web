@@ -261,6 +261,19 @@ class AuthController extends Controller
             ], 400);
         }
 
+        if (empty($mobile) || strlen($mobile) !== 10) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mobile number should be 10 digits.',
+            ], 400);
+        }
+        
+        if (empty($alternate_mobile) || strlen($alternate_mobile) !== 10) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Alternate Mobile number should be 10 digits.',
+            ], 400);
+        }
         if (empty($door_no)) {
             return response()->json([
                 'success' => false,
@@ -385,6 +398,19 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Alternate Mobile is empty.',
+            ], 400);
+        }
+        if (empty($mobile) || strlen($mobile) !== 10) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mobile number should be 10 digits.',
+            ], 400);
+        }
+
+        if (empty($alternate_mobile) || strlen($alternate_mobile) !== 10) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Alternate Mobile number should be 10 digits.',
             ], 400);
         }
 
@@ -548,7 +574,8 @@ class AuthController extends Controller
         $addressDetails = [[
             'id' => $address->id,
             'user_id' => $address->user_id,
-            'name' => $address->name,
+            'first_name' => $address->first_name,
+            'last_name' => $address->last_name ?? '',
             'mobile' => $address->mobile,
             'alternate_mobile' => $address->alternate_mobile,
             'door_no' => $address->door_no,
@@ -556,7 +583,61 @@ class AuthController extends Controller
             'city' => $address->city,
             'pincode' => $address->pincode,
             'state' => $address->state,
-             'landmark' => $address->landmark ?? '',
+            'landmark' => $address->landmark ?? '',
+            'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
+            'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
+        ]];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address details retrieved successfully.',
+            'data' => $addressDetails,
+        ], 200);
+    }
+
+    public function address_details(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $address_id = $request->input('address_id');
+
+        if (empty($user_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'user_id is empty.',
+            ], 400);
+        }
+
+
+        if (empty($address_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'address_id is empty.',
+            ], 400);
+        }
+
+
+           // Check if address exists
+           $address = Addresses::where('user_id', $user_id)->where('id', $address_id)->first();
+           if (!$address) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'address not found.',
+               ], 404);
+           }
+
+        $addressDetails = [[
+            'id' => $address->id,
+            'user_id' => $address->user_id,
+            'first_name' => $address->first_name,
+            'last_name' => $address->last_name ?? '',
+            'mobile' => $address->mobile,
+            'alternate_mobile' => $address->alternate_mobile,
+            'door_no' => $address->door_no,
+            'street_name' => $address->street_name,
+            'city' => $address->city,
+            'pincode' => $address->pincode,
+            'state' => $address->state,
+            'landmark' => $address->landmark ?? '',
             'updated_at' => Carbon::parse($address->updated_at)->format('Y-m-d H:i:s'),
             'created_at' => Carbon::parse($address->created_at)->format('Y-m-d H:i:s'),
         ]];

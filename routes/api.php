@@ -27,6 +27,7 @@ Route::post('reviews_list', [AuthController::class, 'reviews_list']);
 Route::post('privacy_policy', [AuthController::class, 'privacy_policy']);
 Route::post('terms_conditions', [AuthController::class, 'terms_conditions']);
 Route::post('refund_policy', [AuthController::class, 'refund_policy']);
+Route::post('address_details', [AuthController::class, 'address_details']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
