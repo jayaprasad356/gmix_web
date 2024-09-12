@@ -54,7 +54,7 @@
                         <td>{{$product->measurement}}</td>
                         <td>{{$product->quantity}}</td>
                         <td>{{$product->price}}</td>
-                        <td>{{$product->description}}</td>
+                        <td>{!! $product->description !!}</td> <!-- Safely render HTML content -->
                         <td>
                             <a href="{{ asset('storage/app/public/products/' . $product->image) }}" data-lightbox="image-{{ $product->id }}">
                                 <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/products/' . $product->image) }}" alt="Image" style="max-width: 100px; max-height: 100px;">

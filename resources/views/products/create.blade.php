@@ -87,7 +87,7 @@
               
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" placeholder="Description">{{ old('description') }}</textarea>
+                    <textarea name="description" class="form-control ckeditor-content" rows="10" id="description" placeholder="Description">{{ old('description') }}</textarea>
                     @error('description')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -102,6 +102,7 @@
 @endsection
 
 @section('js')
+<script src="//cdn.ckeditor.com/4.21.0/full-all/ckeditor.js"></script>
     <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     <script>
         $(document).ready(function () {
@@ -114,4 +115,13 @@
             label.text(fileName);
         }
     </script>
+    <script>
+    // Replace CKEditor for privacy_policy and terms_conditions textareas
+    document.addEventListener('DOMContentLoaded', function () {
+        CKEDITOR.replace('description', {
+            extraPlugins: 'colorbutton'
+        });
+     
+    });
+</script>
 @endsection
