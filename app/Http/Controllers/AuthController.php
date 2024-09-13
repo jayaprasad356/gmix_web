@@ -830,38 +830,82 @@ class AuthController extends Controller
 
             // Perform actions based on the webhook event
             if ($dataArray && isset($dataArray['order_id'])) {
-                
-                $order_id = $dataArray['order_id'];
+            
+            $order_id = $dataArray['order_id'];
 
-                
-                $order_id = str_replace("Gmix-", "", $order_id);
+            
+            $order_id = str_replace("Gmix-", "", $order_id);
          
 
-                $shipment_status = $dataArray['shipment_status'];
-                $awb = $dataArray['awb'];
-                $etd = Carbon::parse($dataArray['etd'])->format('Y-m-d');
+            $shipment_status = $dataArray['shipment_status'];
+            $awb = $dataArray['awb'];
+            $etd = Carbon::parse($dataArray['etd'])->format('Y-m-d');
 
-                DB::table('orders')->where('id', $order_id)->update([
-                    'shipment_status' => $shipment_status,
-                    'awb' => $awb,
-                    'est_delivery_date' => $etd,
-                ]);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'success',
-                ], 200);
+           if ($shipment_status == 'IN TRANSIT'){
+               $status = 3;
+            }
 
-                // Log the order_id for debugging purposes
-                //Log::info('Order ID received:', ['order_id' => $order_id]);
+            if ($shipment_status == 'DELIVERED'){
+            $status = 4;
 
-                // Handle other events or actions based on order_id if needed
+            // Update user points
+            $user_id = $dataArray['user_id'];
+            $points = 0;
+
+            // Get the product_id for the related order_id
+            $order = Orders::find($order_id);
+            $product_id = $order->product_id;
+
+            // Get the measurement for the product
+            $product = Products::find($product_id);
+            $measurement = $product->measurement;
+
+            // Calculate the points based on measurement
+            if ($measurement == 80) {
+                $points = 100;
+            } elseif ($measurement == 200) {
+                $points = 230;
+            } elseif ($measurement == 400) {
+                $points = 500;
+            }
+
+            // Update user's total points
+            $user = Users::find($user_id);
+            $user->total_points += $points;
+            $user->points += $points;
+            $user->save();
+
+            // Insert transaction record
+            $transaction = new Transaction();
+            $transaction->user_id = $user_id;
+            $transaction->points = $points;
+            $transaction->save();
+             }
+
+
+
+            DB::table('orders')->where('id', $order_id)->update([
+                'shipment_status' => $shipment_status,
+                'awb' => $awb,
+                'est_delivery_date' => $etd,
+                'status' => $status
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'success',
+            ], 200);
+
+            // Log the order_id for debugging purposes
+            //Log::info('Order ID received:', ['order_id' => $order_id]);
+
+            // Handle other events or actions based on order_id if needed
             } else {
-                // Log an error if the order_id is not present or data is invalid
-                Log::error('Invalid data received:', ['data' => $dataArray]);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'success',
-                ], 200);
+            // Log an error if the order_id is not present or data is invalid
+            Log::error('Invalid data received:', ['data' => $dataArray]);
+            return response()->json([
+            'success' => true,
+            'message' => 'success',
+            ], 200);
             }
 
             // Respond with a 200 status code to acknowledge receipt of the webhook

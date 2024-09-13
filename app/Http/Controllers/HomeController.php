@@ -38,8 +38,8 @@ class HomeController extends Controller
         ->count();
 
         $today_orders = Orders::whereDate('created_at', $today)
-        ->count();
-  
+                      ->where('status', 0)  // Add condition for status 0
+                      ->count();
         
         // Optional: Count of pending profiles and cover images
         // $pending_profile_count = Users::where('profile_verified', 0)->whereNotNull('profile')->count();
