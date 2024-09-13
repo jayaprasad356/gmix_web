@@ -137,7 +137,9 @@ class OrdersController extends Controller
     }
 
     // Default sorting: Show pending orders first, then others, sorted by latest date
-    $query->orderByRaw('CASE WHEN status = 0 THEN 0 ELSE 1 END, created_at DESC');
+    $query->orderByRaw('CASE WHEN status = 0 THEN 0 ELSE 1 END');
+
+    $query->orderBy('created_at', 'desc');
 
     // Paginate the results
     $orders = $query->paginate(10);
