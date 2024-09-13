@@ -881,7 +881,9 @@ class AuthController extends Controller
             $transaction->points = $points;
             $transaction->save();
              }
-
+             if ($shipment_status == 'CANCELLED'){
+                $status = 2;
+             }
 
 
             DB::table('orders')->where('id', $order_id)->update([
