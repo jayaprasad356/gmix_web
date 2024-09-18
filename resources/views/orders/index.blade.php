@@ -123,6 +123,7 @@
                         <option value="2" {{ request()->input('status') === '2' ? 'selected' : '' }}>Cancelled</option>
                         <option value="3" {{ request()->input('status') === '3' ? 'selected' : '' }}>Shipped</option>
                         <option value="4" {{ request()->input('status') === '4' ? 'selected' : '' }}>Delivered</option>
+                        <option value="5" {{ request()->input('status') === '5' ? 'selected' : '' }}>COD Not-Verified</option>
                     </select>
                 </div>
                 </div>
@@ -160,6 +161,10 @@
                         <th>Total Price <i class="fas fa-sort"></i></th>
                         <th>Quantity <i class="fas fa-sort"></i></th>
                         <th>Payment Mode <i class="fas fa-sort"></i></th>
+                        <th>Chat Conversation <i class="fas fa-sort"></i></th>
+                        <th>Payment Image<i class="fas fa-sort"></i></th>
+                        <th>Attempt 1 <i class="fas fa-sort"></i></th>
+                        <th>Attempt 2<i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -181,6 +186,8 @@
                                 <span class="badge badge-info">Shipped</span>
                             @elseif ($order->status === 4)
                                 <span class="badge badge-secondary">Delivered</span>
+                            @elseif ($order->status === 5)
+                                <span class="badge badge-warning">COD Not-Verified</span>
                             @endif
                         </td>
                         <td>
@@ -205,7 +212,19 @@
                         <td>{{ $order->delivery_charges }}</td>
                         <td>{{ $order->total_price }}</td>
                         <td>{{ $order->quantity }}</td>
-                        <td>{{ $order->payment_mode }}</td>   
+                        <td>{{ $order->payment_mode }}</td>  
+                        <td>
+                            <a href="https://gmixstaff.graymatterworks.com//{{ $order->chat_conversation }}" data-lightbox="image-{{ $order->id }}">
+                                <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->chat_conversation }}" alt="Image" style="max-width: 100px; max-height: 100px;">
+                            </a>
+                         </td>
+                         <td>
+                            <a href="https://gmixstaff.graymatterworks.com//{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
+                                <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" alt="Image" style="max-width: 100px; max-height: 100px;">
+                            </a>
+                         </td>
+                         <td>{{ $order->attempt1 }}</td>
+                         <td>{{ $order->attempt2 }}</td>  
                     </tr>
                     @endforeach
                 </tbody>
