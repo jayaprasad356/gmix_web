@@ -1415,6 +1415,15 @@ public function update_reason(Request $request)
         ], 400);
     }
 
+    // Check if the user already has a reason
+    $existingReason = Reasons::where('user_id', $user_id)->first();
+    if ($existingReason) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User already has a reason.',
+        ], 400);
+    }
+
     // Insert into reasons table
     $reason = new Reasons();
     $reason->user_id = $user_id;
