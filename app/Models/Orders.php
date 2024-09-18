@@ -15,6 +15,8 @@ class Orders extends Model
         'payment_mode',
         'total_price',
         'quantity',
+        'ratings',
+        'reviews',
     ];
 
     public function user()
