@@ -8,6 +8,7 @@ use App\Models\Users;
 use App\Models\Products; 
 use App\Models\Addresses; 
 use App\Models\Orders;
+use App\Models\Reasons;
 use App\Models\Friends; 
 use App\Models\Points; 
 use App\Models\Plans;
@@ -1343,6 +1344,90 @@ public function update_ratings(Request $request)
     return response()->json([
         'success' => true,
         'message' => 'Reviews updated successfully.',
+    ], 200);
+}
+
+
+public function update_reason(Request $request)
+{
+    $user_id = $request->input('user_id');
+    $place = $request->input('place');
+    $qualification = $request->input('qualification');
+    $experience = $request->input('experience');
+    $gender = $request->input('gender');
+    $age = $request->input('age');
+
+    if (empty($user_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'user_id is empty.',
+        ], 400);
+    }
+
+    if (empty($place)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'place is empty.',
+        ], 400);
+    }
+
+    if (empty($qualification)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'qualification is empty.',
+        ], 400);
+    }
+
+    if (empty($experience)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'experience is empty.',
+        ], 400);
+    }
+
+    if (empty($gender)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'gender is empty.',
+        ], 400);
+    }
+
+    if (empty($age)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'age is empty.',
+        ], 400);
+    }
+
+    $user = Users::find($user_id);
+
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'user not found.',
+        ], 404);
+    }
+
+    if (!in_array($gender, ['male', 'female', 'others'])) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid gender. Gender should be male, female, or others.',
+        ], 400);
+    }
+
+    // Insert into reasons table
+    $reason = new Reasons();
+    $reason->user_id = $user_id;
+    $reason->place = $place;
+    $reason->qualification = $qualification;
+    $reason->experience = $experience;
+    $reason->gender = $gender;
+    $reason->age = $age;
+    $reason->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Reason updated successfully.',
     ], 200);
 }
 
