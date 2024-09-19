@@ -146,6 +146,7 @@
                         <th>Status <i class="fas fa-sort"></i></th>
                         <th>Ship Rocket <i class="fas fa-sort"></i></th>
                         <th>Ordered Date <i class="fas fa-sort"></i></th>
+                        <th>User Mobile <i class="fas fa-sort"></i></th>
                         <th>Staff Name <i class="fas fa-sort"></i></th>
                         <th>Door No <i class="fas fa-sort"></i></th>
                         <th>Street Name <i class="fas fa-sort"></i></th>
@@ -198,6 +199,7 @@
                             @endif
                         </td>
                         <td>{{ $order->ordered_date }}</td> 
+                        <td>{{ optional($order->user)->mobile }}</td>
                         <td>{{ $order->user->staff ? $order->user->staff->name : 'N/A' }}</td> <!-- Display the staff name -->
                         <td>{{ optional($order->addresses)->door_no }}</td>
                         <td>{{ optional($order->addresses)->street_name }}</td>

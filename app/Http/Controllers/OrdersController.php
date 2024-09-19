@@ -119,14 +119,14 @@ class OrdersController extends Controller
    
     public function index(Request $request)
     {
-        $query = Orders::query()->with(['user.staff', 'addresses', 'product']); // Eager load relationships
+        $query = Orders::query()->with(['user','staffs', 'addresses', 'product']); // Eager load relationships
     
         // Search functionality (if required)
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
                 $q->whereHas('user', function($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
+                    $q->where('mobile', 'like', "%{$search}%");
                 })->orWhereHas('addresses', function($q) use ($search) {
                     $q->where('door_no', 'like', "%{$search}%")
                       ->orWhere('street_name', 'like', "%{$search}%")

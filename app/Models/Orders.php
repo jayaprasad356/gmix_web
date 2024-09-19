@@ -23,6 +23,10 @@ class Orders extends Model
     {
         return $this->belongsTo(Users::class, 'user_id');
     }
+    public function staffs()
+    {
+        return $this->belongsTo(Staffs::class, 'staff_id');
+    }
 
      public function addresses()
      {
