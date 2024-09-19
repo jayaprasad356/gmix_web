@@ -8,7 +8,7 @@ use App\Models\Users;
 use App\Models\Products; 
 use App\Models\Addresses; 
 use App\Models\Orders;
-use App\Models\Reasons;
+use App\Models\Resells;
 use App\Models\Friends; 
 use App\Models\Points; 
 use App\Models\Plans;
@@ -1348,7 +1348,7 @@ public function update_ratings(Request $request)
 }
 
 
-public function update_reason(Request $request)
+public function update_resells(Request $request)
 {
     $user_id = $request->input('user_id');
     $place = $request->input('place');
@@ -1416,27 +1416,27 @@ public function update_reason(Request $request)
     }
 
     // Check if the user already has a reason
-    $existingReason = Reasons::where('user_id', $user_id)->first();
-    if ($existingReason) {
+    $existingResells = Resells::where('user_id', $user_id)->first();
+    if ($existingResells) {
         return response()->json([
             'success' => false,
-            'message' => 'User already has a reason.',
+            'message' => 'User already has a resells.',
         ], 400);
     }
 
     // Insert into reasons table
-    $reason = new Reasons();
-    $reason->user_id = $user_id;
-    $reason->place = $place;
-    $reason->qualification = $qualification;
-    $reason->experience = $experience;
-    $reason->gender = $gender;
-    $reason->age = $age;
-    $reason->save();
+    $resells = new Resells();
+    $resells->user_id = $user_id;
+    $resells->place = $place;
+    $resells->qualification = $qualification;
+    $resells->experience = $experience;
+    $resells->gender = $gender;
+    $resells->age = $age;
+    $resells->save();
 
     return response()->json([
         'success' => true,
-        'message' => 'Reason updated successfully.',
+        'message' => 'Resells updated successfully.',
     ], 200);
 }
 

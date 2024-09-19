@@ -29,7 +29,7 @@ Route::post('terms_conditions', [AuthController::class, 'terms_conditions']);
 Route::post('refund_policy', [AuthController::class, 'refund_policy']);
 Route::post('address_details', [AuthController::class, 'address_details']);
 Route::post('update_ratings', [AuthController::class, 'update_ratings']);
-Route::post('update_reason', [AuthController::class, 'update_reason']);
+Route::post('update_resells', [AuthController::class, 'update_resells']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
