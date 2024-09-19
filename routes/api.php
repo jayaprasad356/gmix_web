@@ -28,7 +28,7 @@ Route::post('privacy_policy', [AuthController::class, 'privacy_policy']);
 Route::post('terms_conditions', [AuthController::class, 'terms_conditions']);
 Route::post('refund_policy', [AuthController::class, 'refund_policy']);
 Route::post('address_details', [AuthController::class, 'address_details']);
-Route::post('update_ratings', [AuthController::class, 'update_ratings']);
+Route::post('update_reviews', [AuthController::class, 'update_reviews']);
 Route::post('update_resells', [AuthController::class, 'update_resells']);
 
 

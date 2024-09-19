@@ -1291,7 +1291,7 @@ public function refund_policy(Request $request)
     ], 200);
 }
 
-public function update_ratings(Request $request)
+public function update_reviews(Request $request)
 {
     $user_id = $request->input('user_id');
     $order_id = $request->input('order_id');
