@@ -917,78 +917,102 @@ class AuthController extends Controller
 
         
         public function orders_list(Request $request)
-        {
-            $user_id = $request->input('user_id');
+{
+    $user_id = $request->input('user_id');
 
-            if (empty($user_id)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'user_id is empty.',
-                ], 400);
-            }
-        
-            // Retrieve the orders for the given user
-            $orders = Orders::where('user_id', $user_id)
-                ->latest('created_at')
-                ->get();
-        
-            if ($orders->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No orders found for the user.',
-                ], 404);
-            }
-        
-            $ordersDetails = [];
-        
-            foreach ($orders as $order) {
-        
-                if ($order->user_id == $user_id) {
-                    $user = Users::find($order->user_id);
-                    $product = Products::find($order->product_id);
-                    $address = Addresses::find($order->address_id);
-        
-                    // Determine the status label
-                    $statusLabel = $order->status == 0 ? 'Wait For Confirmation' : ($order->status == 1 ? 'Confirmed' : ($order->status == 2 ? 'Cancelled' : ($order->status == 3 ? 'Shipped' : ($order->status == 4 ? 'Delivered' : (string) $order->status))));
+    if (empty($user_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User ID is empty.',
+        ], 400);
+    }
 
-                    $statusColor = $order->status == 0 ? '#01579B' : ($order->status == 1 ? '#006064' : ($order->status == 2 ? '#DD2C00' : ($order->status == 3 ? '#01579B' : ($order->status == 4 ? '#1B5E20' : '#0D47A1'))));
+    // Check if the user exists
+    $user = Users::find($user_id);
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found.',
+        ], 404);
+    }
 
-                    $ordersDetails[] = [
-                        'id' => $order->id,
-                        'user_id' => $order->user_id,
-                        'user_name' => $user->name ?? '',
-                        'user_mobile_number' => $user->mobile ?? '',
-                       // 'first_name' => $address->first_name,
-                        'first_name' => $address->first_name ?? '', 
-                        'last_name' => $address->last_name ?? '',
-                        'product_name' => $product->name,
-                        'unit' => $product->unit,
-                        'measurement' => $product->measurement,
-                        'delivery_charges' => $order->delivery_charges,
-                        'payment_mode' => $order->payment_mode,
-                        'price' => (string) $order->price,
-                        'total_price' => (string) $order->total_price,
-                        'status' => $statusLabel, // Use status label
-                        'status_color' => $statusColor,
-                        'quantity' => $order->quantity ?? '',
-                        'live_tracking' => $order->live_tracking . $order->awb,
-                        'ship_rocket' => $order->ship_rocket ?? '',
-                        'ratings' => $order->ratings ?? '',
-                        'est_delivery_date' => $order->est_delivery_date ?? '',
-                        'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
-                        'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
-                        'created_at' => Carbon::parse($order->created_at)->format('Y-m-d H:i:s'),
-                    ];
-                }
-            }
-        
-            return response()->json([
-                'success' => true,
-                'message' => 'Orders retrieved successfully.',
-                'data' => $ordersDetails,
-            ], 200);
+    // Retrieve the orders for the given user
+    $orders = Orders::where('user_id', $user_id)
+        ->latest('created_at')
+        ->get();
+
+    if ($orders->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No orders found for this user.',
+        ], 404);
+    }
+
+    $ordersDetails = [];
+
+    foreach ($orders as $order) {
+        $product = Products::find($order->product_id);
+        $address = Addresses::find($order->address_id);
+
+        if (!$product || !$address) {
+            continue; 
         }
-        
+
+        // Determine the status label
+        $statusLabel = $order->status == 0 ? 'Wait For Confirmation' :
+                       ($order->status == 1 ? 'Confirmed' :
+                       ($order->status == 2 ? 'Cancelled' :
+                       ($order->status == 3 ? 'Shipped' :
+                       ($order->status == 4 ? 'Delivered' : (string) $order->status))));
+
+        $statusColor = $order->status == 0 ? '#01579B' :
+                       ($order->status == 1 ? '#006064' :
+                       ($order->status == 2 ? '#DD2C00' :
+                       ($order->status == 3 ? '#01579B' :
+                       ($order->status == 4 ? '#1B5E20' : '#0D47A1'))));
+
+        $ordersDetails[] = [
+            'id' => $order->id,
+            'user_id' => $order->user_id,
+            'user_name' => $user->name ?? '',
+            'user_mobile_number' => $user->mobile ?? '',
+            'first_name' => $address->first_name ?? '',
+            'last_name' => $address->last_name ?? '',
+            'product_name' => $product->name ?? '',
+            'unit' => $product->unit ?? '',
+            'measurement' => $product->measurement ?? '',
+            'delivery_charges' => $order->delivery_charges ?? '',
+            'payment_mode' => $order->payment_mode ?? '',
+            'price' => (string) $order->price,
+            'total_price' => (string) $order->total_price,
+            'status' => $statusLabel,
+            'status_color' => $statusColor,
+            'quantity' => $order->quantity ?? '',
+            'live_tracking' => $order->live_tracking . $order->awb,
+            'ship_rocket' => $order->ship_rocket ?? '',
+            'ratings' => $order->ratings ?? '',
+            'est_delivery_date' => $order->est_delivery_date ?? '',
+            'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
+            'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
+            'created_at' => Carbon::parse($order->created_at)->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    // If no valid orders are found after filtering
+    if (empty($ordersDetails)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No valid orders found for this user.',
+        ], 404);
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Orders retrieved successfully.',
+        'data' => $ordersDetails,
+    ], 200);
+}
+
 
     public function my_address_list(Request $request)
     {
@@ -1295,8 +1319,54 @@ public function update_reviews(Request $request)
 {
     $user_id = $request->input('user_id');
     $order_id = $request->input('order_id');
-    $ratings = $request->input('ratings');
     $reviews = $request->input('reviews');
+
+    if (empty($user_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'user_id is empty.',
+        ], 400);
+    }
+
+    if (empty($order_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'order_id is empty.',
+        ], 400);
+    }
+
+    if (is_null($reviews)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'reviews is empty.',
+        ], 400);
+    }
+
+    // Find the order by user_id and order_id
+    $order = Orders::where('user_id', $user_id)->where('id', $order_id)->first();
+
+    if (!$order) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Order not found.',
+        ], 404);
+    }
+
+    // Update ratings and reviews
+    $order->reviews = $reviews;
+    $order->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Reviews updated successfully.',
+    ], 200);
+}
+
+public function update_ratings(Request $request)
+{
+    $user_id = $request->input('user_id');
+    $order_id = $request->input('order_id');
+    $ratings = $request->input('ratings');
 
     if (empty($user_id)) {
         return response()->json([
@@ -1319,12 +1389,6 @@ public function update_reviews(Request $request)
         ], 400);
     }
 
-    if (is_null($reviews)) {
-        return response()->json([
-            'success' => false,
-            'message' => 'reviews is empty.',
-        ], 400);
-    }
 
     // Find the order by user_id and order_id
     $order = Orders::where('user_id', $user_id)->where('id', $order_id)->first();
@@ -1338,12 +1402,11 @@ public function update_reviews(Request $request)
 
     // Update ratings and reviews
     $order->ratings = $ratings;
-    $order->reviews = $reviews;
     $order->save();
 
     return response()->json([
         'success' => true,
-        'message' => 'Reviews updated successfully.',
+        'message' => 'Ratings updated successfully.',
     ], 200);
 }
 
