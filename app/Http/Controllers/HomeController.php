@@ -40,6 +40,17 @@ class HomeController extends Controller
         $today_orders = Orders::whereDate('created_at', $today)
                       ->where('status', 0)  // Add condition for status 0
                       ->count();
+
+        $today_cod_orders = Orders::whereDate('ordered_date', $today)
+                      ->where('payment_mode', 'COD')  // Add condition for status 0
+                      ->count();
+
+        $today_prepaid_orders = Orders::whereDate('ordered_date', $today)
+                      ->where('payment_mode', 'Prepaid')  // Add condition for status 0
+                      ->count();
+
+        $wait_for_confirmation = Orders::where('status', 0)  // Add condition for status 0
+                      ->count();
         
         // Optional: Count of pending profiles and cover images
         // $pending_profile_count = Users::where('profile_verified', 0)->whereNotNull('profile')->count();
@@ -48,6 +59,9 @@ class HomeController extends Controller
         return view('home', [
             'today_customers' => $today_customers,
             'today_orders' => $today_orders,
+            'today_cod_orders' => $today_cod_orders,
+            'today_prepaid_orders' => $today_prepaid_orders,
+            'wait_for_confirmation' => $wait_for_confirmation,
            
         ]);
     }
