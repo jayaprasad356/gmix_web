@@ -37,8 +37,7 @@ class HomeController extends Controller
         $today_customers = Users::whereDate('created_at', $today)
         ->count();
 
-        $today_orders = Orders::whereDate('created_at', $today)
-                      ->where('status', 0)  // Add condition for status 0
+        $today_orders = Orders::whereDate('ordered_date', $today)
                       ->count();
 
         $today_cod_orders = Orders::whereDate('ordered_date', $today)
