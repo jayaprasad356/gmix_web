@@ -12,5 +12,6 @@ class News extends Model
         'privacy_policy',
         'terms_conditions',
         'refund_policy',
+        'upi_id',
     ];
 }   

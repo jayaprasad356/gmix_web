@@ -1086,6 +1086,7 @@ class AuthController extends Controller
             'id' => $item->id,
             'delivery_charges' => $item->delivery_charges,
             'customer_support_number' => $item->customer_support_number,
+            'upi_id' => $item->upi_id,
         ];
     }
 
