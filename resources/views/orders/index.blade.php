@@ -221,10 +221,19 @@
                             </a>
                          </td>
                          <td>
-                            <a href="https://gmixstaff.graymatterworks.com//{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
-                                <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" alt="Image" style="max-width: 100px; max-height: 100px;">
-                            </a>
-                         </td>
+                            @if(!empty($order->payment_image))
+                                @if(Str::startsWith($order->payment_image, 'upload/images/'))
+                                    <a href="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
+                                        <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                    </a>
+                                @else
+                                    <!-- Otherwise, use the asset path -->
+                                    <a href="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" data-lightbox="image-{{ $order->id }}">
+                                        <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                    </a>
+                                @endif
+                            @endif
+                        </td>
                          <td>{{ $order->attempt1 }}</td>
                          <td>{{ $order->attempt2 }}</td>  
                     </tr>

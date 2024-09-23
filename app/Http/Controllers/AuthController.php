@@ -787,6 +787,18 @@ class AuthController extends Controller
                     'message' => 'Invalid payment mode. Payment mode should be either Prepaid or COD.',
                 ], 400);
             }
+            if ($payment_mode === 'Prepaid') {
+                if (!$request->hasFile('payment_image')) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'payment_image is required for Prepaid payment mode.',
+                    ], 400);
+                }
+                // Store the payment image
+                $payment_image = $request->file('payment_image');
+                $paymentimagePath = $payment_image->store('orders', 'public');
+            }
+
             $shipping_charges = 60 ;
 
             if($payment_mode == 'Prepaid'){
@@ -806,6 +818,9 @@ class AuthController extends Controller
             $order->payment_mode = $payment_mode;
             $order->total_price = $total_price;
             $order->quantity = $quantity;
+            if ($payment_mode === 'Prepaid') {
+                $order->payment_image = basename($paymentimagePath);
+            }
             $order->live_tracking = 'https://gmix.shiprocket.co/tracking/'; 
             $order->ordered_date = Carbon::now();
             $order->save();
