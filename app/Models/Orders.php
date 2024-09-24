@@ -37,5 +37,6 @@ class Orders extends Model
      {
          return $this->belongsTo(Products::class, 'product_id');
      }
+     
     
 }

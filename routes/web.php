@@ -17,6 +17,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\AppsettingsController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RewardproductsController;
@@ -127,6 +128,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/reviews/{reviews}', [ReviewsController::class, 'destroy'])->name('reviews.destroy');
         Route::put('/reviews/{review}', [ReviewsController::class, 'update'])->name('reviews.update');
         Route::post('/reviews', [ReviewsController::class, 'store'])->name('reviews.store');
+
+
+        Route::get('/tickets', [TicketsController::class, 'index'])->name('tickets.index');
+        Route::get('/tickets/{ticket}/edit', [TicketsController::class, 'edit'])->name('tickets.edit');
+        Route::delete('/tickets/{tickets}', [TicketsController::class, 'destroy'])->name('tickets.destroy');
+        Route::put('/tickets/{ticket}', [TicketsController::class, 'update'])->name('tickets.update');
+        Route::post('/tickets', [TicketsController::class, 'store'])->name('tickets.store');
     
 
 // OneSignal service worker route
