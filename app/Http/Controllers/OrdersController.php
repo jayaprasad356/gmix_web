@@ -91,7 +91,15 @@ class OrdersController extends Controller
                         $order->save();
                     } else {
                         // If the API request fails, return an error response
-                        return response()->json(['success' => false, 'message' => 'Shiprocket API request failed'], 500);
+                        // Decode the JSON response body to extract the errors
+                        $responseBody = $response->json(); // Get the JSON response as an array
+                        $errors = isset($responseBody['errors']) ? $responseBody['errors'] : 'No errors found';
+                    
+                        // Return only the errors part of the response
+                        return response()->json([
+                            'success' => false, 
+                            'errors' => $errors // Return only the errors from the response
+                        ], 500);
                     }
                 } else {
                     // If status is not "Confirmed" or ship_rocket is already 1, just save the order status
