@@ -413,7 +413,7 @@
                     if (response.success) {
                         location.reload(); // Reload the page to reflect changes
                     } else {
-                        alert('Failed to update status. Please try again.');
+                        alert(response.message);
                     }
                 },
                 error: function () {
