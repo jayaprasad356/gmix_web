@@ -165,7 +165,6 @@
                         <th>Chat Conversation <i class="fas fa-sort"></i></th>
                         <th>Payment Image<i class="fas fa-sort"></i></th>
                         <th>Attempt 1 <i class="fas fa-sort"></i></th>
-                        <th>Attempt 2<i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -234,8 +233,7 @@
                                 @endif
                             @endif
                         </td>
-                         <td>{{ $order->attempt1 }}</td>
-                         <td>{{ $order->attempt2 }}</td>  
+                         <td>{{ $order->attempt1 }}</td> 
                     </tr>
                     @endforeach
                 </tbody>
