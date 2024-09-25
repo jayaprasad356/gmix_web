@@ -70,6 +70,19 @@
                 </div>
             </div>
 
+            <div class="col-lg-4 col-6">
+            <div class="small-box bg-blue">
+                    <div class="inner">
+                        <h3>{{ $pending_tickets }}</h3>
+                        <p>Pending Tickets</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-ticket-alt"></i> <!-- Example of a different icon -->
+                    </div>
+                    <a href="{{ route('tickets.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
           
 
 

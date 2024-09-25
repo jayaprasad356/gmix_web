@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Points;
 use App\Models\Users;
 use App\Models\Orders;
+use App\Models\Tickets;
 use App\Models\Verifications;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
@@ -51,6 +52,9 @@ class HomeController extends Controller
 
         $wait_for_confirmation = Orders::where('status', 0)  // Add condition for status 0
                       ->count();
+
+        $pending_tickets = Tickets::where('status', 0)  // Add condition for status 0
+                      ->count();
         
         // Optional: Count of pending profiles and cover images
         // $pending_profile_count = Users::where('profile_verified', 0)->whereNotNull('profile')->count();
@@ -62,6 +66,7 @@ class HomeController extends Controller
             'today_cod_orders' => $today_cod_orders,
             'today_prepaid_orders' => $today_prepaid_orders,
             'wait_for_confirmation' => $wait_for_confirmation,
+            'pending_tickets' => $pending_tickets,
            
         ]);
     }
