@@ -19,6 +19,7 @@ use App\Http\Controllers\AppsettingsController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\StaffReportsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RewardproductsController;
 use App\Http\Controllers\FriendsController;
@@ -136,6 +137,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::put('/tickets/{ticket}', [TicketsController::class, 'update'])->name('tickets.update');
         Route::post('/tickets', [TicketsController::class, 'store'])->name('tickets.store');
     
+        Route::get('/staff_reports', [StaffReportsController::class, 'index'])->name('staff_reports.index');
 
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {

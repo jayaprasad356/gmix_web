@@ -29,6 +29,12 @@
                 <p>Dashboard</p>
             </a>
         </li>
+        <li class="nav-item has-treeview">
+                <a href="{{ route('staff_reports.index') }}" class="nav-link {{ activeSegment('staff_reports') }}">
+                <i class="nav-icon fas fa-users"></i> <!-- Icon for Orders -->
+                    <p>Staff Reports</p>
+                </a>
+            </li>
             <li class="nav-item has-treeview">
                 <a href="{{ route('users.index') }}" class="nav-link {{ activeSegment('users') }}">
                     <i class="nav-icon fas fa-users"></i>
