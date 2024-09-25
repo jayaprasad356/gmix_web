@@ -1518,5 +1518,29 @@ public function update_resells(Request $request)
         'message' => 'Resells updated successfully.',
     ], 200);
 }
+public function cron_points(Request $request)
+{
+    $orders = Orders::where('add_points', 0)
+                    ->where('shipment_status', 'DELIVERED')
+                    ->get();
 
+    foreach ($orders as $order) {
+        $user_id = $order->user_id;
+
+        $user = Users::find($user_id);
+        if ($user) {
+            $user->total_points += 300;
+            $user->points += 300;
+            $user->save();
+
+            $order->add_points = 1;
+            $order->save();
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Cron Points Added successfully.',
+    ], 200);
+}
 }

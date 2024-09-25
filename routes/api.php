@@ -31,6 +31,7 @@ Route::post('address_details', [AuthController::class, 'address_details']);
 Route::post('update_reviews', [AuthController::class, 'update_reviews']);
 Route::post('update_ratings', [AuthController::class, 'update_ratings']);
 Route::post('update_resells', [AuthController::class, 'update_resells']);
+Route::post('cron_points', [AuthController::class, 'cron_points']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
