@@ -44,6 +44,7 @@
                         <th>Total Orders</th>
                         <th>COD Orders</th>
                         <th>Prepaid Orders</th>
+                        <th>Quantity</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,6 +55,13 @@
                             <td>{{ $staff->total_orders }}</td>
                             <td>{{ $staff->cod_orders }}</td>
                             <td>{{ $staff->prepaid_orders }}</td>
+                            <td>
+                                @php
+                                    $total_grams = isset($staff->total_grams) ? $staff->total_grams : 0;
+                                    $total_kg = $total_grams / 1000;
+                                    echo number_format($total_kg, 2) . ' kg';
+                                @endphp
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
