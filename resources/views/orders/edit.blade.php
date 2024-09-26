@@ -11,7 +11,7 @@
     <div class="card">
         <div class="card-body">
 
-            <form action="{{ route('orders.update', $order) }}" method="POST">
+            <form action="{{ route('orders.update', $order) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="address_id" value="{{ $addresses->id }}">
@@ -136,17 +136,133 @@
                     @enderror
                 </div>
 
-                <button class="btn btn-success btn-block btn-lg" type="submit">Save Changes</button>
-            </form>
+                <!-- Chat Conversation Image -->
+                <div class="form-group">
+                    <span>Current Image:</span>
+                    @if(Str::startsWith($order->chat_conversation, 'upload/images/'))
+                        <a href="https://gmixstaff.graymatterworks.com/{{ $order->chat_conversation }}" data-lightbox="image-{{ $order->id }}">
+                            <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->chat_conversation }}" alt="Chat Conversation Image" style="max-width: 100px; max-height: 100px;">
+                        </a>
+                    @else
+                        <!-- Otherwise, use the asset path -->
+                        <a href="{{ asset('storage/app/public/orders/' . $order->chat_conversation) }}" data-lightbox="image-{{ $order->id }}">
+                            <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->chat_conversation) }}" alt="Chat Conversation Image" style="max-width: 100px; max-height: 100px;">
+                        </a>
+                    @endif
+                    <br>
+                    <label for="chat_conversation">New Chat Conversation Image</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="chat_conversation" id="inputFileChat" required>
+                        <label class="custom-file-label" for="inputFileChat">Choose file</label>
+                        @if($order->chat_conversation)
+                            <input type="hidden" name="existing_chat_image" value="{{ $order->chat_conversation }}">
+                        @endif
+                    </div>
+                    @error('chat_conversation')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+            <span>Current Image:</span>
+            <div id="current_payment_image" style="{{ old('payment_mode', $order->payment_mode) === 'COD' ? 'display: none;' : '' }}"> <!-- Hide if COD is selected -->
+                @if(Str::startsWith($order->payment_image, 'upload/images/'))
+                    <a href="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
+                        <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                    </a>
+                @else
+                    <a href="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" data-lightbox="image-{{ $order->id }}">
+                        <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                    </a>
+                @endif
+            <br>
+            <div class="form-group" id="payment_image_field" style="display: none;"> <!-- Hide initially -->
+                <label for="payment_image">New Payment Image</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="payment_image" id="inputFilePayment">
+                    <label class="custom-file-label" for="inputFilePayment">Choose file</label>
+                    @if($order->payment_image)
+                        <input type="hidden" name="existing_payment_image" value="{{ $order->payment_image }}">
+                    @endif
+                </div>
+                @error('payment_image')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
         </div>
-    </div>
+
+        <!-- Payment Mode Selection -->
+        <div class="form-group">
+            <label for="payment_mode">Payment Mode</label>
+            <div class="btn-group btn-group-toggle d-block" data-toggle="buttons">
+                <label class="btn btn-outline-success {{ old('payment_mode', $order->payment_mode) === "Prepaid" ? 'active' : '' }}">
+                    <input type="radio" name="payment_mode" id="payment_mode_prepaid" value="Prepaid" {{ old('payment_mode', $order->payment_mode) === "Prepaid" ? 'checked' : '' }}> Prepaid
+                </label>
+                <label class="btn btn-outline-primary {{ old('payment_mode', $order->payment_mode) === "COD" ? 'active' : '' }}">
+                    <input type="radio" name="payment_mode" id="payment_mode_cod" value="COD" {{ old('payment_mode', $order->payment_mode) === "COD" ? 'checked' : '' }}> COD
+                </label>
+            </div>
+        </div>
+
+        <button class="btn btn-success btn-block btn-lg" type="submit">Save Changes</button>
+        </form>
+        </div>
+</div>
+
 @endsection
 
 @section('js')
-    <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
-    <script>
-        $(document).ready(function () {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        // Check if bsCustomFileInput is defined
+        if (typeof bsCustomFileInput !== 'undefined') {
+            // Initialize custom file input styling
             bsCustomFileInput.init();
+        } else {
+            console.error('bsCustomFileInput is not defined. Please check the script path.');
+        }
+
+        // Function to toggle visibility of the payment image and input based on selected payment mode
+        function togglePaymentImageField() {
+            const isPrepaid = $('#payment_mode_prepaid').is(':checked'); // Check if Prepaid is selected
+            const paymentImageField = $('#payment_image_field'); // Select payment image field
+            const currentPaymentImage = $('#current_payment_image'); // Select current payment image field
+
+            // Show or hide the payment image field
+            if (isPrepaid) {
+                paymentImageField.show(); // Show the input
+                currentPaymentImage.show(); // Show the current image
+            } else {
+                paymentImageField.hide(); // Hide the input
+                $('#inputFilePayment').val(''); // Clear the input if COD
+                paymentImageField.find('.custom-file-label').html('Choose file'); // Reset label
+                currentPaymentImage.hide(); // Hide the current image
+            }
+        }
+
+        // Initial check on page load to set visibility based on the currently selected payment mode
+        togglePaymentImageField();
+
+        // Add event listener to radio buttons for payment mode selection
+        $('input[name="payment_mode"]').change(togglePaymentImageField);
+
+        // Update file input labels when a file is chosen
+        $('#inputFileChat').on('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'Choose file';
+            $(this).next('.custom-file-label').html(fileName);
         });
-    </script>
+
+        $('#inputFilePayment').on('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'Choose file';
+            $(this).next('.custom-file-label').html(fileName);
+        });
+    });
+</script>
+
 @endsection

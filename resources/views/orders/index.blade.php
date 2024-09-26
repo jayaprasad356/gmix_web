@@ -215,9 +215,18 @@
                         <td>{{ $order->quantity }}</td>
                         <td>{{ $order->payment_mode }}</td>  
                         <td>
-                            <a href="https://gmixstaff.graymatterworks.com//{{ $order->chat_conversation }}" data-lightbox="image-{{ $order->id }}">
-                                <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->chat_conversation }}" alt="Image" style="max-width: 100px; max-height: 100px;">
-                            </a>
+                        @if(!empty($order->chat_conversation))
+                                @if(Str::startsWith($order->chat_conversation, 'upload/images/'))
+                                    <a href="https://gmixstaff.graymatterworks.com/{{ $order->chat_conversation }}" data-lightbox="image-{{ $order->id }}">
+                                        <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->chat_conversation }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                    </a>
+                                @else
+                                    <!-- Otherwise, use the asset path -->
+                                    <a href="{{ asset('storage/app/public/orders/' . $order->chat_conversation) }}" data-lightbox="image-{{ $order->id }}">
+                                        <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->chat_conversation) }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                    </a>
+                                @endif
+                            @endif
                          </td>
                          <td>
                             @if(!empty($order->payment_image))

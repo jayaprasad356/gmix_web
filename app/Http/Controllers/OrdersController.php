@@ -228,7 +228,7 @@ class OrdersController extends Controller
     public function update(Request $request, Orders $order)
     {
         // Validate the input
-        $request->validate([
+        $rules = [
             'address_id' => 'required|exists:addresses,id',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -240,7 +240,15 @@ class OrdersController extends Controller
             'pincode' => 'required|numeric',
             'state' => 'required|string|max:255',
             'landmark' => 'nullable|string|max:255',
-        ]);
+            'chat_conversation' => 'required|image', // Mandatory for both payment modes
+        ];
+    
+        // Conditionally validate payment_image only if payment_mode is Prepaid
+        if ($request->input('payment_mode') === 'Prepaid') {
+            $rules['payment_image'] = 'required|image';  // Make it required if prepaid
+        }
+    
+        $request->validate($rules);
     
         // Update the Address
         $addresses = Addresses::find($request->input('address_id'));
@@ -260,6 +268,25 @@ class OrdersController extends Controller
             'mobile' => $request->input('mobile'),
             'alternate_mobile' => $request->input('alternate_mobile'),
         ]);
+    
+        
+        // Handle chat_conversation image upload
+        if ($request->hasFile('chat_conversation')) {
+            $newImagePath = $request->file('chat_conversation')->store('orders', 'public');
+            Storage::disk('public')->delete('orders/' . $order->chat_conversation);
+            $order->chat_conversation = basename($newImagePath);
+        }
+    
+        // Handle payment_image upload if payment_mode is Prepaid
+        if ($request->hasFile('payment_image') && $request->input('payment_mode') === 'Prepaid') {
+            $newImagePath = $request->file('payment_image')->store('orders', 'public');
+            Storage::disk('public')->delete('orders/' . $order->payment_image);
+            $order->payment_image = basename($newImagePath);
+        }
+    
+        // Update payment mode
+        $order->payment_mode = $request->input('payment_mode');
+        $order->save();
     
         return redirect()->route('orders.index')->with('success', 'Order and Address updated successfully.');
     }

@@ -76,11 +76,12 @@
             </li>
 
             <li class="nav-item has-treeview">
-                <a href="{{ route('tickets.index') }}" class="nav-link {{ activeSegment('tickets') }}">
-                <i class="nav-icon fas fa-ticket-alt"></i> <!-- Icon for Orders -->
+                <a href="{{ route('tickets.index', ['search' => '', 'status' => 0]) }}" class="nav-link {{ activeSegment('tickets') }}">
+                    <i class="nav-icon fas fa-ticket-alt"></i> <!-- Icon for Tickets -->
                     <p>Rise Tickets</p>
                 </a>
             </li>
+
             <li class="nav-item has-treeview">
                     <a href="{{ route('news.edit') }}" class="nav-link {{ activeSegment('news') }}">
                         <i class="nav-icon fas fa-gear"></i>

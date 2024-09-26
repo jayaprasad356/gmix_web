@@ -13,35 +13,44 @@ use Illuminate\Http\Request;
 class TicketsController extends Controller
 {
     public function index(Request $request)
-{
-    // Eager load 'order' and the 'staff' related to that order
-    $query = Tickets::with(['order.user.staff']); // Load the necessary relationships
+    {
+        // Eager load 'order' and the 'staff' related to that order
+        $query = Tickets::with(['order.user.staff']); // Load the necessary relationships
 
-    // Search functionality (if required)
-    if ($request->has('search')) {
-        $search = $request->input('search');
-        $query->whereHas('order.user.staff', function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%"); // Search by staff name
-        })->orWhere('title', 'like', "%{$search}%");
+        // Check if a status filter is set and apply it
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        // Check if a search term is present and apply it
+        if ($request->has('search') && $request->search !== '') {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('description', 'like', '%' . $request->search . '%')
+                  ->orWhereHas('order.user.staff', function ($q) use ($request) {
+                      $q->where('name', 'like', '%' . $request->search . '%');
+                  });
+            });
+        }
+
+        // Order by status, with status 0 first
+        $query->orderByRaw('status = 0 DESC, status ASC');
+
+        // Retrieve tickets with pagination
+        $tickets = $query->paginate(10);
+
+        return view('tickets.index', compact('tickets'));
     }
 
-    // Paginate the results
-    $tickets = $query->paginate(10);
+    public function edit(Tickets $ticket)
+    {
+        // Fetch related data from the order associated with the ticket
+        $order = $ticket->order()->with(['user', 'product', 'addresses'])->first();
 
-    return view('tickets.index', compact('tickets'));
-}
+        // Return the data to the view
+        return view('tickets.edit', compact('ticket', 'order')); // Pass ticket and order data to the view
+    }
 
-    
-public function edit(Tickets $ticket)
-{
-    // Fetch related data from the order associated with the ticket
-    $order = $ticket->order()->with(['user', 'product', 'addresses'])->first();
-
-    // Return the data to the view
-    return view('tickets.edit', compact('ticket', 'order')); // Pass ticket and order data to the view
-}
-
-    
     public function update(Request $request, Tickets $ticket)
     {
         $ticket->status = $request->status;
@@ -49,10 +58,10 @@ public function edit(Tickets $ticket)
     
         return redirect()->route('tickets.index')->with('success', 'Ticket updated successfully.');
     }
-    
-    public function destroy(Tickets $ticket)
+
+    public function destroy(Tickets $tickets)
     {
-        $ticket->delete(); // Delete the ticket
+        $tickets->delete(); // Delete the ticket
 
         return response()->json([
             'success' => true
