@@ -35,7 +35,7 @@
                 <button type="submit" class="d-none">Submit</button>
             </form>
 
-        <div class="table-responsive">
+            <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
                     <tr>
@@ -44,7 +44,7 @@
                         <th>Total Orders</th>
                         <th>COD Orders</th>
                         <th>Prepaid Orders</th>
-                        <th>Quantity</th>
+                        <th>Quantity (kg)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,6 +67,14 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Show the total quantity below the table -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h5>Total Quantity: <strong>{{ number_format($totalKg, 2) }} kg</strong></h5>
+            </div>
+        </div>
+
         {{ $staffs->links() }}
     </div>
 </div>
