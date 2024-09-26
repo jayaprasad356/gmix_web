@@ -79,7 +79,7 @@
                     <div class="icon">
                         <i class="fas fa-ticket-alt"></i> <!-- Example of a different icon -->
                     </div>
-                    <a href="{{ route('tickets.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('tickets.index', ['search' => '', 'status' => 0]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
