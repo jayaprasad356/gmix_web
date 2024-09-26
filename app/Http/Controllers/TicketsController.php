@@ -22,16 +22,23 @@ class TicketsController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Check if a search term is present and apply it
-        if ($request->has('search') && $request->search !== '') {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%')
-                  ->orWhereHas('order.user.staff', function ($q) use ($request) {
-                      $q->where('name', 'like', '%' . $request->search . '%');
-                  });
-            });
-        }
+        
+    // Search functionality: title, description, staff name, or user mobile
+    if ($request->has('search') && $request->search !== '') {
+        $searchTerm = $request->search;
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('title', 'like', '%' . $searchTerm . '%')
+              ->orWhere('description', 'like', '%' . $searchTerm . '%')
+              // Search by staff name
+              ->orWhereHas('order.user.staff', function ($q) use ($searchTerm) {
+                  $q->where('name', 'like', '%' . $searchTerm . '%');
+              })
+              // Search by user mobile
+              ->orWhereHas('order.user', function ($q) use ($searchTerm) {
+                  $q->where('mobile', 'like', '%' . $searchTerm . '%');
+              });
+        });
+    }
 
         // Order by status, with status 0 first
         $query->orderByRaw('status = 0 DESC, status ASC');

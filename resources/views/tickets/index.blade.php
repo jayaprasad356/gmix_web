@@ -49,6 +49,7 @@
                         <th>ID <i class="fas fa-sort"></i></th>
                         <th>Staff Name <i class="fas fa-sort"></i></th>
                         <th>Order ID <i class="fas fa-sort"></i></th>
+                        <th>Customer Mobile <i class="fas fa-sort"></i></th>
                         <th>Title <i class="fas fa-sort"></i></th>
                         <th>Description <i class="fas fa-sort"></i></th>
                         <th>Status <i class="fas fa-sort"></i></th>
@@ -64,6 +65,7 @@
                         <td>{{ $ticket->id }}</td>
                         <td>{{ $ticket->order && $ticket->order->user && $ticket->order->user->staff ? $ticket->order->user->staff->name : 'N/A' }}</td>
                         <td>{{ $ticket->order_id }}</td>
+                        <td>{{ optional($ticket->order->user)->mobile ?? 'N/A' }}</td>
                         <td>{{ $ticket->title }}</td>
                         <td>{{ $ticket->description }}</td>
                         <td>

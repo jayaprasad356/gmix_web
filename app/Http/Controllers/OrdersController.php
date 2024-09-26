@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests\OrderStoreRequest;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
 {
@@ -226,70 +226,101 @@ class OrdersController extends Controller
     
     
     public function update(Request $request, Orders $order)
-    {
-        // Validate the input
-        $rules = [
-            'address_id' => 'required|exists:addresses,id',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'mobile' => 'required|numeric',
-            'alternate_mobile' => 'nullable|numeric',
-            'door_no' => 'required|string|max:255',
-            'street_name' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'pincode' => 'required|numeric',
-            'state' => 'required|string|max:255',
-            'landmark' => 'nullable|string|max:255',
-            'chat_conversation' => 'required|image', // Mandatory for both payment modes
-        ];
-    
-        // Conditionally validate payment_image only if payment_mode is Prepaid
-        if ($request->input('payment_mode') === 'Prepaid') {
-            $rules['payment_image'] = 'required|image';  // Make it required if prepaid
-        }
-    
-        $request->validate($rules);
-    
-        // Update the Address
-        $addresses = Addresses::find($request->input('address_id'));
-        if (!$addresses) {
-            return redirect()->route('orders.index')->with('error', 'Address not found.');
-        }
-    
-        $addresses->update([
-            'door_no' => $request->input('door_no'),
-            'street_name' => $request->input('street_name'),
-            'city' => $request->input('city'),
-            'pincode' => $request->input('pincode'),
-            'state' => $request->input('state'),
-            'landmark' => $request->input('landmark'),
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'mobile' => $request->input('mobile'),
-            'alternate_mobile' => $request->input('alternate_mobile'),
-        ]);
-    
-        
-        // Handle chat_conversation image upload
-        if ($request->hasFile('chat_conversation')) {
-            $newImagePath = $request->file('chat_conversation')->store('orders', 'public');
-            Storage::disk('public')->delete('orders/' . $order->chat_conversation);
-            $order->chat_conversation = basename($newImagePath);
-        }
-    
-        // Handle payment_image upload if payment_mode is Prepaid
-        if ($request->hasFile('payment_image') && $request->input('payment_mode') === 'Prepaid') {
-            $newImagePath = $request->file('payment_image')->store('orders', 'public');
-            Storage::disk('public')->delete('orders/' . $order->payment_image);
-            $order->payment_image = basename($newImagePath);
-        }
-    
-        // Update payment mode
-        $order->payment_mode = $request->input('payment_mode');
-        $order->save();
-    
-        return redirect()->route('orders.index')->with('success', 'Order and Address updated successfully.');
+{
+    // Validate the input
+    $rules = [
+        'address_id' => 'required|exists:addresses,id',
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'mobile' => 'required|numeric',
+        'alternate_mobile' => 'required|numeric',
+        'door_no' => 'required|string|max:255',
+        'street_name' => 'required|string|max:255',
+        'city' => 'required|string|max:255',
+        'pincode' => 'required|numeric',
+        'state' => 'required|string|max:255',
+        'landmark' => 'nullable|string|max:255',
+        'chat_conversation' => 'nullable|image', // Mandatory for both payment modes
+    ];
+
+    // Conditionally validate payment_image only if payment_mode is Prepaid
+    if ($request->input('payment_mode') === 'Prepaid') {
+        $rules['payment_image'] = 'required|image';  // Make it required if prepaid
     }
+
+    $request->validate($rules);
+
+    // Update the Address
+    $addresses = Addresses::find($request->input('address_id'));
+    if (!$addresses) {
+        return redirect()->route('orders.index')->with('error', 'Address not found.');
+    }
+
+    $addresses->update([
+        'door_no' => $request->input('door_no'),
+        'street_name' => $request->input('street_name'),
+        'city' => $request->input('city'),
+        'pincode' => $request->input('pincode'),
+        'state' => $request->input('state'),
+        'landmark' => $request->input('landmark'),
+        'first_name' => $request->input('first_name'),
+        'last_name' => $request->input('last_name'),
+        'mobile' => $request->input('mobile'),
+        'alternate_mobile' => $request->input('alternate_mobile'),
+    ]);
+
+    // Fetch product price based on product_id
+    $product = Products::find($order->product_id);
+    if (!$product) {
+        return redirect()->route('orders.index')->with('error', 'Product not found!');
+    }
+
+    $price = $product->price;
+    $delivery_charges = 0;
+    $total_price = 0;
+    $status = $order->status;  // Keep current status unless overridden
+
+    // Condition based on payment mode
+    if ($request->input('payment_mode') === 'Prepaid') {
+        // Prepaid orders: No delivery charges, status is default (0)
+        $total_price = $price;
+        $status = 0; // Default status for prepaid orders
+    } else if ($request->input('payment_mode') === 'COD') {
+        $charges_result = DB::table('news')->orderBy('id', 'desc')->value('delivery_charges');
+
+        if (!is_null($charges_result)) {
+            $delivery_charges = $charges_result;
+        }
+
+        $total_price = $price + $delivery_charges;
+        $status = 5; // COD orders have status set to 5
+    }
+
+    // Handle chat_conversation image upload
+    if ($request->hasFile('chat_conversation')) {
+        $newImagePath = $request->file('chat_conversation')->store('orders', 'public');
+        Storage::disk('public')->delete('orders/' . $order->chat_conversation);
+        $order->chat_conversation = basename($newImagePath);
+    }
+
+    // Handle payment_image upload if payment_mode is Prepaid
+    if ($request->hasFile('payment_image') && $request->input('payment_mode') === 'Prepaid') {
+        $newImagePath = $request->file('payment_image')->store('orders', 'public');
+        Storage::disk('public')->delete('orders/' . $order->payment_image);
+        $order->payment_image = basename($newImagePath);
+    }
+
+    // Update order fields
+    $order->price = $price;
+    $order->delivery_charges = $delivery_charges;
+    $order->total_price = $total_price;
+    $order->status = $status;
+    $order->payment_mode = $request->input('payment_mode');
+    $order->save();
+
+    return redirect()->route('orders.index')->with('success', 'Order and Address updated successfully.');
+}
+
     
 
     public function getUserAddresses($userId)

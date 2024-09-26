@@ -9,59 +9,64 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
-<style>
-    /* Ensure the table container is scrollable horizontally */
-.table-scroll-container {
-    position: relative;
-    overflow-x: hidden; /* Hide the native bottom scrollbar */
-}
+    <style>
+        /* Ensure the table container is scrollable horizontally */
+        .table-scroll-container {
+            position: relative;
+            overflow-x: hidden; /* Hide the native bottom scrollbar */
+        }
 
-/* Styling for the top scrollbar */
-.top-scroll {
-    height: 20px; /* Height for the scrollbar */
-    overflow-x: auto;
-    margin-bottom: 10px;
-}
+        /* Styling for the top scrollbar */
+        .top-scroll {
+            height: 20px; /* Height for the scrollbar */
+            overflow-x: auto;
+            margin-bottom: 10px;
+            position: fixed; /* Fix the top scrollbar */
+            top: 0; /* Position it at the top */
+            width: 70%; /* Make it span the full width */
+            z-index: 1000; /* Ensure it stays above other elements */
+            background-color: #fff; /* Optional: Background color to match the page */
+        }
 
-/* Styling for the dummy element to match the table width */
-.dummy {
-    height: 1px;
-}
+        /* Styling for the dummy element to match the table width */
+        .dummy {
+            height: 1px;
+        }
 
-/* Ensure the table remains responsive and scrollable */
-.table-responsive {
-    overflow-x: auto;
-    position: relative;
-}
+        /* Ensure the table remains responsive and scrollable */
+        .table-responsive {
+            overflow-x: auto;
+            position: relative;
+            margin-top: 30px; /* Adjust for the fixed top scrollbar height */
+        }
 
-/* Hide the bottom scrollbar for desktop screens */
-.table-responsive::-webkit-scrollbar {
-    display: none; /* Hide the scrollbar in webkit browsers */
-}
-.table-responsive {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
+        /* Hide the bottom scrollbar for desktop screens */
+        .table-responsive::-webkit-scrollbar {
+            display: none; /* Hide the scrollbar in webkit browsers */
+        }
+        .table-responsive {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
 
-/* Mobile behavior: Show bottom scrollbar and hide top scrollbar */
-@media (max-width: 768px) {
-    .top-scroll {
-        display: none; /* Hide top scrollbar on mobile */
-    }
+        /* Mobile behavior: Show bottom scrollbar and hide top scrollbar */
+        @media (max-width: 768px) {
+            .top-scroll {
+                display: none; /* Hide top scrollbar on mobile */
+            }
 
-    /* Show bottom scrollbar on mobile */
-    .table-responsive {
-        overflow-x: scroll;
-    }
+            /* Show bottom scrollbar on mobile */
+            .table-responsive {
+                overflow-x: scroll;
+            }
 
-    /* Allow text wrapping on smaller screens */
-    .table th, .table td {
-        white-space: normal;
-    }
-}
-
-</style>
-    @endsection
+            /* Allow text wrapping on smaller screens */
+            .table th, .table td {
+                white-space: normal;
+            }
+        }
+    </style>
+@endsection
 
 @section('content')
 
@@ -270,7 +275,6 @@
 <div class="pagination mt-3">
     {{ $orders->appends(request()->query())->links() }}
 </div>
-    
 
 
 

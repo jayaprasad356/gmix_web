@@ -151,7 +151,7 @@
                     <br>
                     <label for="chat_conversation">New Chat Conversation Image</label>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="chat_conversation" id="inputFileChat" required>
+                        <input type="file" class="custom-file-input" name="chat_conversation" id="inputFileChat">
                         <label class="custom-file-label" for="inputFileChat">Choose file</label>
                         @if($order->chat_conversation)
                             <input type="hidden" name="existing_chat_image" value="{{ $order->chat_conversation }}">
