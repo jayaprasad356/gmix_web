@@ -136,7 +136,7 @@
                     @enderror
                 </div>
 
-                <!-- Chat Conversation Image -->
+            <!-- Chat Conversation Image -->
                 <div class="form-group">
                     <span>Current Image:</span>
                     @if(Str::startsWith($order->chat_conversation, 'upload/images/'))
@@ -144,7 +144,6 @@
                             <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->chat_conversation }}" alt="Chat Conversation Image" style="max-width: 100px; max-height: 100px;">
                         </a>
                     @else
-                        <!-- Otherwise, use the asset path -->
                         <a href="{{ asset('storage/app/public/orders/' . $order->chat_conversation) }}" data-lightbox="image-{{ $order->id }}">
                             <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->chat_conversation) }}" alt="Chat Conversation Image" style="max-width: 100px; max-height: 100px;">
                         </a>
@@ -165,35 +164,39 @@
                     @enderror
                 </div>
 
+                <!-- Payment Image Section -->
                 <div class="form-group">
-            <span>Current Image:</span>
-            <div id="current_payment_image" style="{{ old('payment_mode', $order->payment_mode) === 'COD' ? 'display: none;' : '' }}"> <!-- Hide if COD is selected -->
-                @if(Str::startsWith($order->payment_image, 'upload/images/'))
-                    <a href="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
-                        <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
-                    </a>
-                @else
-                    <a href="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" data-lightbox="image-{{ $order->id }}">
-                        <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
-                    </a>
-                @endif
-            <br>
-            <div class="form-group" id="payment_image_field" style="display: none;"> <!-- Hide initially -->
-                <label for="payment_image">New Payment Image</label>
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="payment_image" id="inputFilePayment">
-                    <label class="custom-file-label" for="inputFilePayment">Choose file</label>
-                    @if($order->payment_image)
-                        <input type="hidden" name="existing_payment_image" value="{{ $order->payment_image }}">
-                    @endif
+                    <div class="d-flex align-items-center">
+                        <span class="mr-2">Current Image:</span> <!-- Use margin for spacing -->
+                        <div id="current_payment_image" style="{{ old('payment_mode', $order->payment_mode) === 'COD' ? 'display: none;' : '' }}">
+                            @if(Str::startsWith($order->payment_image, 'upload/images/'))
+                                <a href="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
+                                    <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                </a>
+                            @else
+                                <a href="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" data-lightbox="image-{{ $order->id }}">
+                                    <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group" id="payment_image_field" style="display: none;"> <!-- Hide initially -->
+                        <label for="payment_image">New Payment Image</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="payment_image" id="inputFilePayment">
+                            <label class="custom-file-label" for="inputFilePayment">Choose file</label>
+                            @if($order->payment_image)
+                                <input type="hidden" name="existing_payment_image" value="{{ $order->payment_image }}">
+                            @endif
+                        </div>
+                        @error('payment_image')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
                 </div>
-                @error('payment_image')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-                @enderror
-            </div>
-        </div>
 
         <!-- Payment Mode Selection -->
         <div class="form-group">
