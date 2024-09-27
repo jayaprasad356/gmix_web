@@ -1006,6 +1006,7 @@ class AuthController extends Controller
             'live_tracking' => $order->live_tracking . $order->awb,
             'ship_rocket' => $order->ship_rocket ?? '',
             'ratings' => $order->ratings ?? '',
+            'reviews' => $order->reviews ?? '',
             'est_delivery_date' => $order->est_delivery_date ?? '',
             'ordered_date' => Carbon::parse($order->ordered_date)->format('Y-m-d'),
             'updated_at' => Carbon::parse($order->updated_at)->format('Y-m-d H:i:s'),
