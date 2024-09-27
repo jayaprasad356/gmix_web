@@ -1331,58 +1331,12 @@ public function refund_policy(Request $request)
     ], 200);
 }
 
-public function update_reviews(Request $request)
-{
-    $user_id = $request->input('user_id');
-    $order_id = $request->input('order_id');
-    $reviews = $request->input('reviews');
-
-    if (empty($user_id)) {
-        return response()->json([
-            'success' => false,
-            'message' => 'user_id is empty.',
-        ], 400);
-    }
-
-    if (empty($order_id)) {
-        return response()->json([
-            'success' => false,
-            'message' => 'order_id is empty.',
-        ], 400);
-    }
-
-    if (is_null($reviews)) {
-        return response()->json([
-            'success' => false,
-            'message' => 'reviews is empty.',
-        ], 400);
-    }
-
-    // Find the order by user_id and order_id
-    $order = Orders::where('user_id', $user_id)->where('id', $order_id)->first();
-
-    if (!$order) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Order not found.',
-        ], 404);
-    }
-
-    // Update ratings and reviews
-    $order->reviews = $reviews;
-    $order->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Reviews updated successfully.',
-    ], 200);
-}
-
 public function update_ratings(Request $request)
 {
     $user_id = $request->input('user_id');
     $order_id = $request->input('order_id');
     $ratings = $request->input('ratings');
+    $reviews = $request->input('reviews');
 
     if (empty($user_id)) {
         return response()->json([
@@ -1404,6 +1358,12 @@ public function update_ratings(Request $request)
             'message' => 'ratings is empty.',
         ], 400);
     }
+    if (is_null($reviews)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'reviews is empty.',
+        ], 400);
+    }
 
 
     // Find the order by user_id and order_id
@@ -1418,11 +1378,12 @@ public function update_ratings(Request $request)
 
     // Update ratings and reviews
     $order->ratings = $ratings;
+    $order->reviews = $reviews;
     $order->save();
 
     return response()->json([
         'success' => true,
-        'message' => 'Ratings updated successfully.',
+        'message' => 'Ratings and Reviews updated successfully.',
     ], 200);
 }
 
