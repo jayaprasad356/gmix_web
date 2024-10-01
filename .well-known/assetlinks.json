@@ -1,0 +1,26 @@
+[
+  {
+  "relation": [
+  "delegate_permission/common.handle_all_urls"
+  ],
+  "target": {
+  "namespace": "android_app",
+  "package_name": "com.g_mix.gmw_app",
+  "sha256_cert_fingerprints": [
+  "B4:0E:CF:18:71:D4:8F:6E:B9:8A:33:FF:D0:A9:2C:62:1A:A7:1B:DA:B7:3E:FC:09:8E:4B:2E:68:23:EA:52:4A"
+  ]
+  }
+  },
+  {
+  "relation": [
+  "delegate_permission/common.handle_all_urls"
+  ],
+  "target": {
+  "namespace": "android_app",
+  "package_name": "com.g_mix.gmw_app",
+  "sha256_cert_fingerprints": [
+  "46:A3:59:79:E8:AF:97:B0:45:28:EF:EE:3A:02:00:DD:46:33:26:46:01:57:94:9A:C9:C1:8C:64:C1:24:2F:35"
+  ]
+  }
+  }
+  ]

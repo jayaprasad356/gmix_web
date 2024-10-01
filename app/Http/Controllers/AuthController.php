@@ -803,10 +803,10 @@ class AuthController extends Controller
 
             if($payment_mode == 'Prepaid'){
                 $payment_mode = 'Prepaid';
-                $total_price = $price + 0;
+                $total_price = $quantity * $price + 0 ;
             }else{
                 $payment_mode = 'COD';
-                $total_price = $price + $delivery_charges;
+                $total_price = $quantity * $price + $delivery_charges;
              }
         
             $order = new Orders();
