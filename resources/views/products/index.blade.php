@@ -38,7 +38,7 @@
                     <th>Quantity</th>
                     <th>Price</th>
                     <th>Profit</th>
-                    <th>Description</th>
+                    <!--<th>Description</th>-->
                     <th>Image</th>
                     </tr>
                 </thead>
@@ -56,7 +56,7 @@
                         <td>{{$product->quantity}}</td>
                         <td>{{$product->price}}</td>
                         <td>{{$product->profit}}</td>
-                        <td>{!! $product->description !!}</td> <!-- Safely render HTML content -->
+                       <!-- <td>{!! $product->description !!}</td> -->
                         <td>
                             <a href="{{ asset('storage/app/public/products/' . $product->image) }}" data-lightbox="image-{{ $product->id }}">
                                 <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/products/' . $product->image) }}" alt="Image" style="max-width: 100px; max-height: 100px;">

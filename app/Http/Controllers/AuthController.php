@@ -196,7 +196,7 @@ class AuthController extends Controller
                 'unit' => $product->unit,
                 'measurement' => $product->measurement,
                 'quantity' => $product->quantity,
-                //'description' => $product->description,
+                'description' => $product->description,
                 'price' => (string) $product->price,
                 'image' => $imageUrl,
                 'ratings' => $ratings ?? '',
