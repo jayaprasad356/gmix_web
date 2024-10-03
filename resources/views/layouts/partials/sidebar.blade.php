@@ -49,8 +49,9 @@
             </li>
             <li class="nav-item has-treeview">
                 <a href="{{ route('products.index') }}" class="nav-link {{ activeSegment('products') }}">
-                <i class="nav-icon fas fa-map-marker-alt"></i> <!-- Icon for Address -->
-                    <p>Products</p>
+                <i class="nav-icon fas fa-box-open"></i> <!-- Icon for Products -->
+               
+                <p>Products</p>
                 </a>
             </li>
 

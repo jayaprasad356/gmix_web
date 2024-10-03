@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UsersStoreRequest;
 use App\Models\Users;
+use App\Models\Staffs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,12 +17,20 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Users::query();
+        $query = Users::with('staff');
 
+        // If search is provided
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('name', 'like', "%$search%")
-                  ->orWhere('mobile', 'like', "%$search%");
+    
+            // Search by name, mobile, or related product name
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('mobile', 'like', "%$search%")
+                  ->orWhereHas('staff', function($q) use ($search) {
+                      $q->where('name', 'like', "%$search%");
+                  });
+            });
         }
 
         // Get perPage value from the request, default to 10
@@ -90,7 +99,11 @@ class UsersController extends Controller
      */
     public function edit(Users $users)
     {
-        return view('users.edit', compact('users'));
+        // Fetch all staff members
+        $staff = Staffs::all();
+    
+        // Pass the users and staff data to the view
+        return view('users.edit', compact('users', 'staff'));
     }
 
     /**
@@ -106,6 +119,7 @@ class UsersController extends Controller
         $users->mobile = $request->mobile;
         $users->points = $request->points;
         $users->total_points = $request->total_points;
+        $users->staff_id = $request->staff_id;
 
         if (!$users->save()) {
             return redirect()->back()->with('error', 'Sorry, Something went wrong while updating the user.');

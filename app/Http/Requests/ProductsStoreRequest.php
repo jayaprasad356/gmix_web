@@ -30,6 +30,7 @@ class ProductsStoreRequest extends FormRequest
             'quantity' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
+            'profit' => 'required|numeric|min:0',
         ];
     }
 }

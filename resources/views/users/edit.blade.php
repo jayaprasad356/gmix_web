@@ -64,6 +64,23 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="staff_id">Staff Name</label>
+                    <select name="staff_id" id="staff_id" class="form-control @error('staff_id') is-invalid @enderror">
+                        @foreach($staff as $member)
+                            <option value="{{ $member->id }}" {{ $users->staff_id == $member->id ? 'selected' : '' }}>
+                                {{ $member->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('staff_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
+
 
                 <button class="btn btn-success btn-block btn-lg" type="submit">Save Changes</button>
             </form>

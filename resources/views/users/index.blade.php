@@ -36,6 +36,7 @@
                     <th>Mobile</th>
                     <th>Points</th>
                     <th>total Points</th>
+                    <th>Staff Name</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,6 +51,7 @@
                         <td>{{$user->mobile}}</td>
                         <td>{{$user->points}}</td>
                         <td>{{$user->total_points}}</td>
+                        <td>{{ $user->staff ? $user->staff->name : 'No Staff Assigned' }}</td>
                     </tr>
                     @endforeach
                 </tbody>

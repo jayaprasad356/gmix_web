@@ -74,6 +74,18 @@
                     @enderror 
                 </div>
 
+                <div class="form-group">
+                    <label for="profit">Profit</label>
+                    <input type="number" name="profit" class="form-control @error('profit') is-invalid @enderror"
+                           id="profit"
+                           placeholder="profit" value="{{ old('profit', $product->profit) }}">
+                    @error('profit')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror 
+                </div>
+
 
                 <div class="form-group">
                     <span>Current Image:</span>
