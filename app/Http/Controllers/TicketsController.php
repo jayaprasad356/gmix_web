@@ -14,31 +14,30 @@ class TicketsController extends Controller
 {
     public function index(Request $request)
     {
-        // Eager load 'order' and the 'staff' related to that order
-        $query = Tickets::with(['order.user.staff']); // Load the necessary relationships
+        // Eager load 'order' and the 'staff' related to that order directly from the orders table
+        $query = Tickets::with(['order.staffs']); // Load the necessary relationships (order and staff)
 
         // Check if a status filter is set and apply it
         if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
-        
-    // Search functionality: title, description, staff name, or user mobile
-    if ($request->has('search') && $request->search !== '') {
-        $searchTerm = $request->search;
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('title', 'like', '%' . $searchTerm . '%')
-              ->orWhere('description', 'like', '%' . $searchTerm . '%')
-              // Search by staff name
-              ->orWhereHas('order.user.staff', function ($q) use ($searchTerm) {
-                  $q->where('name', 'like', '%' . $searchTerm . '%');
-              })
-              // Search by user mobile
-              ->orWhereHas('order.user', function ($q) use ($searchTerm) {
-                  $q->where('mobile', 'like', '%' . $searchTerm . '%');
-              });
-        });
-    }
+        // Search functionality: title, description, staff name, or user mobile
+        if ($request->has('search') && $request->search !== '') {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                  // Search by staff name directly from the orders table
+                  ->orWhereHas('order.staffs', function ($q) use ($searchTerm) {
+                      $q->where('name', 'like', '%' . $searchTerm . '%');
+                  })
+                  // Search by user mobile
+                  ->orWhereHas('order.user', function ($q) use ($searchTerm) {
+                      $q->where('mobile', 'like', '%' . $searchTerm . '%');
+                  });
+            });
+        }
 
         // Order by status, with status 0 first
         $query->orderByRaw('status = 0 DESC, status ASC');

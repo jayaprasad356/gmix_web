@@ -43,10 +43,12 @@ class HomeController extends Controller
                   ->count();  
 
         $today_cod_orders = Orders::whereDate('ordered_date', $today)
+                      ->where('status', '!=', 2)  // Exclude orders with status 2
                       ->where('payment_mode', 'COD')  // Add condition for status 0
                       ->count();
 
         $today_prepaid_orders = Orders::whereDate('ordered_date', $today)
+                     ->where('status', '!=', 2)  // Exclude orders with status 2
                       ->where('payment_mode', 'Prepaid')  // Add condition for status 0
                       ->count();
 

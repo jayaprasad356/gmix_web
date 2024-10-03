@@ -63,7 +63,8 @@
                             <button class="btn btn-danger btn-delete" data-url="{{ route('tickets.destroy', $ticket) }}"><i class="fas fa-trash"></i></button>
                         </td>
                         <td>{{ $ticket->id }}</td>
-                        <td>{{ $ticket->order && $ticket->order->user && $ticket->order->user->staff ? $ticket->order->user->staff->name : 'N/A' }}</td>
+                        <td>{{ $ticket->order && $ticket->order->staffs ? $ticket->order->staffs->name : 'N/A' }}</td>
+
                         <td>{{ $ticket->order_id }}</td>
                         <td>{{ optional($ticket->order->user)->mobile ?? 'N/A' }}</td>
                         <td>{{ $ticket->title }}</td>

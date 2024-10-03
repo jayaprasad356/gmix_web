@@ -204,7 +204,7 @@
                         </td>
                         <td>{{ $order->ordered_date }}</td> 
                         <td>{{ optional($order->user)->mobile }}</td>
-                        <td>{{ $order->user->staff ? $order->user->staff->name : 'N/A' }}</td> <!-- Display the staff name -->
+                        <td>{{ $order->staffs ? $order->staffs->name : 'N/A' }}</td> <!-- Display the staff name -->
                         <td>{{ optional($order->addresses)->door_no }}</td>
                         <td>{{ optional($order->addresses)->street_name }}</td>
                         <td>{{ optional($order->addresses)->city }}</td>

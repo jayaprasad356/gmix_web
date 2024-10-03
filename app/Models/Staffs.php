@@ -15,5 +15,8 @@ class Staffs extends Model
         'password',
     ];
 
-  
+    public function order()
+    {
+        return $this->belongsTo(Orders::class, 'order_id');
+    }
 }

@@ -64,7 +64,7 @@ class OrdersController extends Controller
                         "shipping_is_billing" => true,
                         "order_items" => [
                             [
-                                "name" => "G Mix",
+                                "name" => $product->name,
                                 "sku" => "123456",
                                 "units" => 1,
                                 "selling_price" => $price,
