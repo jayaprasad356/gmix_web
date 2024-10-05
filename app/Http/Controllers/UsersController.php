@@ -119,7 +119,7 @@ class UsersController extends Controller
         $users->mobile = $request->mobile;
         $users->points = $request->points;
         $users->total_points = $request->total_points;
-        $users->staff_id = $request->staff_id;
+       // $users->staff_id = $request->staff_id;
 
         if (!$users->save()) {
             return redirect()->back()->with('error', 'Sorry, Something went wrong while updating the user.');
