@@ -46,6 +46,7 @@
                         <th>COD Orders</th>
                         <th>Prepaid Orders</th>
                         <th>Quantity (kg)</th>
+                        <th>Week Quantity (kg)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,6 +62,13 @@
                                     $total_grams = isset($staff->total_grams) ? $staff->total_grams : 0;
                                     $total_kg = $total_grams / 1000;
                                     echo number_format($total_kg, 2) . ' kg';
+                                @endphp
+                            </td>
+                            <td>
+                                @php
+                                    $weekly_grams = isset($staff->weekly_grams) ? $staff->weekly_grams : 0;
+                                    $weekly_kg = $weekly_grams / 1000;
+                                    echo number_format($weekly_kg, 2) . ' kg';
                                 @endphp
                             </td>
                         </tr>
