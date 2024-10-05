@@ -29,6 +29,7 @@ class StaffReportsController extends Controller
                 $startDate = Carbon::today()->subDays(7);
                 break;
             case 'this_week':
+                    // This will give you the current week's start (Sunday) and end (Saturday)
                 $startDate = Carbon::now()->startOfWeek(Carbon::SUNDAY);
                 $endDate = Carbon::now()->endOfWeek(Carbon::SATURDAY);
                 break;
@@ -41,40 +42,36 @@ class StaffReportsController extends Controller
                 break;
         }
 
-        // Get the start and end of the current week (Sunday to Saturday)
-        $weekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY);
-        $weekEnd = Carbon::now()->endOfWeek(Carbon::SATURDAY);
-
         $staffs = Staffs::query()
-            ->select(
-                'staffs.id',
-                'staffs.name',
-                // Count total orders excluding status = 2
-                DB::raw('COUNT(CASE WHEN orders.status != 2 THEN orders.id ELSE NULL END) as total_orders'),
-                DB::raw('SUM(CASE WHEN orders.payment_mode = "COD" AND orders.status != 2 THEN 1 ELSE 0 END) as cod_orders'),
-                DB::raw('SUM(CASE WHEN orders.payment_mode = "Prepaid" AND orders.status != 2 THEN 1 ELSE 0 END) as prepaid_orders'),
-                DB::raw('SUM(CASE WHEN orders.status != 2 THEN products.measurement ELSE 0 END) as total_grams'), // Total grams (excluding status = 2)
-                // Weekly quantity (Sunday to Saturday) filtering by order date within the week range
-                DB::raw('SUM(CASE WHEN orders.ordered_date BETWEEN "' . $weekStart . '" AND "' . $weekEnd . '" AND orders.status != 2 THEN products.measurement ELSE 0 END) as weekly_grams') // Week grams
-            )
-            ->leftJoin('orders', function ($join) use ($startDate, $endDate) {
-                $join->on('orders.staff_id', '=', 'staffs.id')
-                    ->whereBetween('orders.ordered_date', [$startDate, $endDate]); // Filter based on selected date range
-            })
-            ->leftJoin('products', 'orders.product_id', '=', 'products.id');
+                ->select(
+                    'staffs.id',
+                    'staffs.name',
+                    // Only count orders where the status is NOT 2
+                    DB::raw('COUNT(CASE WHEN orders.status != 2 THEN orders.id ELSE NULL END) as total_orders'),
+                    DB::raw('SUM(CASE WHEN orders.payment_mode = "COD" AND orders.status != 2 THEN 1 ELSE 0 END) as cod_orders'),
+                    DB::raw('SUM(CASE WHEN orders.payment_mode = "Prepaid" AND orders.status != 2 THEN 1 ELSE 0 END) as prepaid_orders'),
+                    // Only sum grams where the order status is NOT 2
+                    DB::raw('SUM(CASE WHEN orders.status != 2 THEN products.measurement ELSE 0 END) as total_grams') // Only sum grams where status != 2
+                )
+                ->leftJoin('orders', function ($join) use ($startDate, $endDate) {
+                    $join->on('orders.staff_id', '=', 'staffs.id') // Now using staff_id from orders table
+                        ->whereBetween('orders.ordered_date', [$startDate, $endDate]); // Filter orders based on date range
+                })
+                ->leftJoin('products', 'orders.product_id', '=', 'products.id'); // Join with products table using product_id
 
-        // Group by staff ID and name
+
+        // Group by staff ID and name, and paginate the results
         $staffs = $staffs->groupBy('staffs.id', 'staffs.name')
                          ->paginate(10);
 
-        // Calculate total quantity in grams
+        // Calculate total quantity for all staff (in grams)
         $totalGrams = $staffs->sum('total_grams');
         $totalKg = $totalGrams / 1000;  // Convert grams to kilograms
 
         // Fetch users for dropdown (if needed)
         $users = Users::all();
 
-        // Pass staff data, users, total kilograms, and search query to the view
+        // Pass staff, user data, the total quantity, and the current search query to the view
         return view('staff_reports.index', compact('staffs', 'users', 'searchQuery', 'totalKg'));
     }
 }
