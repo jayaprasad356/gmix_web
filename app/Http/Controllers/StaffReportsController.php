@@ -28,6 +28,11 @@ class StaffReportsController extends Controller
             case 'last_7_days':
                 $startDate = Carbon::today()->subDays(7);
                 break;
+            case 'this_week':
+                    // This will give you the current week's start (Sunday) and end (Saturday)
+                $startDate = Carbon::now()->startOfWeek(Carbon::SUNDAY);
+                $endDate = Carbon::now()->endOfWeek(Carbon::SATURDAY);
+                break;
             case 'this_month':
                 $startDate = Carbon::now()->startOfMonth();
                 break;

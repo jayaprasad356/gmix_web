@@ -20,6 +20,7 @@
                     <select name="date_filter" id="date-filter" class="form-control" style="width: 200px;">
                         <option value="today" {{ request('date_filter') == 'today' ? 'selected' : '' }}>Today</option>
                         <option value="yesterday" {{ request('date_filter') == 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+                        <option value="this_week" {{ request('date_filter') == 'this_week' ? 'selected' : '' }}>This Week</option>
                         <option value="last_7_days" {{ request('date_filter') == 'last_7_days' ? 'selected' : '' }}>Last 7 Days</option>
                         <option value="this_month" {{ request('date_filter') == 'this_month' ? 'selected' : '' }}>This Month</option>
                     </select>
