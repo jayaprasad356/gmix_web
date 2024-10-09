@@ -1,41 +1,26 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UsersStoreRequest;
 use App\Models\Users;
-use App\Models\Staffs;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
-        $query = Users::with('staff');
+        $query = Users::query(); // Removed 'with' if not necessary
 
         // If search is provided
         if ($request->has('search')) {
             $search = $request->input('search');
-    
-            // Search by name, mobile, or related product name
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%$search%")
-                  ->orWhere('mobile', 'like', "%$search%")
-                  ->orWhereHas('staff', function($q) use ($search) {
-                      $q->where('name', 'like', "%$search%");
-                  });
-            });
+            // Search by mobile only
+            $query->where('mobile', 'like', "%$search%");
         }
 
         // Get perPage value from the request, default to 10
         $perPage = $request->input('perPage', 10);
-
+        
         // Pagination
         $users = $query->latest()->paginate($perPage); // Show latest users first
 
@@ -44,95 +29,49 @@ class UsersController extends Controller
             return response()->json($users);
         }
 
-        $allUsers = Users::all(); // Fetch all users for the filter dropdown
-        return view('users.index', compact('users', 'allUsers', 'perPage'));
-    }
-    
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('users.create');
+        return view('users.index', compact('users', 'perPage'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    
     public function store(UsersStoreRequest $request)
     {
-
-        $users = Users::create([
+        $user = Users::create([
             'name' => $request->name,
             'mobile' => $request->mobile,
-            
+            // No staff_id field
         ]);
 
-        if (!$users) {
-            return redirect()->back()->with('error', 'Sorry, Something went wrong while creating profession.');
+        if (!$user) {
+            return redirect()->back()->with('error', 'Sorry, something went wrong while creating the user.');
         }
-        return redirect()->route('users.index')->with('success', 'Success, New user has been added successfully!');
+        
+        return redirect()->route('users.index')->with('success', 'Success! New user has been added successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function show(users $users)
-    {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Users $users)
     {
-        // Fetch all staff members
-        $staff = Staffs::all();
-    
-        // Pass the users and staff data to the view
-        return view('users.edit', compact('users', 'staff'));
+        // No need to load staff data if not needed
+        return view('users.edit', compact('users'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Users $users)
+    public function update(Request $request, Users $user)
     {
-        $users->name = $request->name;
-        $users->mobile = $request->mobile;
-        $users->points = $request->points;
-        $users->total_points = $request->total_points;
-       // $users->staff_id = $request->staff_id;
+        $user->name = $request->name;
+        $user->mobile = $request->mobile;
+        $user->points = $request->points;
+        $user->total_points = $request->total_points;
+        // No staff_id field
 
-        if (!$users->save()) {
-            return redirect()->back()->with('error', 'Sorry, Something went wrong while updating the user.');
+        if (!$user->save()) {
+            return redirect()->back()->with('error', 'Sorry, something went wrong while updating the user.');
         }
-        return redirect()->route('users.edit', $users->id)->with('success', 'Success, user has been updated.');
+        
+        return redirect()->route('users.edit', $user->id)->with('success', 'Success! User has been updated.');
     }
-    
-    public function destroy(Users $users)
-    {
-        $users->delete();
 
-        return response()->json([
-            'success' => true
-        ]);
+    public function destroy(Users $user)
+    {
+        $user->delete();
+
+        return response()->json(['success' => true]);
     }
 }

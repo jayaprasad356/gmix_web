@@ -22,10 +22,7 @@ class Users extends Authenticatable
     {
         return $this->hasMany(Addresses::class, 'user_id');
     }
-    public function staff()
-    {
-        return $this->belongsTo(Staffs::class, 'staff_id');
-    }
+   
 
 
     public function findForPassport($mobile)
