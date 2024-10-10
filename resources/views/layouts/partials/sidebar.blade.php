@@ -91,7 +91,7 @@
 
             <li class="nav-item has-treeview">
                 <a href="{{ route('categories.index') }}" class="nav-link {{ activeSegment('categories') }}">
-                <i class="nav-icon fas fa-image"></i> <!-- Icon for Orders -->
+                <i class="nav-icon fas fa-list"></i>
                     <p>Categories</p>
                 </a>
             </li>
