@@ -817,6 +817,7 @@ class AuthController extends Controller
                 ], 404);
             }
             $price = $product->price;
+            $incentives = $product->incentives;
         
             // Check if address exists
             $address = Addresses::find($address_id);

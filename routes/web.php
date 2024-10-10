@@ -35,6 +35,7 @@ use App\Http\Controllers\Recharge_transController;
 use App\Http\Controllers\Verification_transController;
 use App\Http\Controllers\ProfessionsController;
 use App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\WithdrawalsController;
 use App\Http\Controllers\BulkUserController;
 use App\Models\UserNotifications;
 use Illuminate\Support\Facades\Route;
@@ -155,6 +156,12 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     
         Route::get('/staff_reports', [StaffReportsController::class, 'index'])->name('staff_reports.index');
 
+             //Withdrawals  
+             Route::get('/withdrawals', [WithdrawalsController::class, 'index'])->name('withdrawals.index');
+             Route::post('/withdrawals/verify', [WithdrawalsController::class, 'verify'])->name('withdrawals.verify');
+           
+
+             
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {
     return response()->file(public_path('OneSignalSDKWorker.js'));

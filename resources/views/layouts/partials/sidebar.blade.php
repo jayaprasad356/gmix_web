@@ -97,6 +97,13 @@
             </li>
 
             <li class="nav-item has-treeview">
+                <a href="{{ route('withdrawals.index') }}" class="nav-link {{ activeSegment('withdrawals') }}">
+                <i class="nav-icon fas fa-list"></i>
+                    <p>Withdrawals</p>
+                </a>
+            </li>
+
+            <li class="nav-item has-treeview">
                     <a href="{{ route('news.edit') }}" class="nav-link {{ activeSegment('news') }}">
                         <i class="nav-icon fas fa-gear"></i>
                         <p>Settings</p>
