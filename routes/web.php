@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PointsController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\AddressesController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrdersController;
@@ -137,6 +138,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/image_sliders/{image_sliders}', [ImageSlidersController::class, 'destroy'])->name('image_sliders.destroy');
         Route::put('/image_sliders/{image_sliders}', [ImageSlidersController::class, 'update'])->name('image_sliders.update');
         Route::post('/image_sliders', [ImageSlidersController::class, 'store'])->name('image_sliders.store');
+
+        Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
+        Route::get('/categories/categories', [CategoriesController::class, 'create'])->name('categories.create');
+        Route::get('/categories/{categories}/edit', [CategoriesController::class, 'edit'])->name('categories.edit');
+        Route::delete('/categories/{categories}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
+        Route::put('/categories/{categories}', [CategoriesController::class, 'update'])->name('categories.update');
+        Route::post('/categories', [CategoriesController::class, 'store'])->name('categories.store');
 
 
         Route::get('/tickets', [TicketsController::class, 'index'])->name('tickets.index');

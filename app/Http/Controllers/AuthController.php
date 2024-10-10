@@ -23,7 +23,7 @@ use App\Models\Reward_products;
 use App\Models\VerificationTrans;
 use App\Models\Appsettings; 
 use App\Models\News;
-use App\Models\Image_sliders;  
+use App\Models\image_sliders;  
 use App\Models\Reviews;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
