@@ -34,6 +34,8 @@ Route::post('update_resells', [AuthController::class, 'update_resells']);
 Route::post('cron_points', [AuthController::class, 'cron_points']);
 Route::post('image_sliders', [AuthController::class, 'image_sliders']);
 Route::post('category_product_list', [AuthController::class, 'category_product_list']);
+Route::post('add_my_cart', [AuthController::class, 'add_my_cart']);
+Route::post('my_cart_list', [AuthController::class, 'my_cart_list']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

@@ -9,6 +9,7 @@ use App\Models\Products;
 use App\Models\Addresses; 
 use App\Models\Orders;
 use App\Models\Resells;
+use App\Models\My_cart;
 use App\Models\Friends; 
 use App\Models\Points; 
 use App\Models\Plans;
@@ -1584,6 +1585,123 @@ public function image_sliders(Request $request)
         'success' => true,
         'message' => 'Image Sliders listed successfully.',
         'data' => $image_sliderData,
+    ], 200);
+}
+public function add_my_cart(Request $request)
+{
+    $user_id = $request->input('user_id'); 
+    $product_id = $request->input('product_id'); // Renamed the variable to avoid conflict
+
+    // Validate user_id and feedbackContent
+    if (empty($user_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'user_id is empty.',
+        ], 400);
+    }
+    if (empty($product_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'product_id is empty.',
+        ], 400);
+    }
+ 
+
+    // Check if user exists
+    $user = Users::find($user_id);
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'user not found.',
+        ], 404);
+    }
+
+    $product = Products::find($product_id);
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'product not found.',
+        ], 404);
+    }
+
+    // Create a new Feedback instance
+    $my_cart = new My_cart();
+    $my_cart->user_id = $user_id; 
+    $my_cart->product_id = $product_id; // Assign the feedback content to the model property
+
+    // Save the feedback
+    if (!$my_cart->save()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to save my_cart.',
+        ], 500);
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'My Cart added successfully.',
+    ], 201);
+}
+
+public function my_cart_list(Request $request)
+{
+    $user_id = $request->input('user_id');
+
+    if (empty($user_id)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'user_id is empty.',
+        ], 400);
+    }
+
+    // Fetch my cart items for the user, including product details
+    $my_cart = My_cart::where('user_id', $user_id)
+        ->with(['user', 'product']) // Eager load the user and product relationships
+        ->get();
+
+    // Check if the cart collection is empty
+    if ($my_cart->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No products found for this user.',
+        ], 404);
+    }
+
+    $productsDetails = [];
+
+    foreach ($my_cart as $cartItem) {
+        // Access product details through the relationship
+        $product = $cartItem->product;
+
+        // Ensure the product exists before trying to access its properties
+        if ($product) {
+            $imageUrl = $product->image ? asset('storage/app/public/products/' . $product->image) : '';
+            $ratings = number_format(Reviews::where('product_id', $product->id)->avg('ratings'), 2);
+            
+            $productsDetails[] = [
+                'id' => $cartItem->id, // cart id
+                'user_id' => $cartItem->user_id, // cart id
+                'product_id' => $product->id,
+                'category_id' => $product->categories->id ?? "",
+                'category_name' => $product->categories->name ?? "",
+                'name' => $product->name,
+                'unit' => $product->unit,
+                'measurement' => $product->measurement,
+                'quantity' => $product->quantity, // quantity in the cart
+                'description' => $product->description,
+                'price' => (string) $product->price,
+                'image' => $imageUrl,
+                'ratings' => $ratings ?? '',
+                'updated_at' => Carbon::parse($product->updated_at)->format('Y-m-d H:i:s'),
+                'created_at' => Carbon::parse($product->created_at)->format('Y-m-d H:i:s'),
+            ];
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'My Cart Details retrieved successfully.',
+        'data' => $productsDetails,
     ], 200);
 }
 
