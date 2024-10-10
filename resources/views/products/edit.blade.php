@@ -14,6 +14,26 @@
         @csrf
         @method('PUT')
 
+        <div class="form-group">
+    <label for="category_id">Category Name</label>
+    <select name="category_id" class="form-control @error('category_id') is-invalid @enderror" id="category_id">
+        <option value="">Select a Category</option>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}" {{ $category->id == $product->category_id ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+
+    @error('category_id')
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ $message }}</strong>
+    </span>
+    @enderror
+</div>
+
+
+
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"

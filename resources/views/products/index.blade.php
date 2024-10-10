@@ -33,6 +33,7 @@
                     <th>Actions</th>
                     <th>ID <i class="fas fa-sort"></i></th>
                     <th>Name</th>
+                    <th>Category Name</th>
                     <th>Unit</th>
                     <th>Measurement</th>
                     <th>Quantity</th>
@@ -51,6 +52,7 @@
                         </td>
                         <td>{{$product->id}}</td>
                         <td>{{$product->name}}</td>
+                        <td>{{ optional($product->categories)->name }}</td>
                         <td>{{$product->unit}}</td>
                         <td>{{$product->measurement}}</td>
                         <td>{{$product->quantity}}</td>

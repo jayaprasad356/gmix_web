@@ -175,7 +175,7 @@ class AuthController extends Controller
     }
     public function product_list(Request $request)
     {
-        $products = Products::orderBy('price', 'desc')->get();
+        $products = Products::with('categories')->orderBy('price', 'desc')->get();
 
         if ($products->isEmpty()) {
             return response()->json([
@@ -193,6 +193,7 @@ class AuthController extends Controller
             //$description = implode('<br>', $reviews);
             $productsDetails[] = [
                 'id' => $product->id,
+                
                 'name' => $product->name,
                 'unit' => $product->unit,
                 'measurement' => $product->measurement,
@@ -201,7 +202,8 @@ class AuthController extends Controller
                 'price' => (string) $product->price,
                 'image' => $imageUrl,
                 'ratings' => $ratings ?? '',
-                //'description' => $description ?? '',
+                'category_id' => $product->categories->id ?? "",
+                'category_name' => $product->categories->name ?? "",
                 'updated_at' => Carbon::parse($product->updated_at)->format('Y-m-d H:i:s'),
                 'created_at' => Carbon::parse($product->created_at)->format('Y-m-d H:i:s'),
             ];
@@ -213,6 +215,62 @@ class AuthController extends Controller
             'data' => $productsDetails,
         ], 200);
     }
+
+    public function category_product_list(Request $request)
+    {
+        $category_id = $request->input('category_id');
+    
+        if (empty($category_id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'category_id is empty.',
+            ], 400);
+        }
+    
+        // Fetch products based on the category_id
+        $products = Products::where('category_id', $category_id)
+            ->with('categories') // Eager load the categories
+            ->get();
+    
+        // Check if the products collection is empty
+        if ($products->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No products found for this Category.',
+            ], 404);
+        }
+    
+        $productsDetails = [];
+    
+        foreach ($products as $product) {
+            $imageUrl = $product->image ? asset('storage/app/public/products/' . $product->image) : '';
+            $ratings = number_format(Reviews::where('product_id', $product->id)->avg('ratings'), 2);
+            
+            $productsDetails[] = [
+                'id' => $product->id,
+                'category_id' => $product->categories->id ?? "",
+                'category_name' => $product->categories->name ?? "",
+                'name' => $product->name,
+                'unit' => $product->unit,
+                'measurement' => $product->measurement,
+                'quantity' => $product->quantity,
+                'description' => $product->description,
+                'price' => (string) $product->price,
+                'image' => $imageUrl,
+                'ratings' => $ratings ?? '',
+                'updated_at' => Carbon::parse($product->updated_at)->format('Y-m-d H:i:s'),
+                'created_at' => Carbon::parse($product->created_at)->format('Y-m-d H:i:s'),
+            ];
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'products Details retrieved successfully.',
+            'data' => $productsDetails,
+        ], 200);
+    }
+    
+
     public function add_address(Request $request)
     {
         $user_id = $request->input('user_id'); 

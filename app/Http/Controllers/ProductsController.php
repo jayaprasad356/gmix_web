@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductsStoreRequest;
 use App\Models\Products;
+use App\Models\categories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,15 +17,20 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Products::query();
-
+        
+        $query = Products::query()->with(['categories']); // Eager load relationships
+    
+        // Search functionality (if required)
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('name', 'like', "%$search%")
-                  ->orWhere('unit', 'like', "%$search%")
-                  ->orWhere('measurement', 'like', "%$search%")
-                  ->orWhere('price', 'like', "%$search%")
-                  ->orWhere('quantity', 'like', "%$search%");
+            $query->where(function($q) use ($search) {
+                $q->whereHas('categories', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })->orWhereHas('products', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('price', 'like', "%{$search}%");
+                });
+            });
         }
 
         if ($request->wantsJson()) {
@@ -32,7 +38,9 @@ class ProductsController extends Controller
         }
 
         $products = $query->latest()->paginate(10);
-        return view('products.index')->with('products', $products);
+        $categories = categories::all();  // Fetch all staffs for the filter dropdown
+    
+        return view('products.index', compact('categories','products'));
     }
 
     /**
@@ -42,7 +50,9 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        $products = Products::all();
+        $categories = categories::all();
+        return view('products.create', compact('products', 'categories'));
     }
 
     /**
@@ -72,6 +82,7 @@ class ProductsController extends Controller
             'price' => $request->price,
             'description' => $request->description,
             'profit' => $request->profit,
+            'category_id' => $request->category_id,
             'image' => $imageName, 
         ]);
 
@@ -99,7 +110,8 @@ class ProductsController extends Controller
      */
     public function edit(Products $product)
     {
-        return view('products.edit', compact('product'));
+        $categories = categories::all(); // Fetch all shops
+        return view('products.edit', compact('product', 'categories'));
     }
 
     /**
@@ -117,6 +129,7 @@ class ProductsController extends Controller
         $product->quantity = $request->quantity;
         $product->price = $request->price;
         $product->description = $request->description;
+        $product->category_id = $request->category_id;
         $product->profit = $request->profit;
 
         if ($request->hasFile('image')) {

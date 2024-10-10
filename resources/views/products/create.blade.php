@@ -14,6 +14,23 @@
                 @csrf
 
                 <div class="form-group">
+                    <label for="category_id">Category ID</label>
+                    <select name="category_id" class="form-control @error('category_id') is-invalid @enderror" id="category_id">
+                        <option value=''>--select--</option>
+                        @foreach($categories as $categorie)
+                            <option value="{{ $categorie->id }}" {{ old('category_id') == $categorie->id ? 'selected' : '' }}>
+                                {{ $categorie->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                            id="name"

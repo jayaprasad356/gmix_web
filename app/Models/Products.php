@@ -15,10 +15,15 @@ class Products extends Model
         'image',
         'description',
         'profit',
+        'category_id'
     ];
     public function order()
     {
         return $this->belongsTo(Orders::class, 'order_id');
+    }
+    public function categories()
+    {
+        return $this->belongsTo(categories::class, 'category_id');
     }
 }
 
