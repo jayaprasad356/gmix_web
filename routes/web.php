@@ -12,6 +12,7 @@ use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\StaffsController;
 use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ImageSlidersController;
 use App\Http\Controllers\HomeController;    
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
@@ -129,6 +130,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/reviews/{reviews}', [ReviewsController::class, 'destroy'])->name('reviews.destroy');
         Route::put('/reviews/{review}', [ReviewsController::class, 'update'])->name('reviews.update');
         Route::post('/reviews', [ReviewsController::class, 'store'])->name('reviews.store');
+
+        Route::get('/image_sliders', [ImageSlidersController::class, 'index'])->name('image_sliders.index');
+        Route::get('/image_sliders/image_sliders', [ImageSlidersController::class, 'create'])->name('image_sliders.create');
+        Route::get('/image_sliders/{image_sliders}/edit', [ImageSlidersController::class, 'edit'])->name('image_sliders.edit');
+        Route::delete('/image_sliders/{image_sliders}', [ImageSlidersController::class, 'destroy'])->name('image_sliders.destroy');
+        Route::put('/image_sliders/{image_sliders}', [ImageSlidersController::class, 'update'])->name('image_sliders.update');
+        Route::post('/image_sliders', [ImageSlidersController::class, 'store'])->name('image_sliders.store');
 
 
         Route::get('/tickets', [TicketsController::class, 'index'])->name('tickets.index');

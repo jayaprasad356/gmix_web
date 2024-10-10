@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tickets', function (Blueprint $table) {
+        Schema::create('image_sliders', function (Blueprint $table) {
             $table->id();
-            $table->Integer('order_id');
-            $table->string('title');
-            $table->text('description');
-            $table->integer('status');
+            $table->text('name');
+            $table->text('image');
+            $table->text('link');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tickets');
+        Schema::dropIfExists('image_sliders');
     }
 };

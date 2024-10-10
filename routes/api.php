@@ -32,6 +32,7 @@ Route::post('update_reviews', [AuthController::class, 'update_reviews']);
 Route::post('update_ratings', [AuthController::class, 'update_ratings']);
 Route::post('update_resells', [AuthController::class, 'update_resells']);
 Route::post('cron_points', [AuthController::class, 'cron_points']);
+Route::post('image_sliders', [AuthController::class, 'image_sliders']);
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

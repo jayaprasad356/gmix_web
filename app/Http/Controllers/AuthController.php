@@ -22,7 +22,8 @@ use App\Models\RechargeTrans;
 use App\Models\Reward_products;
 use App\Models\VerificationTrans;
 use App\Models\Appsettings; 
-use App\Models\News; 
+use App\Models\News;
+use App\Models\Image_sliders;  
 use App\Models\Reviews;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -1495,4 +1496,37 @@ public function cron_points(Request $request)
         'message' => 'Cron Points Added successfully.',
     ], 200);
 }
+
+public function image_sliders(Request $request)
+{
+    // Retrieve all news settings
+    $image_sliders = image_sliders::all();
+
+    if ($image_sliders->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No Image Sliders found.',
+        ], 404);
+    }
+
+    $image_sliderData = [];
+    foreach ($image_sliders as $image_slider) {
+        $imageUrl = $image_slider->image ? asset('storage/app/public/image_sliders/' . $image_slider->image) : '';
+        $image_sliderData[] = [
+            'id' => $image_slider->id,
+            'name' => $image_slider->name,
+            'link' => (string) $image_slider->link,
+            'image' => $imageUrl,
+            'updated_at' => Carbon::parse($image_slider->updated_at)->format('Y-m-d H:i:s'),
+            'created_at' => Carbon::parse($image_slider->created_at)->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Image Sliders listed successfully.',
+        'data' => $image_sliderData,
+    ], 200);
+}
+
 }

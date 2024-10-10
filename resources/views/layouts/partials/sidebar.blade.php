@@ -50,7 +50,6 @@
             <li class="nav-item has-treeview">
                 <a href="{{ route('products.index') }}" class="nav-link {{ activeSegment('products') }}">
                 <i class="nav-icon fas fa-box-open"></i> <!-- Icon for Products -->
-               
                 <p>Products</p>
                 </a>
             </li>
@@ -80,6 +79,13 @@
                 <a href="{{ route('tickets.index', ['search' => '', 'status' => 0]) }}" class="nav-link {{ activeSegment('tickets') }}">
                     <i class="nav-icon fas fa-ticket-alt"></i> <!-- Icon for Tickets -->
                     <p>Rise Tickets</p>
+                </a>
+            </li>
+
+            <li class="nav-item has-treeview">
+                <a href="{{ route('image_sliders.index') }}" class="nav-link {{ activeSegment('image_sliders') }}">
+                <i class="nav-icon fas fa-image"></i> <!-- Icon for Orders -->
+                    <p>Image Sliders</p>
                 </a>
             </li>
 
