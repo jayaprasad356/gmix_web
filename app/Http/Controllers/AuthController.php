@@ -767,6 +767,7 @@ class AuthController extends Controller
             $user_id = $request->input('user_id');
             $product_id = $request->input('product_id');
             $address_id = $request->input('address_id');
+            $staff_id = $request->input('staff_id');
             $payment_mode = $request->input('payment_mode');
             $quantity = $request->input('quantity');
         
@@ -874,6 +875,7 @@ class AuthController extends Controller
             $order->user_id = $user_id;
             $order->product_id = $product_id;
             $order->address_id = $address_id;
+            $order->staff_id = $staff_id;
             $order->price = $price;
             $order->delivery_charges = $delivery_charges;
             $order->payment_mode = $payment_mode;
