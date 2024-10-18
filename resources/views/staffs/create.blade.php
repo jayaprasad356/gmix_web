@@ -7,12 +7,13 @@
 @endsection
 @section('content')
 
-    <div class="card">
+<div class="card">
         <div class="card-body">
 
-            <form action="{{ route('staffs.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('staffs.update', $staffs) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-
+                @method('PUT')
+                <a href="{{ route('staffs.add_incentives', $staffs->id) }}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Incentives</a>
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"

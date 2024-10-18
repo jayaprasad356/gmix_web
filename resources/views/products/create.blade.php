@@ -100,6 +100,18 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="incentives">Incentives</label>
+                    <input type="number" name="incentives" class="form-control @error('incentives') is-invalid @enderror"
+                           id="incentives"
+                           placeholder="incentives" value="{{ old('incentives') }}">
+                    @error('incentives')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+
 
                 <div class="form-group">
                     <label for="image">Image</label>

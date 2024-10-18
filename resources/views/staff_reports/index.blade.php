@@ -40,6 +40,7 @@
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
                     <tr>
+                   
                         <th>ID</th>
                         <th>Staff Name</th>
                         <th>Total Orders</th>
@@ -51,6 +52,7 @@
                 <tbody>
                     @foreach ($staffs as $staff)
                         <tr>
+                       
                             <td>{{ $staff->id }}</td>
                             <td>{{ $staff->name }}</td>
                             <td>{{ $staff->total_orders }}</td>

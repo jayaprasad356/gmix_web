@@ -22,6 +22,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\StaffReportsController;
+use App\Http\Controllers\StaffTransactionsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RewardproductsController;
 use App\Http\Controllers\FriendsController;
@@ -37,6 +38,7 @@ use App\Http\Controllers\ProfessionsController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\WithdrawalsController;
 use App\Http\Controllers\BulkUserController;
+use App\Models\StaffTransactions;
 use App\Models\UserNotifications;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -106,6 +108,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete('/orders/{orders}', [OrdersController::class, 'destroy'])->name('orders.destroy');
     });
 
+    Route::get('/staffs', [StaffsController::class, 'index'])->name('staffs.index');
+    Route::get('/staffs/create', [StaffsController::class, 'create'])->name('staffs.create');
+    Route::get('/staffs/{staffs}/edit', [StaffsController::class, 'edit'])->name('staffs.edit');
+    Route::delete('/staffs/{staffs}', [StaffsController::class, 'destroy'])->name('staffs.destroy');
+    Route::put('/staffs/{staffs}', [StaffsController::class, 'update'])->name('staffs.update');
+    Route::post('/staffs', [StaffsController::class, 'store'])->name('staffs.store');
+    Route::get('/staffs/{id}/add-incentives', [StaffsController::class, 'addIncentivesForm'])->name('staffs.add_incentives');
+    Route::post('/staffs/{id}/add-incentives', [StaffsController::class, 'addIncentives'])->name('staffs.store_incentives');
+    
+
+
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('/orders/orders', [OrdersController::class, 'create'])->name('orders.create');
     Route::post('/orders', [OrdersController::class, 'store'])->name('orders.store');
@@ -155,12 +168,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/tickets', [TicketsController::class, 'store'])->name('tickets.store');
     
         Route::get('/staff_reports', [StaffReportsController::class, 'index'])->name('staff_reports.index');
-
+        Route::get('/staff_reports/{staff_reports}/edit', [StaffReportsController::class, 'edit'])->name('staff_reports.edit');
+        Route::put('/staff_reports/{staff_reports}', [StaffReportsController::class, 'update'])->name('staff_reports.update');
              //Withdrawals  
              Route::get('/withdrawals', [WithdrawalsController::class, 'index'])->name('withdrawals.index');
              Route::post('/withdrawals/verify', [WithdrawalsController::class, 'verify'])->name('withdrawals.verify');
            
-
+             Route::get('/staff_transactions', [StaffTransactionsController::class, 'index'])->name('staff_transactions.index');
              
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {

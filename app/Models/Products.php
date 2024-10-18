@@ -15,7 +15,8 @@ class Products extends Model
         'image',
         'description',
         'profit',
-        'category_id'
+        'category_id',
+        'incentives',
     ];
     public function order()
     {

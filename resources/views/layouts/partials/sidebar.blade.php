@@ -36,6 +36,12 @@
                 </a>
             </li>
             <li class="nav-item has-treeview">
+                <a href="{{ route('staffs.index') }}" class="nav-link {{ activeSegment('staffs') }}">
+                <i class="nav-icon fas fa-users"></i> <!-- Icon for Orders -->
+                    <p>Staffs</p>
+                </a>
+            </li>
+            <li class="nav-item has-treeview">
                 <a href="{{ route('users.index') }}" class="nav-link {{ activeSegment('users') }}">
                     <i class="nav-icon fas fa-users"></i>
                     <p>Users</p>
@@ -100,6 +106,12 @@
                 <a href="{{ route('withdrawals.index') }}" class="nav-link {{ activeSegment('withdrawals') }}">
                 <i class="nav-icon fas fa-list"></i>
                     <p>Withdrawals</p>
+                </a>
+            </li>
+            <li class="nav-item has-treeview">
+                <a href="{{ route('staff_transactions.index') }}" class="nav-link {{ activeSegment('staff_transactions') }}">
+                <i class="nav-icon fas fa-users"></i> <!-- Icon for Orders -->
+                    <p>Staff Transactions</p>
                 </a>
             </li>
 

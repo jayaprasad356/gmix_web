@@ -84,6 +84,7 @@ class ProductsController extends Controller
             'profit' => $request->profit,
             'category_id' => $request->category_id,
             'image' => $imageName, 
+            'incentives' => $request->incentives,
         ]);
 
         if (!$products) {
@@ -131,6 +132,7 @@ class ProductsController extends Controller
         $product->description = $request->description;
         $product->category_id = $request->category_id;
         $product->profit = $request->profit;
+        $product->incentives = $request->incentives;
 
         if ($request->hasFile('image')) {
             $newImagePath = $request->file('image')->store('products', 'public');

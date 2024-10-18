@@ -36,6 +36,13 @@
                     <th>Name</th>
                     <th>Mobile</th>
                     <th>Password</th>
+                    <th>Incentives</th>
+                    <th>Total Incentives</th>
+                    <th>Bank Name<i class="fas fa-sort"></i></th>
+                    <th>Branch Name<i class="fas fa-sort"></i></th>
+                    <th>IFSC Code <i class="fas fa-sort"></i></th>
+                    <th>Account Number <i class="fas fa-sort"></i></th>
+                    <th>Account Holder Name <i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,6 +56,13 @@
                         <td>{{$staff->name}}</td>
                         <td>{{$staff->mobile}}</td>
                         <td>{{$staff->password}}</td>
+                        <td>{{$staff->incentives}}</td>
+                        <td>{{$staff->total_incentives}}</td>
+                        <td>{{$staff->bank}}</td>
+                        <td>{{$staff->branch}}</td>
+                        <td>{{$staff->ifsc}}</td>
+                        <td>{{$staff->account_num}}</td>
+                        <td>{{$staff->holder_name}}</td>
                     </tr>
                     @endforeach
                 </tbody>

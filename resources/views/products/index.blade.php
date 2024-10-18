@@ -39,6 +39,7 @@
                     <th>Quantity</th>
                     <th>Price</th>
                     <th>Profit</th>
+                    <th>Incentives</th>
                     <!--<th>Description</th>-->
                     <th>Image</th>
                     </tr>
@@ -58,6 +59,7 @@
                         <td>{{$product->quantity}}</td>
                         <td>{{$product->price}}</td>
                         <td>{{$product->profit}}</td>
+                        <td>{{$product->incentives}}</td>
                        <!-- <td>{!! $product->description !!}</td> -->
                         <td>
                             <a href="{{ asset('storage/app/public/products/' . $product->image) }}" data-lightbox="image-{{ $product->id }}">

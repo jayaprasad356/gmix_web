@@ -27,6 +27,7 @@ class StaffsStoreRequest extends FormRequest
             'name' => 'required|string',
             'mobile' => 'required|string',
             'password' => 'required|string',
+            'incentives' => 'required|string',
         ];
     }
 }

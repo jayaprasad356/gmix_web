@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Users; 
+use App\Models\Staffs; 
 use App\Models\Products; 
 use App\Models\Addresses; 
 use App\Models\Orders;
@@ -894,6 +895,23 @@ class AuthController extends Controller
             $order->live_tracking = 'https://gmix.shiprocket.co/tracking/'; 
             $order->ordered_date = Carbon::now();
             $order->save();
+
+            if ($incentives) {
+                $staff = Staffs::find($staff_id); // Check if the staff exists
+                if ($staff) {
+                    // Update or add to current incentives
+                    $staff->incentives = ($staff->incentives ?? 0) + $incentives; // Increment existing incentives
+            
+                    // Update or add to total incentives (cumulative)
+                    $staff->total_incentives = ($staff->total_incentives ?? 0) + $incentives; // Increment total incentives
+            
+                    // Save the updated staff record
+                    $staff->save(); 
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Staff not found.'], 404);
+                }
+            }
+            
 
                     // Return success response
             return response()->json([

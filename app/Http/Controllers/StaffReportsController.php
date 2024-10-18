@@ -74,4 +74,5 @@ class StaffReportsController extends Controller
         // Pass staff, user data, the total quantity, and the current search query to the view
         return view('staff_reports.index', compact('staffs', 'users', 'searchQuery', 'totalKg'));
     }
+ 
 }
