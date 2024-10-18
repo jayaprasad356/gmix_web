@@ -828,6 +828,13 @@ class AuthController extends Controller
                     'message' => 'address not found.',
                 ], 404);
             }
+
+            if ($payment_mode === 'COD') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'COD is not available',
+                ], 400);
+            }
         
             // Get delivery charges from settings table but i getting from news table some issue of the settings name so i change name into news
             $delivery_charges = 0; // Default to 0 for prepaid
