@@ -42,18 +42,11 @@ class HomeController extends Controller
                   ->where('status', '!=', 2)  // Exclude orders with status 2
                   ->count();  
 
-        $today_cod_orders = Orders::whereDate('ordered_date', $today)
-                      ->where('status', '!=', 2)  // Exclude orders with status 2
-                      ->where('payment_mode', 'COD')  // Add condition for status 0
-                      ->count();
+        $today_profit = Orders::whereDate('ordered_date', $today)
+                  ->where('status', '!=', 2)  // Exclude orders with status 2
+                  ->join('products', 'orders.product_id', '=', 'products.id')  // Join with the products table using product_id
+                  ->sum('products.profit');   // Sum the profit from products table  
 
-        $today_prepaid_orders = Orders::whereDate('ordered_date', $today)
-                     ->where('status', '!=', 2)  // Exclude orders with status 2
-                      ->where('payment_mode', 'Prepaid')  // Add condition for status 0
-                      ->count();
-
-        $wait_for_confirmation = Orders::where('status', 0)  // Add condition for status 0
-                      ->count();
 
         $pending_tickets = Tickets::where('status', 0)  // Add condition for status 0
                       ->count();
@@ -65,9 +58,7 @@ class HomeController extends Controller
         return view('home', [
             'today_customers' => $today_customers,
             'today_orders' => $today_orders,
-            'today_cod_orders' => $today_cod_orders,
-            'today_prepaid_orders' => $today_prepaid_orders,
-            'wait_for_confirmation' => $wait_for_confirmation,
+            'today_profit' => $today_profit,
             'pending_tickets' => $pending_tickets,
            
         ]);

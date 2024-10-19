@@ -67,7 +67,7 @@
                 <tbody>
                     @foreach ($withdrawals as $withdrawal)
                     <tr>
-                        <td><input type="checkbox" class="checkbox" data-id="{{ $withdrawal->id }}"></td>
+                        
                         <td>{{ $withdrawal->id }}</td>
                         <td>{{ optional($withdrawal->staffs)->name }}</td>
                         <td>{{ optional($withdrawal->staffs)->mobile }}</td>

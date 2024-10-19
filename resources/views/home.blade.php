@@ -7,7 +7,7 @@
         <div class="row">
             <!-- small box -->
             <div class="col-lg-4 col-6">
-              <div class="small-box bg-green">
+              <div class="small-box bg-orange">
                     <div class="inner">
                         <h3>{{ $today_customers}}</h3>
                         <p>Today Customers</p>
@@ -32,36 +32,10 @@
                 </div>
             </div>
             <div class="col-lg-4 col-6">
-            <div class="small-box bg-orange">
+            <div class="small-box bg-green">
                     <div class="inner">
-                        <h3>{{ $today_cod_orders }}</h3>
-                        <p>Today COD Orders</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-shopping-cart"></i> <!-- Example of a different icon -->
-                    </div>
-                    <a href="{{ route('orders.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-6">
-            <div class="small-box bg-red">
-                    <div class="inner">
-                        <h3>{{ $today_prepaid_orders }}</h3>
-                        <p>Today Prepaid Orders</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-shopping-cart"></i> <!-- Example of a different icon -->
-                    </div>
-                    <a href="{{ route('orders.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-6">
-            <div class="small-box bg-yellow">
-                    <div class="inner">
-                        <h3>{{ $wait_for_confirmation }}</h3>
-                        <p>Wait For Confirmation</p>
+                        <h3>{{ $today_profit }}</h3>
+                        <p>Today Profit</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-shopping-cart"></i> <!-- Example of a different icon -->
