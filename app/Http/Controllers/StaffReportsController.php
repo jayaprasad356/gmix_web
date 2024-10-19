@@ -46,6 +46,7 @@ class StaffReportsController extends Controller
                 ->select(
                     'staffs.id',
                     'staffs.name',
+                    'staffs.incentives',
                     // Only count orders where the status is NOT 2
                     DB::raw('COUNT(CASE WHEN orders.status != 2 THEN orders.id ELSE NULL END) as total_orders'),
                     DB::raw('SUM(CASE WHEN orders.payment_mode = "COD" AND orders.status != 2 THEN 1 ELSE 0 END) as cod_orders'),
@@ -61,7 +62,7 @@ class StaffReportsController extends Controller
 
 
         // Group by staff ID and name, and paginate the results
-        $staffs = $staffs->groupBy('staffs.id', 'staffs.name')
+        $staffs = $staffs->groupBy('staffs.id', 'staffs.name','staffs.incentives')
                          ->paginate(10);
 
         // Calculate total quantity for all staff (in grams)

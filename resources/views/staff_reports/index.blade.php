@@ -47,6 +47,7 @@
                         <th>COD Orders</th>
                         <th>Prepaid Orders</th>
                         <th>Quantity (kg)</th>
+                        <th>Incentives</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,6 +66,7 @@
                                     echo number_format($total_kg, 2) . ' kg';
                                 @endphp
                             </td>
+                            <td>{{ $staff->incentives }}</td>
                         </tr>
                     @endforeach
                 </tbody>
