@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Staffs;
 use App\Models\StaffTransactions;
 use Illuminate\Http\Request;
+use App\Http\Requests\StaffsStoreRequest;
+
 
 class StaffsController extends Controller
 {
@@ -19,6 +21,33 @@ class StaffsController extends Controller
         $staffs = $query->latest()->paginate(10);
 
         return view('staffs.index', compact('staffs'));
+    }
+
+    public function create()
+    {
+        return view('staffs.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    
+    public function store(StaffsStoreRequest $request)
+    {
+
+        $staffs = Staffs::create([
+            'name' => $request->name,
+            'mobile' => $request->mobile,
+            'password' => $request->password,
+        ]);
+
+        if (!$staffs) {
+            return redirect()->back()->with('error', 'Sorry, Something went wrong while creating profession.');
+        }
+        return redirect()->route('staffs.index')->with('success', 'Success, New Staff has been added successfully!');
     }
 
     public function edit(Staffs $staffs)
