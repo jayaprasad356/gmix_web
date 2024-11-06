@@ -48,6 +48,7 @@
                     <th><input type="checkbox" id="checkAll"></th>
                     <th>Actions</th>
                         <th>ID <i class="fas fa-sort"></i></th>
+                        <th>Payment Image<i class="fas fa-sort"></i></th>
                         <th>Status <i class="fas fa-sort"></i></th>
                         <th>Ship Rocket <i class="fas fa-sort"></i></th>
                         <th>Ordered Date <i class="fas fa-sort"></i></th>
@@ -67,7 +68,6 @@
                         <th>Total Price <i class="fas fa-sort"></i></th>
                         <th>Quantity <i class="fas fa-sort"></i></th>
                         <th>Payment Mode <i class="fas fa-sort"></i></th>
-                        <th>Payment Image<i class="fas fa-sort"></i></th>
                         <th>Attempt 1 <i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
@@ -79,6 +79,20 @@
                             <a href="{{ route('orders.edit', $order) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                         </td>
                         <td>{{ $order->id }}</td>
+                        <td>
+                            @if(!empty($order->payment_image))
+                                @if(Str::startsWith($order->payment_image, 'upload/images/'))
+                                <a href="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
+                                        <img class="customer-img img-thumbnail img-fluid" src="https://gmixstaff.graymatterworks.com/{{ $order->payment_image }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                    </a>
+                                @else
+                                    <!-- Otherwise, use the asset path -->
+                                    <a href="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" data-lightbox="image-{{ $order->id }}">
+                                        <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
+                                    </a>
+                                @endif
+                            @endif
+                        </td>
                         <td>
                             @if ($order->status === 0)
                                 <span class="badge badge-primary">Wait For Confirmation</span>
@@ -120,20 +134,6 @@
                         <td>{{ $order->total_price }}</td>
                         <td>{{ $order->quantity }}</td>
                         <td>{{ $order->payment_mode }}</td>  
-                         <td>
-                            @if(!empty($order->payment_image))
-                                @if(Str::startsWith($order->payment_image, 'upload/images/'))
-                                    <a href="http://localhost/gmix_staff/{{ $order->payment_image }}" data-lightbox="image-{{ $order->id }}">
-                                        <img class="customer-img img-thumbnail img-fluid" src="http://localhost/gmix_staff/{{ $order->payment_image }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
-                                    </a>
-                                @else
-                                    <!-- Otherwise, use the asset path -->
-                                    <a href="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" data-lightbox="image-{{ $order->id }}">
-                                        <img class="customer-img img-thumbnail img-fluid" src="{{ asset('storage/app/public/orders/' . $order->payment_image) }}" alt="Payment Image" style="max-width: 100px; max-height: 100px;">
-                                    </a>
-                                @endif
-                            @endif
-                        </td>
                          <td>{{ $order->attempt1 }}</td> 
                     </tr>
                     @endforeach

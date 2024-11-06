@@ -39,11 +39,12 @@ class HomeController extends Controller
         ->count();
 
         $today_orders = Orders::whereDate('ordered_date', $today)
-                  ->where('status', '!=', 2)  // Exclude orders with status 2
-                  ->count();  
+                      ->whereNotIn('status', [2, 6])  // Exclude orders with status 2 and 6
+                      ->count();
+
 
         $today_profit = Orders::whereDate('ordered_date', $today)
-                  ->where('status', '!=', 2)  // Exclude orders with status 2
+                  ->whereNotIn('status', [2, 6]) 
                   ->join('products', 'orders.product_id', '=', 'products.id')  // Join with the products table using product_id
                   ->sum('products.profit');   // Sum the profit from products table  
 
