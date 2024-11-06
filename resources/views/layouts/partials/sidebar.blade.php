@@ -75,6 +75,13 @@
             </li>
 
             <li class="nav-item has-treeview">
+                <a href="{{ route('verifyorders.index') }}" class="nav-link {{ activeSegment('verifyorders') }}">
+                <i class="nav-icon fas fa-check-circle"></i>
+                    <p>Verify Orders</p>
+                </a>
+            </li>
+
+            <li class="nav-item has-treeview">
                 <a href="{{ route('reviews.index') }}" class="nav-link {{ activeSegment('reviews') }}">
                 <i class="nav-icon fas fa-star"></i> <!-- Icon for Orders -->
                     <p>Reviews</p>
@@ -112,14 +119,6 @@
                 <a href="{{ route('staff_transactions.index') }}" class="nav-link {{ activeSegment('staff_transactions') }}">
                 <i class="nav-icon fas fa-users"></i> <!-- Icon for Orders -->
                     <p>Staff Transactions</p>
-                </a>
-            </li>
-
-            <li class="nav-item has-treeview">
-                <a href="{{ route('verifyorders.index') }}" class="nav-link {{ activeSegment('verifyorders') }}">
-                <i class="nav-icon fas fa-check-circle"></i>
-                    <p>Verify Orders</p>
-
                 </a>
             </li>
 

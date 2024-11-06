@@ -7,6 +7,7 @@ use App\Models\Orders;
 use App\Models\Products;
 use App\Models\Addresses;
 use App\Models\Staffs;
+use App\Models\StaffTransactions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -29,6 +30,30 @@ class OrdersController extends Controller
             if ($order) {
                 // Update the order status to the selected status
                 $order->status = $newStatus;
+
+                  // Check if the status is '2' (for deduction)
+            if ($newStatus == 2) {
+                // Fetch the product's incentive value
+                $product = Products::find($order->product_id);
+                if ($product && $product->incentives) {
+                    $incentives = $product->incentives;
+
+                    // Insert a transaction with negative incentive into staff_transactions table
+                    StaffTransactions::create([
+                        'staff_id' => $order->staff_id,
+                        'amount' => -$incentives, // Deduct the incentive
+                        'type' => 'cancelled',
+                        'datetime' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    $staff = Staffs::find($order->staff_id);
+                    if ($staff) {
+                        $staff->incentives -= $incentives; // Deduct the incentive
+                        $staff->total_incentives -= $incentives; // Deduct from total incentives as well
+                        $staff->save(); // Save the updated values
+                    }
+                }
+            }
     
                 // Execute Shiprocket API request only if the status is 'Confirmed' (1) and ship_rocket is not already 1
                 if ($newStatus == 1 && $order->ship_rocket != 1) {
