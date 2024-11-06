@@ -129,6 +129,7 @@
                         <option value="3" {{ request()->input('status') === '3' ? 'selected' : '' }}>Shipped</option>
                         <option value="4" {{ request()->input('status') === '4' ? 'selected' : '' }}>Delivered</option>
                         <option value="5" {{ request()->input('status') === '5' ? 'selected' : '' }}>COD Not-Verified</option>
+                        <option value="6" {{ request()->input('status') === '6' ? 'selected' : '' }}>Payment Not-Verified</option>
                     </select>
                 </div>
                 </div>
@@ -193,6 +194,8 @@
                                 <span class="badge badge-secondary">Delivered</span>
                             @elseif ($order->status === 5)
                                 <span class="badge badge-warning">COD Not-Verified</span>
+                            @elseif ($order->status === 6)
+                                <span class="badge badge-warning">Payment Not-Verified</span>
                             @endif
                         </td>
                         <td>

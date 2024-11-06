@@ -35,6 +35,7 @@ use App\Http\Controllers\FeedbacksController;
 use App\Http\Controllers\Recharge_transController;
 use App\Http\Controllers\Verification_transController;
 use App\Http\Controllers\ProfessionsController;
+use App\Http\Controllers\VerifyordersController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\WithdrawalsController;
 use App\Http\Controllers\BulkUserController;
@@ -170,12 +171,17 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/staff_reports', [StaffReportsController::class, 'index'])->name('staff_reports.index');
         Route::get('/staff_reports/{staff_reports}/edit', [StaffReportsController::class, 'edit'])->name('staff_reports.edit');
         Route::put('/staff_reports/{staff_reports}', [StaffReportsController::class, 'update'])->name('staff_reports.update');
-             //Withdrawals  
-             Route::get('/withdrawals', [WithdrawalsController::class, 'index'])->name('withdrawals.index');
-             Route::post('/withdrawals/verify', [WithdrawalsController::class, 'verify'])->name('withdrawals.verify');
+        
+        //Withdrawals  
+        Route::get('/withdrawals', [WithdrawalsController::class, 'index'])->name('withdrawals.index');
+        Route::post('/withdrawals/verify', [WithdrawalsController::class, 'verify'])->name('withdrawals.verify');
            
-             Route::get('/staff_transactions', [StaffTransactionsController::class, 'index'])->name('staff_transactions.index');
-             
+        Route::get('/staff_transactions', [StaffTransactionsController::class, 'index'])->name('staff_transactions.index');
+           
+        //verifyorders
+        Route::get('/verifyorders', [VerifyordersController::class, 'index'])->name('verifyorders.index');
+        Route::post('/verifyorders/verify', [VerifyordersController::class, 'verify'])->name('verifyorders.verify');
+           
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {
     return response()->file(public_path('OneSignalSDKWorker.js'));

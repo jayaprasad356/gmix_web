@@ -116,6 +116,14 @@
             </li>
 
             <li class="nav-item has-treeview">
+                <a href="{{ route('verifyorders.index') }}" class="nav-link {{ activeSegment('verifyorders') }}">
+                <i class="nav-icon fas fa-check-circle"></i>
+                    <p>Verify Orders</p>
+
+                </a>
+            </li>
+
+            <li class="nav-item has-treeview">
                     <a href="{{ route('news.edit') }}" class="nav-link {{ activeSegment('news') }}">
                         <i class="nav-icon fas fa-gear"></i>
                         <p>Settings</p>
