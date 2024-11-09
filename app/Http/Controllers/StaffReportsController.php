@@ -50,7 +50,7 @@ class StaffReportsController extends Controller
                     // Only count orders where the status is NOT 2
                     DB::raw('COUNT(CASE WHEN orders.status != 2 THEN orders.id ELSE NULL END) as total_orders'),
                     DB::raw('SUM(CASE WHEN orders.payment_mode = "COD" AND orders.status != 2 THEN 1 ELSE 0 END) as cod_orders'),
-                    DB::raw('SUM(CASE WHEN orders.payment_mode = "Prepaid" AND orders.status != 2 THEN 1 ELSE 0 END) as prepaid_orders'),
+                    DB::raw('SUM(CASE WHEN orders.payment_mode = "Prepaid" AND orders.status NOT IN (2, 0) THEN 1 ELSE 0 END) as prepaid_orders'),
                     // Only sum grams where the order status is NOT 2
                     DB::raw('SUM(CASE WHEN orders.status != 2 THEN products.measurement ELSE 0 END) as total_grams') // Only sum grams where status != 2
                 )
