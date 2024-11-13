@@ -77,6 +77,7 @@
                     <td><input type="checkbox" class="checkbox" data-id="{{ $order->id }}"></td>
                     <td>
                             <a href="{{ route('orders.edit', $order) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                            <button class="btn btn-danger btn-delete" data-url="{{route('verifyorders.destroy', $order)}}"><i class="fas fa-trash"></i></button>
                         </td>
                         <td>{{ $order->id }}</td>
                         <td>

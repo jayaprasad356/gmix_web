@@ -181,6 +181,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         //verifyorders
         Route::get('/verifyorders', [VerifyordersController::class, 'index'])->name('verifyorders.index');
         Route::post('/verifyorders/verify', [VerifyordersController::class, 'verify'])->name('verifyorders.verify');
+        Route::delete('/verifyorders/{verifyorders}', [VerifyordersController::class, 'destroy'])->name('verifyorders.destroy');
            
 // OneSignal service worker route
 Route::get('/OneSignalSDKWorker.js', function () {

@@ -89,5 +89,14 @@ class VerifyordersController extends Controller
     
         return view('verifyorders.index', compact('users', 'orders', 'products', 'staffs'));
     }
+    public function destroy(orders $verifyorders)
+    {
+        $verifyorders->delete();
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
     
 }
