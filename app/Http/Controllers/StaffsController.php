@@ -76,7 +76,7 @@ class StaffsController extends Controller
     public function addIncentives(Request $request, $id)
     {
         $request->validate([
-            'incentives' => 'required|integer|min:1',
+            'incentives' => 'required|integer',
         ]);
 
         $staff = Staffs::find($id);
