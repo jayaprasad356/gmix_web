@@ -65,6 +65,9 @@ class OrdersController extends Controller
                     $total_price = $order->price;
                     $address1 = $address->door_no . ' ' . $address->street_name;
                     $payment_mode = $order->payment_mode;
+
+                    $measurement = $product->measurement; 
+                    $weight = $measurement / 1000;
     
                      // Shiprocket API request
                 $response = Http::withHeaders([
@@ -107,7 +110,7 @@ class OrdersController extends Controller
                         "length" => 8,
                         "breadth" => 4,
                         "height" => 5,
-                        "weight" => 0.5
+                        "weight" => $weight
                     ]);
     
                     if ($response->successful()) {
